@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C36F225228B4005DF25F /* PhotoViewController.swift */; };
+		B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */; };
+		B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C373225233E0005DF25F /* UIButton+Animation.swift */; };
+		B958C37622524F4D005DF25F /* GalleryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */; };
+		B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */; };
+		B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37922525812005DF25F /* DetailImageViewController.swift */; };
+		B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */; };
+		B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37D22526644005DF25F /* UIApplication+statusBar.swift */; };
+		B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9814E0F224F9AA700F1C0CC /* RoundButton.swift */; };
+		B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */; };
+		B9F8A11F224F8F5A003E1028 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */; };
+		B9F8A120224F8F5A003E1028 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11D224F8F5A003E1028 /* Comfortaa-Light.ttf */; };
+		B9F8A121224F8F5A003E1028 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11E224F8F5A003E1028 /* Comfortaa-Regular.ttf */; };
 		B9F9255C224F842900CD2F9C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F9255B224F842900CD2F9C /* AppDelegate.swift */; };
 		B9F9255E224F842900CD2F9C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F9255D224F842900CD2F9C /* ViewController.swift */; };
 		B9F92561224F842900CD2F9C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B9F9255F224F842900CD2F9C /* Main.storyboard */; };
@@ -15,6 +28,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B958C36F225228B4005DF25F /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Orientation.swift"; sourceTree = "<group>"; };
+		B958C373225233E0005DF25F /* UIButton+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Animation.swift"; sourceTree = "<group>"; };
+		B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCollectionViewController.swift; sourceTree = "<group>"; };
+		B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		B958C37922525812005DF25F /* DetailImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailImageViewController.swift; sourceTree = "<group>"; };
+		B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Fetch.swift"; sourceTree = "<group>"; };
+		B958C37D22526644005DF25F /* UIApplication+statusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+statusBar.swift"; sourceTree = "<group>"; };
+		B9814E0F224F9AA700F1C0CC /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scale.swift"; sourceTree = "<group>"; };
+		B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
+		B9F8A11D224F8F5A003E1028 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
+		B9F8A11E224F8F5A003E1028 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Regular.ttf"; sourceTree = "<group>"; };
 		B9F92558224F842900CD2F9C /* Thundy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thundy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9F9255B224F842900CD2F9C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B9F9255D224F842900CD2F9C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +61,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B9814E0E224F9A7F00F1C0CC /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				B9814E0F224F9AA700F1C0CC /* RoundButton.swift */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		B9F8A118224F8CE1003E1028 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */,
+				B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */,
+				B958C373225233E0005DF25F /* UIButton+Animation.swift */,
+				B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */,
+				B958C37D22526644005DF25F /* UIApplication+statusBar.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B9F8A11B224F8F3E003E1028 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */,
+				B9F8A11D224F8F5A003E1028 /* Comfortaa-Light.ttf */,
+				B9F8A11E224F8F5A003E1028 /* Comfortaa-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		B9F9254F224F842900CD2F9C = {
 			isa = PBXGroup;
 			children = (
@@ -54,8 +110,15 @@
 		B9F9255A224F842900CD2F9C /* Thundy */ = {
 			isa = PBXGroup;
 			children = (
+				B9814E0E224F9A7F00F1C0CC /* Custom */,
+				B9F8A11B224F8F3E003E1028 /* Fonts */,
+				B9F8A118224F8CE1003E1028 /* Extensions */,
 				B9F9255B224F842900CD2F9C /* AppDelegate.swift */,
 				B9F9255D224F842900CD2F9C /* ViewController.swift */,
+				B958C36F225228B4005DF25F /* PhotoViewController.swift */,
+				B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */,
+				B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */,
+				B958C37922525812005DF25F /* DetailImageViewController.swift */,
 				B9F9255F224F842900CD2F9C /* Main.storyboard */,
 				B9F92562224F842A00CD2F9C /* Assets.xcassets */,
 				B9F92564224F842A00CD2F9C /* LaunchScreen.storyboard */,
@@ -122,9 +185,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9F8A11F224F8F5A003E1028 /* Comfortaa-Bold.ttf in Resources */,
 				B9F92566224F842A00CD2F9C /* LaunchScreen.storyboard in Resources */,
 				B9F92563224F842A00CD2F9C /* Assets.xcassets in Resources */,
 				B9F92561224F842900CD2F9C /* Main.storyboard in Resources */,
+				B9F8A121224F8F5A003E1028 /* Comfortaa-Regular.ttf in Resources */,
+				B9F8A120224F8F5A003E1028 /* Comfortaa-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,8 +201,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */,
+				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,
+				B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */,
+				B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */,
 				B9F9255E224F842900CD2F9C /* ViewController.swift in Sources */,
+				B958C37622524F4D005DF25F /* GalleryCollectionViewController.swift in Sources */,
+				B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */,
+				B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */,
 				B9F9255C224F842900CD2F9C /* AppDelegate.swift in Sources */,
+				B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */,
+				B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */,
+				B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
