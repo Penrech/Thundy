@@ -21,6 +21,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     let numOfColumns = 3
     var selectionModeEnabled = false
     var slideShowModeEnabled = false
+    var navBarsHidden = false
 
     let defaultViewTitle = "Your awesome photos!"
     let selectedPhotosViewTitle = "%d Photos selected"
@@ -31,13 +32,19 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     let imageSelectionModeEnabled = UIImage(named: "endSelection")!.escalarImagen(nuevaAnchura: 34)
     let imageSelectionModeDisabled = UIImage(named: "startSelection")!.escalarImagen(nuevaAnchura: 34)
 
+    var selectButton: UIBarButtonItem = UIBarButtonItem()
+    var closeSlideShowMode: UIBarButtonItem = UIBarButtonItem()
     
     var deleteButton: UIBarButtonItem = UIBarButtonItem()
     var shareButton: UIBarButtonItem = UIBarButtonItem()
+    
     let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+    
+    var toolbarDefault = [UIBarButtonItem]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -48,14 +55,16 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         self.collectionView.collectionViewLayout.invalidateLayout()
         self.collectionView.allowsMultipleSelection = true
         
-        let selectButton = UIBarButtonItem(image: imageSelectionModeDisabled, style: .plain, target: self, action: #selector(clickOnSelectionButton))
+        selectButton = UIBarButtonItem(image: imageSelectionModeDisabled, style: .plain, target: self, action: #selector(clickOnSelectionButton))
+        closeSlideShowMode = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(disableSlideShowMode))
         navigationItem.rightBarButtonItem = selectButton
     
         deleteButton = UIBarButtonItem(image: UIImage(named: "delete")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(deleteImages))
         shareButton = UIBarButtonItem(image: UIImage(named: "share")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(shareImages))
         deleteButton.isEnabled = false
         shareButton.isEnabled = false
-        toolbarItems = [spacer, shareButton, spacer, deleteButton, spacer]
+        toolbarDefault = [spacer, shareButton, spacer, deleteButton, spacer]
+        toolbarItems = toolbarDefault
         
         //navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
         navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
@@ -68,6 +77,14 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         longPressGR.delaysTouchesBegan = true
         self.collectionView.addGestureRecognizer(longPressGR)
 
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
+    }
+    
+    override var prefersStatusBarHidden: Bool{
+        return navBarsHidden
     }
     
     
@@ -185,37 +202,62 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
         let asset = allPhotos?.object(at: indexPath.row)
     
-        cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFill, targetSize: cell.libraryImage.frame.size)
+        if !slideShowModeEnabled {
+            cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFill, targetSize: cell.libraryImage.frame.size)
+        } else {
+            cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFit)
+        }
+        
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        let cellSize = calculateSizes(element: .Cell)
-        return CGSize(width: cellSize, height: cellSize)
+        if !slideShowModeEnabled{
+            let cellSize = calculateSizes(element: .Cell)
+            return CGSize(width: cellSize, height: cellSize)
+        }
+        let screenSize = UIScreen.main.bounds
+        return CGSize(width: screenSize.width , height: screenSize.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        let footerHeight = calculateSizes(element: .TopMargin)
-        return CGSize(width: view.frame.width, height: footerHeight)
+        
+        if !slideShowModeEnabled{
+            let footerHeight = calculateSizes(element: .TopMargin)
+            return CGSize(width: view.frame.width, height: footerHeight)
+        }
+        return CGSize(width: 0, height: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let headerHeight = calculateSizes(element: .TopMargin)
-        return CGSize(width: view.frame.width, height: headerHeight)
+        
+        if !slideShowModeEnabled {
+            let headerHeight = calculateSizes(element: .TopMargin)
+            return CGSize(width: view.frame.width, height: headerHeight)
+            
+        }
+        return CGSize(width: 0, height: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 1.0
+        if !slideShowModeEnabled {
+            return 1.0
+        }
+        return 0.0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout
         collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return calculateSizes(element: .TopMargin)
+        if !slideShowModeEnabled {
+            return calculateSizes(element: .TopMargin)
+        }
+        return 0.0
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
@@ -224,6 +266,30 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
         
         //performSegue(withIdentifier: "showImageInDetail", sender: indexPath.row)
+        if !slideShowModeEnabled{
+            slideShowImage(moveToClicked: indexPath)
+        } else {
+            if !navigationController!.navigationBar.isHidden && !navigationController!.toolbar.isHidden{
+                navigationController?.setToolbarHidden(true, animated: true)
+                navigationController?.setNavigationBarHidden(true, animated: true)
+                navBarsHidden = true
+                UIView.animate(withDuration: 0.15) {
+                    self.setNeedsStatusBarAppearanceUpdate()
+                }
+                
+            } else {
+                navigationController?.setToolbarHidden(false, animated: true)
+                navigationController?.setNavigationBarHidden(false, animated: true)
+                navBarsHidden = false
+                UIView.animate(withDuration: 0.15) {
+                    self.setNeedsStatusBarAppearanceUpdate()
+                }
+            }
+
+        }
+        
+        print(collectionView.indexPathsForVisibleItems)
+        
         return false
      }
     
@@ -253,6 +319,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     @objc func handleLongPress(longPressGR: UILongPressGestureRecognizer) {
+        if slideShowModeEnabled {
+            return
+        }
+        
         if longPressGR.state == .ended {
             return
         }
@@ -290,6 +360,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
             
             navigationController?.hidesBarsOnSwipe = false
+            toolbarItems = toolbarDefault
             navigationController?.setToolbarHidden(false, animated: true)
             
             
@@ -299,7 +370,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             navigationItem.hidesBackButton = false
             navigationController?.hidesBarsOnSwipe = true
             navigationController?.setToolbarHidden(true, animated: true)
-            
+            toolbarItems = nil
             //Deselect all
             if let totalSelection = collectionView.indexPathsForSelectedItems {
                 for selection in totalSelection {
@@ -325,10 +396,74 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         case Cell
         case TopMargin
     }
+    
+    @objc func disableSlideShowMode(){
+        backToNormalGallery()
+    }
 
-    func slideShowImage(){
+    func slideShowImage(moveToClicked: IndexPath){
+        self.collectionView.backgroundColor = .black
+        
+        UIView.animate(withDuration: 0.3) {
+            self.collectionView.contentInsetAdjustmentBehavior = .never
+            self.slideShowModeEnabled = true
+            self.collectionView.reloadData()
+            self.collectionView.collectionViewLayout.invalidateLayout()
+            
+            self.collectionView.isPagingEnabled = true
+            self.navigationItem.hidesBackButton = true
+            
+            if self.navigationController!.navigationBar.isHidden {
+                self.navigationController?.setNavigationBarHidden(false, animated: true)
+            }
+            
+            self.shareButton.isEnabled = true
+            self.deleteButton.isEnabled = true
+            self.toolbarItems = self.toolbarDefault
+            self.navigationController?.setToolbarHidden(false, animated: true)
+            self.navigationController?.hidesBarsOnSwipe = false
+            self.navigationItem.rightBarButtonItem = self.closeSlideShowMode
+            
+            if let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = .horizontal  // .horizontal
+            }
+            
+            self.collectionView.scrollToItem(at: moveToClicked, at: .centeredHorizontally, animated: false)
+        }
+        
         
     }
+    
+    func backToNormalGallery(){
+        collectionView.contentInsetAdjustmentBehavior = .always
+        slideShowModeEnabled = false
+        collectionView.reloadData()
+        collectionView.collectionViewLayout.invalidateLayout()
+        
+        collectionView.isPagingEnabled = false
+        collectionView.backgroundColor = .clear
+        navigationItem.hidesBackButton = false
+        
+        shareButton.isEnabled = false
+        deleteButton.isEnabled = false
+        toolbarItems = nil
+        if !navigationController!.toolbar.isHidden {
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
+        
+        if !UIApplication.shared.isStatusBarHidden {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
+        
+        navigationController?.hidesBarsOnSwipe = true
+        navigationItem.rightBarButtonItem = selectButton
+        
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .vertical  // .horizontal
+        }
+        
+    }
+    
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 

@@ -19,11 +19,11 @@
         <scene sceneID="KNj-jp-dcn">
             <objects>
                 <viewController storyboardIdentifier="galleryViewController" id="Owg-Iq-Dgf" customClass="GalleryViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Evn-Oh-jr8">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" id="Evn-Oh-jr8">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ai4-kO-RcT">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ai4-kO-RcT">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -41,11 +41,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoFondo" translatesAutoresizingMaskIntoConstraints="NO" id="5Lp-zw-YmO">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="logoFondo" translatesAutoresizingMaskIntoConstraints="NO" id="5Lp-zw-YmO">
                                                     <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" secondItem="5Lp-zw-YmO" secondAttribute="height" multiplier="1:1" id="xmf-MW-0c4"/>
-                                                    </constraints>
                                                 </imageView>
                                                 <view hidden="YES" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nzZ-hY-dT3">
                                                     <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
@@ -91,7 +88,6 @@
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <viewLayoutGuide key="safeArea" id="l5E-2s-Brx"/>
                     </view>
                     <navigationItem key="navigationItem" title="Your Awesome photos!" id="d12-ty-pCK"/>
                     <connections>
