@@ -29,21 +29,12 @@ class GalleryCollectionViewController: UICollectionViewController, UICollectionV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
         let fetchOptions = PHFetchOptions()
         self.allPhotos = PHAsset.fetchAssets(with: .image, options: fetchOptions)
         self.collectionView.allowsMultipleSelection = true
-        
-        //navigationItem.rightBarButtonItem.
-        
+
         buttonDelete.customView?.isHidden = true
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        //self.collectionView!.register(PhotoCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -73,7 +64,6 @@ class GalleryCollectionViewController: UICollectionViewController, UICollectionV
             return
         }
         statusBarView.backgroundColor = UIColor.init(red: 102/255, green: 230/255, blue: 1, alpha: 1)
-    
     }
     
     /*
@@ -144,7 +134,6 @@ class GalleryCollectionViewController: UICollectionViewController, UICollectionV
         case .TopMargin:
             return screenWidth  * 0.025
         }
-        
     }
     
     enum CollectionViewSizes {
@@ -179,9 +168,11 @@ class GalleryCollectionViewController: UICollectionViewController, UICollectionV
         
     }
     
+    
     /*override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         
     }*/
+    
 
     override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
         return false
@@ -191,8 +182,9 @@ class GalleryCollectionViewController: UICollectionViewController, UICollectionV
         print("Uso esto \(sender)")
     }
     
-    @nonobjc private let Pruebas = #selector(PhotoCollectionViewCell.prueba(_:))
-    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return false
+    }
 
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

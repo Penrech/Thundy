@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Photos
 
 extension UIImage {
     func escalarImagen(nuevaAnchura: CGFloat) -> UIImage {
@@ -26,5 +27,18 @@ extension UIImage {
         let nuevaImagen: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return nuevaImagen ?? self
+    }
+    func getAssetImage(asset: PHAsset) -> UIImage{
+        let manager = PHImageManager.default()
+        let option = PHImageRequestOptions()
+        var image = UIImage()
+        option.isSynchronous = true
+        option.version = .original
+        manager.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFit, options: option) { (resultImage, [AnyHashable : Any]?) in
+            if resultImage != nil {
+                image = resultImage!
+            }
+        }
+        return image
     }
 }

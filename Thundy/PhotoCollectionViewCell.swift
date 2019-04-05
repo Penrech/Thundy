@@ -12,22 +12,19 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
 
     @IBOutlet weak var libraryImage: UIImageView!
-    
-    @objc func prueba(_ : Any){
-        print("JAJAS")
-    }
-    
+    @IBOutlet weak var selectedTint: UIView!
+    @IBOutlet weak var checkSelectedIndicator: UIImageView!
     override var isSelected: Bool{
         didSet{
             if self.isSelected
             {
-                self.libraryImage.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-                self.contentView.backgroundColor = UIColor.init(red: 102/255, green: 230/255, blue: 1, alpha: 1)
+                self.selectedTint.isHidden = false
+                self.checkSelectedIndicator.isHidden = false
             }
             else
             {
-                self.libraryImage.transform = CGAffineTransform.identity
-                self.contentView.backgroundColor = .clear
+                self.selectedTint.isHidden = true
+                self.checkSelectedIndicator.isHidden = true
             }
         }
     }

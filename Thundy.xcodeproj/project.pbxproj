@@ -16,6 +16,8 @@
 		B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */; };
 		B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37D22526644005DF25F /* UIApplication+statusBar.swift */; };
 		B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9814E0F224F9AA700F1C0CC /* RoundButton.swift */; };
+		B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */; };
+		B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */; };
 		B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */; };
 		B9F8A11F224F8F5A003E1028 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */; };
 		B9F8A120224F8F5A003E1028 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11D224F8F5A003E1028 /* Comfortaa-Light.ttf */; };
@@ -37,6 +39,8 @@
 		B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Fetch.swift"; sourceTree = "<group>"; };
 		B958C37D22526644005DF25F /* UIApplication+statusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+statusBar.swift"; sourceTree = "<group>"; };
 		B9814E0F224F9AA700F1C0CC /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ext.swift"; sourceTree = "<group>"; };
 		B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scale.swift"; sourceTree = "<group>"; };
 		B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
 		B9F8A11D224F8F5A003E1028 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
@@ -77,6 +81,7 @@
 				B958C373225233E0005DF25F /* UIButton+Animation.swift */,
 				B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */,
 				B958C37D22526644005DF25F /* UIApplication+statusBar.swift */,
+				B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -119,6 +124,7 @@
 				B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */,
 				B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */,
 				B958C37922525812005DF25F /* DetailImageViewController.swift */,
+				B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */,
 				B9F9255F224F842900CD2F9C /* Main.storyboard */,
 				B9F92562224F842A00CD2F9C /* Assets.xcassets */,
 				B9F92564224F842A00CD2F9C /* LaunchScreen.storyboard */,
@@ -206,6 +212,8 @@
 				B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */,
 				B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */,
 				B9F9255E224F842900CD2F9C /* ViewController.swift in Sources */,
+				B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */,
+				B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */,
 				B958C37622524F4D005DF25F /* GalleryCollectionViewController.swift in Sources */,
 				B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */,
 				B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */,
