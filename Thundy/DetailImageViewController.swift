@@ -15,6 +15,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     
     var viewFullyLoaded = false
     var clipping: CGRect!
+    var screenSize: CGRect!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailImageView: UIImageView!
@@ -38,42 +39,30 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         detailImageView.addGestureRecognizer(doubleTapRecognizer)
         
         detailImageView.fetchImage(asset: asset, contentMode: .aspectFit)
-        //setConstraints()
+        clipping = detailImageView.contentClippingRect
+        screenSize = UIScreen.main.bounds
+        setConstraints(element: screenSize.width)
         
 
     }
     
-    func setConstraints(){
-        clipping = detailImageView.contentClippingRect
-        
-        let screenSize = view.frame
+    func setConstraints(element: CGFloat){
+     
         var proportion: CGFloat = 1
         var scaledHeight = clipping.height
         var scaledWidth = clipping.width
         
-        if clipping.width > clipping.height {
-            proportion = scaledHeight / scaledWidth
-            scaledWidth = screenSize.width
-            scaledHeight = scaledWidth * proportion
-        } else {
-            proportion = scaledWidth / scaledHeight
-            scaledHeight = screenSize.height
-            scaledWidth = scaledHeight * proportion
-        }
+        proportion = scaledHeight / scaledWidth
+        scaledWidth = element
+        scaledHeight = scaledWidth * proportion
         
-    
-        let imageScaledSize = CGRect(x: 0, y: 0, width: scaledWidth, height: scaledHeight)
+        print(screenSize)
+        print(scaledWidth)
+        print(scaledHeight)
+        let imageScaledSize = CGRect(x: 0, y: 0.5, width: scaledWidth  , height: scaledHeight)
         
-        
-        let leftConstraint = (screenSize.width - imageScaledSize.width) / 2
-        let rightConstraint = leftConstraint
-        let topConstraint = (screenSize.height - imageScaledSize.height) / 2
-        let bottomConstraint = topConstraint
-        
-        LeftImageConstraint.constant = leftConstraint
-        RightLeadingConstraint.constant = rightConstraint
-        TopImageConstraint.constant = topConstraint
-        BottomImageConstraint.constant = bottomConstraint
+        detailImageView.frame = imageScaledSize
+        //detailImageView.contentMode = .scaleAspectFill
     }
     
     func manageChangeOfOrientation(portrait: Bool){
@@ -114,16 +103,30 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        navigationController?.navigationBar.backgroundColor = .clear
-        viewFullyLoaded = true
+        //navigationController?.navigationBar.backgroundColor = .clear
+        /*viewFullyLoaded = true
         UIView.animate(withDuration: 0.15) {
             self.setNeedsStatusBarAppearanceUpdate()
-        }
+        }*/
         
     }
 
     override func viewWillAppear(_ animated: Bool) {
         //navigationController?.navigationBar.backgroundColor = .clear
+        //navigationController?.setToolbarHidden(false, animated: true)
+        navigationItem.title = " "
+        navigationController?.hidesBarsOnSwipe = false
+        
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        print("hola")
+        super.viewWillTransition(to: size, with: coordinator)
+        if UIDevice.current.orientation.isLandscape {
+            setConstraints(element: size.height)
+        } else {
+            setConstraints(element: size.width)
+        }
     }
     
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {

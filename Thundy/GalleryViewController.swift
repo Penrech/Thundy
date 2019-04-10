@@ -16,6 +16,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var buttonDelete: UIBarButtonItem!
+    @IBOutlet weak var emptyStateView: UIView!
+    
+    var customPhotoManager = CustomPhotoAlbum()
+    
     var allPhotos : PHFetchResult<PHAsset>? = nil
     
     let numOfColumns = 3
@@ -32,7 +36,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     let imageSelectionModeEnabled = UIImage(named: "endSelection")!.escalarImagen(nuevaAnchura: 34)
     let imageSelectionModeDisabled = UIImage(named: "startSelection")!.escalarImagen(nuevaAnchura: 34)
 
-    var selectButton: UIBarButtonItem = UIBarButtonItem()
+    var selectButton: UIBarButtonItem!
     var closeSlideShowMode: UIBarButtonItem = UIBarButtonItem()
     
     var deleteButton: UIBarButtonItem = UIBarButtonItem()
@@ -45,28 +49,20 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        let fetchOptions = PHFetchOptions()
-        self.allPhotos = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-        self.collectionView.reloadData()
-        self.collectionView.collectionViewLayout.invalidateLayout()
-        self.collectionView.allowsMultipleSelection = true
-        
-        selectButton = UIBarButtonItem(image: imageSelectionModeDisabled, style: .plain, target: self, action: #selector(clickOnSelectionButton))
+        if selectButton == nil {
+            selectButton = UIBarButtonItem(image: imageSelectionModeDisabled, style: .plain, target: self, action: #selector(clickOnSelectionButton))
+        }
         closeSlideShowMode = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(disableSlideShowMode))
-        navigationItem.rightBarButtonItem = selectButton
     
         deleteButton = UIBarButtonItem(image: UIImage(named: "delete")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(deleteImages))
         shareButton = UIBarButtonItem(image: UIImage(named: "share")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(shareImages))
         deleteButton.isEnabled = false
         shareButton.isEnabled = false
         toolbarDefault = [spacer, shareButton, spacer, deleteButton, spacer]
-        toolbarItems = toolbarDefault
         
-        //navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
         navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
         navigationController?.toolbar.isTranslucent = false
         navigationController?.toolbar.barTintColor = UIColor.defaultBlue
@@ -78,7 +74,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         self.collectionView.addGestureRecognizer(longPressGR)
 
     }
-    
+  
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return .slide
     }
@@ -87,6 +83,48 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         return navBarsHidden
     }
     
+    func loadImages(){
+        customPhotoManager.getPhotos(albumTitle: customPhotoManager.photoAlbumName) { (success, numberOfElements, photos) in
+            if success {
+                if numberOfElements! > 0 {
+                    //Hay elementos, mostrar
+                    self.allPhotos = photos
+                    self.showEmptyState(show: false)
+                    
+                } else {
+                    //No hay elementos, mostrar empty view
+                    print("Album vacio")
+                    self.showEmptyState(show: true)
+                    
+                }
+            } else {
+                //Mostrar Error
+                print("Error cargando photos")
+            }
+        }
+      
+    }
+    
+    func showEmptyState(show: Bool){
+        DispatchQueue.main.async {
+            if show {
+                self.emptyStateView.isHidden = false
+                self.navigationItem.rightBarButtonItem = nil
+            } else {
+                if !self.emptyStateView.isHidden {
+                    self.emptyStateView.isHidden = true
+                }
+                
+                if self.selectButton == nil {
+                   self.selectButton = UIBarButtonItem(image: self.imageSelectionModeDisabled, style: .plain, target: self, action: #selector(self.clickOnSelectionButton))
+                }
+                self.navigationItem.setRightBarButton(self.selectButton, animated: true)
+                self.collectionView.reloadData()
+                self.collectionView.collectionViewLayout.invalidateLayout()
+                self.collectionView.allowsMultipleSelection = true
+            }
+        }
+    }
     
     @objc func deleteImages(){
         if let seleccion = self.collectionView.indexPathsForSelectedItems{
@@ -96,21 +134,21 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
             let indexSet = IndexSet(indexPaths)
             
-            var assetsSelected = allPhotos?.objects(at: indexSet)
+            let assetsSelected = allPhotos?.objects(at: indexSet)
             
             let elements = seleccion.count > 1 ? String(format: photosToDelete, seleccion.count) : String(format: photoToDelete, seleccion.count)
             let alert = UIAlertController(title: "Delete", message: "Are you sure that you want to delete \(elements), this action can't be undone", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (action) in
-                PHPhotoLibrary.shared().performChanges({
-                    PHAssetChangeRequest.deleteAssets(assetsSelected! as NSFastEnumeration)
-                }, completionHandler: { (success, error) in
-                    if success {
-                        self.successDeletingPhotos(selectionToDelete: seleccion)
-                    } else {
-                        self.errorDeletingPhotos()
-                    }
-                })
+                if assetsSelected != nil {
+                    self.customPhotoManager.deletePhotos(assetsToDelete: assetsSelected!, completionHandler: { (success, error, remainPhotos) in
+                        if success{
+                            self.successDeletingPhotos(selectionToDelete: seleccion, remainPhotos: remainPhotos)
+                        } else {
+                             self.errorDeletingPhotos()
+                        }
+                    })
+                }
             }
             
             alert.addAction(cancelAction)
@@ -127,15 +165,21 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         present(alert, animated: true, completion: nil)
     }
     
-    func successDeletingPhotos(selectionToDelete: [IndexPath]){
+    func successDeletingPhotos(selectionToDelete: [IndexPath], remainPhotos: PHFetchResult<PHAsset>?){
         OperationQueue.main.addOperation {
-            let fetchOptions = PHFetchOptions()
-            self.allPhotos = PHAsset.fetchAssets(with: .image, options: fetchOptions)
+
+            self.allPhotos = remainPhotos
             self.collectionView.performBatchUpdates({
                 self.collectionView.deleteItems(at: selectionToDelete)
             }) { (finished) in
                 self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems)
-                self.showSelectionTitle()
+                if self.allPhotos == nil || self.allPhotos?.count == 0 {
+                    self.setSelectionMode(on: false)
+                    self.showEmptyState(show: true)
+                } else {
+                    self.showSelectionTitle()
+                }
+                
             }
         }
         
@@ -146,10 +190,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         var imagenesACompartir: [UIImage] = []
         if let listaDeImagenesSeleccionadas = self.collectionView.indexPathsForSelectedItems {
             for indexPath in listaDeImagenesSeleccionadas{
-                if let asset = self.allPhotos?.object(at: indexPath.row) {
-                    let image = UIImage().getAssetImage(asset: asset)
-                    imagenesACompartir.append(image)
-                }
+                let asset = self.allPhotos?.object(at: indexPath.row)
+                let image = UIImage().getAssetImage(asset: asset!)
+                imagenesACompartir.append(image)
+                
             }
         }
         
@@ -161,6 +205,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        loadImages()
         
         let value = UIInterfaceOrientation.portrait.rawValue
         UIDevice.current.setValue(value, forKey: "orientation")
@@ -188,10 +234,9 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
     }
-
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let allPhotos = allPhotos {
+        if let allPhotos = allPhotos{
             return allPhotos.count
         } else {
             return 0
@@ -207,7 +252,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFit)
         }
-        
         
         return cell
     }
@@ -287,8 +331,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
 
         }
-        
-        print(collectionView.indexPathsForVisibleItems)
         
         return false
      }
@@ -404,32 +446,31 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     func slideShowImage(moveToClicked: IndexPath){
         self.collectionView.backgroundColor = .black
         
-        UIView.animate(withDuration: 0.3) {
-            self.collectionView.contentInsetAdjustmentBehavior = .never
-            self.slideShowModeEnabled = true
-            self.collectionView.reloadData()
-            self.collectionView.collectionViewLayout.invalidateLayout()
-            
-            self.collectionView.isPagingEnabled = true
-            self.navigationItem.hidesBackButton = true
-            
-            if self.navigationController!.navigationBar.isHidden {
-                self.navigationController?.setNavigationBarHidden(false, animated: true)
-            }
-            
-            self.shareButton.isEnabled = true
-            self.deleteButton.isEnabled = true
-            self.toolbarItems = self.toolbarDefault
-            self.navigationController?.setToolbarHidden(false, animated: true)
-            self.navigationController?.hidesBarsOnSwipe = false
-            self.navigationItem.rightBarButtonItem = self.closeSlideShowMode
-            
-            if let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-                layout.scrollDirection = .horizontal  // .horizontal
-            }
-            
-            self.collectionView.scrollToItem(at: moveToClicked, at: .centeredHorizontally, animated: false)
+        self.collectionView.contentInsetAdjustmentBehavior = .never
+        self.slideShowModeEnabled = true
+        self.collectionView.reloadData()
+        
+        self.collectionView.isPagingEnabled = true
+        self.navigationItem.hidesBackButton = true
+        
+        
+        if self.navigationController!.navigationBar.isHidden {
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
+        
+        self.shareButton.isEnabled = true
+        self.deleteButton.isEnabled = true
+        self.toolbarItems = self.toolbarDefault
+        self.navigationController?.setToolbarHidden(false, animated: true)
+
+        self.navigationController?.hidesBarsOnSwipe = false
+        self.navigationItem.rightBarButtonItem = self.closeSlideShowMode
+        
+        if let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal  // .horizontal
+        }
+        
+        self.collectionView.scrollToItem(at: moveToClicked, at: .centeredHorizontally, animated: false)
         
         
     }
@@ -438,7 +479,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         collectionView.contentInsetAdjustmentBehavior = .always
         slideShowModeEnabled = false
         collectionView.reloadData()
-        collectionView.collectionViewLayout.invalidateLayout()
         
         collectionView.isPagingEnabled = false
         collectionView.backgroundColor = .clear

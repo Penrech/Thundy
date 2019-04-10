@@ -18,6 +18,9 @@ class ViewController: UIViewController {
     let albumName = "Thundy"
     var images: [UIImage]?
     
+    var imagesButton = UIBarButtonItem()
+    var infoButton = UIBarButtonItem()
+    
     var blinkTimer: Timer!
     var permissionError = false
 
@@ -25,7 +28,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelTexto: UILabel!
     @IBOutlet weak var buttonStart: RoundButton!
     @IBAction func comenzarConLaApp(_ sender: Any) {
-        buttonStart.clickAnimation()
         askForPermissions()
     }
     override func viewDidLoad() {
@@ -33,8 +35,8 @@ class ViewController: UIViewController {
         images = [blinkLogoImage!, normalLogoImage!]
         startTimer()
 
-        let imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(showInfo))
-        let infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(goToImages))
+        imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(showInfo))
+        infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(goToImages))
         
         navigationItem.rightBarButtonItems = [imagesButton, infoButton]
         for item in navigationItem.rightBarButtonItems! {
@@ -42,12 +44,16 @@ class ViewController: UIViewController {
         }
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    /*override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
     
     override var shouldAutorotate: Bool {
         return true
+    }*/
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -57,17 +63,57 @@ class ViewController: UIViewController {
             return
         }
         statusBarView.backgroundColor = .clear
+
+        if UIApplication.shared.statusBarOrientation.isPortrait {
+            UIView.setAnimationsEnabled(true)
+            showAllOnceViewRotatedToPortrait()
+        }
+        
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { context in
+            
+        }, completion: { context in
+            // turn animations back on.
+            UIView.setAnimationsEnabled(true)
+            self.showAllOnceViewRotatedToPortrait()
+        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let value = UIInterfaceOrientation.portrait.rawValue
-        UIDevice.current.setValue(value, forKey: "orientation")
+        if UIApplication.shared.statusBarOrientation.isLandscape{
+            hideAllIfCommingFromLandscape()
+            UIView.setAnimationsEnabled(false)
+        }
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
         
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.hidesBarsOnSwipe = false
+
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
+    }
+    
+    func hideAllIfCommingFromLandscape(){
+        logoImage.isHidden = true
+        labelTexto.isHidden = true
+        buttonStart.isHidden = true
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
+    func showAllOnceViewRotatedToPortrait(){
+        UIView.animate(withDuration: 0.3) {
+            self.logoImage.isHidden = false
+            self.labelTexto.isHidden = false
+            self.buttonStart.isHidden = false
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+        }
         
-       
     }
     
     func startTimer(){
@@ -93,20 +139,23 @@ class ViewController: UIViewController {
     
     func askForPermissions(){
         //Compruebo que el dispositivo tiene cámaras
-        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera], mediaType: AVMediaType.video, position: .unspecified)
+        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
         guard let _ = deviceDiscoverySession.devices.first else {
             let alerta = UIAlertController(title: "Error", message: "This device does not have a camera", preferredStyle: .alert)
             alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (acccion) in
-                //self.showErrorIfNotPermission(error: .NoCamera)
-                //TODO: quitar luego
-                self.loadCameraView()
+                self.showErrorIfNotPermission(error: .NoCamera)
             }))
             present(alerta, animated: true, completion: nil)
             return
         }
+    
         
         let cameraPermissionStatus = AVCaptureDevice.authorizationStatus(for: .video)
         let savePhotosPermissionStatus = PHPhotoLibrary.authorizationStatus()
+        
+        if cameraPermissionStatus == .authorized && savePhotosPermissionStatus == .authorized{
+            self.loadCameraView()
+        }
 
         if cameraPermissionStatus == .denied {
             requestPermissionAgain(error: .Camera)
@@ -142,20 +191,24 @@ class ViewController: UIViewController {
     func loadCameraView(){
         reStoreInitialState()
     
-        if let cameraViewController = self.storyboard?.instantiateViewController(withIdentifier: "photoViewController") {
-            present(cameraViewController, animated: true, completion: nil)
+        OperationQueue.main.addOperation {
+            if let cameraViewController = self.storyboard?.instantiateViewController(withIdentifier: "photoViewController") {
+                self.present(cameraViewController, animated: true, completion: nil)
+            }
         }
+        
     }
     
     func reStoreInitialState(){
-        if permissionError {
-            permissionError = false
-            self.labelTexto.numberOfLines = 1
-            self.labelTexto.text = defaultText
-            self.logoImage.image = normalLogoImage
-            
-            startTimer()
-            
+        DispatchQueue.main.async {
+            if self.permissionError {
+                self.permissionError = false
+                self.labelTexto.numberOfLines = 1
+                self.labelTexto.text = self.defaultText
+                self.logoImage.image = self.normalLogoImage
+                
+                self.startTimer()
+            }
         }
     }
     
@@ -197,6 +250,13 @@ class ViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    func albumCreationError(){
+        let alertController = UIAlertController(title: "Media Error", message:"Error while creating Thundy photo album, please try again" , preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
     func stopBlinking(){
         if logoImage.isAnimating {
             logoImage.stopAnimating()
@@ -216,44 +276,6 @@ class ViewController: UIViewController {
         case LibraryToShow = "You have denied library use permission previously, but thundy needs that in order to show your thundy photos. Go to settings in order to give thundy permission, please."
     }
     
-    /*func checkIfAlbumIsCreated(){
-        let albumList = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
-        //print(albumList)
-        albumList.enumerateObjects { (colection, _, _) in
-            print(colection.localizedTitle)
-        }
-    }*/
-    
-    func crearAlbumConNombre(name: String){
-        var albumPlaceholder: PHObjectPlaceholder?
-        PHPhotoLibrary.shared().performChanges({
-            // Request creating an album with parameter name
-            let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: name)
-            // Get a placeholder for the new album
-            albumPlaceholder = createAlbumRequest.placeholderForCreatedAssetCollection
-        }, completionHandler: { success, error in
-            if success {
-                guard let placeholder = albumPlaceholder else {
-                    fatalError("Album placeholder is nil")
-                }
-                
-                let fetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [placeholder.localIdentifier], options: nil)
-                guard let album: PHAssetCollection = fetchResult.firstObject else {
-                    // FetchResult has no PHAssetCollection
-                    return
-                }
-                
-                // Saved successfully!
-                print(album.assetCollectionType)
-            }
-            else if let e = error {
-                // Save album failed with error
-            }
-            else {
-                // Save album failed with no error
-            }
-        })
-    }
 
     @objc func goToImages(){
         let galleryViewController = self.storyboard?.instantiateViewController(withIdentifier: "galleryViewController")
