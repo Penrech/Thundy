@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B90566AC225DFD97001DDFC2 /* TutorialStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */; };
+		B90566AE225E22F9001DDFC2 /* TutorialPagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */; };
 		B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9302DFD22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift */; };
 		B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C36F225228B4005DF25F /* PhotoViewController.swift */; };
 		B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */; };
 		B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C373225233E0005DF25F /* UIButton+Animation.swift */; };
-		B958C37622524F4D005DF25F /* GalleryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */; };
 		B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */; };
 		B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37922525812005DF25F /* DetailImageViewController.swift */; };
 		B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */; };
@@ -34,11 +35,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialStepViewController.swift; sourceTree = "<group>"; };
+		B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPagerViewController.swift; sourceTree = "<group>"; };
 		B9302DFD22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIInterfaceOrientation+Video.swift"; sourceTree = "<group>"; };
 		B958C36F225228B4005DF25F /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Orientation.swift"; sourceTree = "<group>"; };
 		B958C373225233E0005DF25F /* UIButton+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Animation.swift"; sourceTree = "<group>"; };
-		B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCollectionViewController.swift; sourceTree = "<group>"; };
 		B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		B958C37922525812005DF25F /* DetailImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailImageViewController.swift; sourceTree = "<group>"; };
 		B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Fetch.swift"; sourceTree = "<group>"; };
@@ -133,10 +135,11 @@
 				B9F9255B224F842900CD2F9C /* AppDelegate.swift */,
 				B9F9255D224F842900CD2F9C /* ViewController.swift */,
 				B958C36F225228B4005DF25F /* PhotoViewController.swift */,
-				B958C37522524F4D005DF25F /* GalleryCollectionViewController.swift */,
 				B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */,
 				B958C37922525812005DF25F /* DetailImageViewController.swift */,
 				B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */,
+				B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */,
+				B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */,
 				B9F9255F224F842900CD2F9C /* Main.storyboard */,
 				B9F92562224F842A00CD2F9C /* Assets.xcassets */,
 				B9F92564224F842A00CD2F9C /* LaunchScreen.storyboard */,
@@ -220,6 +223,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */,
+				B90566AC225DFD97001DDFC2 /* TutorialStepViewController.swift in Sources */,
+				B90566AE225E22F9001DDFC2 /* TutorialPagerViewController.swift in Sources */,
 				B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */,
 				B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */,
 				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,
@@ -229,7 +234,6 @@
 				B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */,
 				B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */,
 				B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */,
-				B958C37622524F4D005DF25F /* GalleryCollectionViewController.swift in Sources */,
 				B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */,
 				B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */,
 				B9F9255C224F842900CD2F9C /* AppDelegate.swift in Sources */,

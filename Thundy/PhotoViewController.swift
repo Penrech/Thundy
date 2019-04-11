@@ -27,6 +27,7 @@ class PhotoViewController: UIViewController {
     var controlLuxTimer: Timer!
     var scanningPauseBecauseDeviceMoved = false
     var scanningPauseBetweenPhotoGap = false
+    var scanningPauseCauseTakingPhoto = false
     
     var referenceAttitude: CMAttitude?
     
@@ -38,13 +39,16 @@ class PhotoViewController: UIViewController {
     
     var motionManager: CMMotionManager!
     
-    var customAlbumManager = CustomPhotoAlbum()
+    var customAlbumManager: CustomPhotoAlbum = (UIApplication.shared.delegate as! AppDelegate).customPhotosManager
     
     //Variables
     var captureSession = AVCaptureSession()
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
     var captureOutput = AVCaptureVideoDataOutput()
+    var captureDeviceRef: AVCaptureDevice?
+
+    var stillImageOutput: AVCapturePhotoOutput?
     
     @IBOutlet weak var scanButton: UIButton!
     @IBOutlet weak var thunderCountLabel: UILabel!
@@ -78,8 +82,10 @@ class PhotoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         customAlbumManager.getAlbum(title: customAlbumManager.photoAlbumName) { (album) in
             if let _ = album {
-                if !self.scanButton.isEnabled && self.captureSession.isRunning {
-                    self.scanButton.isEnabled = true
+                OperationQueue.main.addOperation {
+                    if !self.scanButton.isEnabled && self.captureSession.isRunning {
+                        self.scanButton.isEnabled = true
+                    }
                 }
             } else {
                 let alerta = UIAlertController(title: "Unspected Error", message: "Thundy can't load it's photo album and unspected error occur. Please, try start it again.", preferredStyle: .alert)
@@ -116,13 +122,45 @@ class PhotoViewController: UIViewController {
         guard let captureDevice = deviceDiscoverySession.devices.first else {
             return
         }
+      
+        var cmTime = CMTime(value: 1, timescale: 500)
+        var iso = 50
+        if cmTime < captureDevice.activeFormat.minExposureDuration {
+            cmTime = captureDevice.activeFormat.minExposureDuration
+        }
+        if iso < captureDevice.activeFormat.minISO {
+            iso = captureDevice.activeFormat.minISO
+        }
+        captureDeviceRef = captureDevice
         
+        if captureDevice.isExposureModeSupported(.custom) {
+            do {
+                try captureDevice.lockForConfiguration()
+                //self.configureAndStartSesion(captureDevice: captureDevice)
+                captureDevice.setExposureModeCustom(duration: cmTime, iso: 50, completionHandler: nil)
+                self.configureAndStartSesion(captureDevice: captureDevice)
+            } catch {
+                print("Error de configuración : \(error)")
+            }
+            captureDevice.unlockForConfiguration()
+        } else {
+            configureAndStartSesion(captureDevice: captureDevice)
+        }
+    
+    }
+    
+    func configureAndStartSesion(captureDevice: AVCaptureDevice){
         //Arrancamos la sesión
         do {
             //Convertimos el device (La camara) a un input
             let input = try AVCaptureDeviceInput(device: captureDevice)
+            captureOutput.setSampleBufferDelegate(self, queue: DispatchQueue.main )
+            stillImageOutput = AVCapturePhotoOutput()
             //Añadimos el input a la sesión
+            
             captureSession.addInput(input)
+            captureSession.addOutput(stillImageOutput!)
+            captureSession.addOutput(captureOutput)
             
             //Mostramos en el VideoPreviewLayer
             videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -154,6 +192,63 @@ class PhotoViewController: UIViewController {
             return
         }
     }
+    
+    func changeConfigBeforeTakingPhoto(settings: AVCapturePhotoSettings, exposureFromDetection: Double, isoFromDetection: Double){
+        
+        var iso: Float = 50
+        guard let captureDevice = captureDeviceRef else {
+            return
+        }
+        
+        if captureDevice.isExposureModeSupported(.custom) {
+            do {
+                self.scanningPauseCauseTakingPhoto = true
+                try captureDevice.lockForConfiguration()
+                let secondsOfExposure = (Double(iso) * exposureFromDetection) / isoFromDetection
+                /*print("Valor superior: \((Double(iso) * exposureFromDetection))")
+                print("Maxima iso: \(captureDevice.activeFormat.maxISO)")
+                print("Minima iso: \(captureDevice.activeFormat.minISO)")
+                print("Valor inferior: \(isoFromDetection)")*/
+                var cmTime = CMTime(value: 10, timescale: 100)/*
+                print("valor maxima exposicion \(captureDevice.activeFormat.maxExposureDuration.seconds)")
+                print("Valor de segundos de exposicion: \(secondsOfExposure)")
+                print("Valor de segundos segun cmtime: \(cmTime.seconds)")
+                print("Valor de segundos minimos dispositivo: \(captureDevice.activeFormat.minExposureDuration.seconds)")*/
+                if cmTime > captureDevice.activeFormat.maxExposureDuration {
+                    cmTime = captureDevice.activeFormat.maxExposureDuration
+                }
+                if iso > captureDevice.activeFormat.maxISO {
+                    iso = captureDevice.activeFormat.maxISO
+                }
+                //captureDevice.setExposureModeCustom(duration: AVCaptureDevice.currentExposureDuration, iso: 100, completionHandler: nil)
+                captureDevice.setExposureModeCustom(duration: cmTime, iso: iso) { (time) in
+                    self.stillImageOutput?.capturePhoto(with: settings, delegate: self)
+                }
+            } catch {
+                print("Error de configuración : \(error)")
+            }
+        } else {
+            stillImageOutput?.capturePhoto(with: settings, delegate: self)
+        }
+
+    }
+    
+    func changeConfigAfterTakingPhoto(){
+        
+        guard let captureDevice = captureDeviceRef else {
+            return
+        }
+        do {
+            try captureDevice.lockForConfiguration()
+            captureDevice.exposureMode = .continuousAutoExposure
+            self.scanningPauseCauseTakingPhoto = false
+        } catch {
+            print("Error de configuración : \(error)")
+        }
+        
+        
+    }
+   
     
     func updateVideoOrientation() {
         guard let videoPreviewLayer = self.videoPreviewLayer else {
@@ -188,31 +283,24 @@ class PhotoViewController: UIViewController {
     }
     
     func startScanning(){
-        //Generamos un Output
-        captureOutput.setSampleBufferDelegate(self, queue: DispatchQueue.main )
-        captureSession.addOutput(captureOutput)
-        
+        scanning = true
         motionManager.startDeviceMotionUpdates()
         
-        
         scanButton.setImage(pauseImage, for: .normal)
-        scanning = true
         print("Scanning...")
     }
     
     func stopScanning(){
-        captureSession.removeOutput(captureOutput)
-        
+        scanning = false
         motionManager.stopDeviceMotionUpdates()
         scanningPauseBecauseDeviceMoved = false
         scanningPauseBetweenPhotoGap = false
-        restoreVariables()
+        showAlertToUser(show: false)
         
         setTimer(active: false)
         setControlLuminosityTimer(active: false)
         
         scanButton.setImage(scanImage, for: .normal)
-        scanning = false
         print("Stop scanning.")
     
     }
@@ -223,7 +311,16 @@ class PhotoViewController: UIViewController {
         lastValue = nil
     }
     
-    func photoTaken(){
+    func photoTaken(exposure: Double, iso: Double){
+        let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+        photoSettings.isAutoStillImageStabilizationEnabled = true
+        photoSettings.isHighResolutionPhotoEnabled = true
+        photoSettings.flashMode = .off
+        
+        stillImageOutput?.isHighResolutionCaptureEnabled = true
+        changeConfigBeforeTakingPhoto(settings: photoSettings, exposureFromDetection: exposure, isoFromDetection: iso)
+        
+        
         showAlertView()
     }
     
@@ -245,21 +342,25 @@ class PhotoViewController: UIViewController {
 extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptureVideoDataOutputSampleBufferDelegate{
    
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    
+        if scanningPauseCauseTakingPhoto || scanningPauseBetweenPhotoGap || scanningPauseBecauseDeviceMoved || !scanning || deviceMoved(){
+            return
+        }
         
         //Retrieving EXIF data of camara frame buffer
         let rawMetadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: CMAttachmentMode(kCMAttachmentMode_ShouldPropagate))
         let metadata = CFDictionaryCreateMutableCopy(nil, 0, rawMetadata) as NSMutableDictionary
         let exifData = metadata.value(forKey: "{Exif}") as? NSMutableDictionary
-        
-        let FNumber : Double = exifData?["FNumber"] as! Double
-        let ExposureTime : Double = exifData?["ExposureTime"] as! Double
-        let ISOSpeedRatingsArray = exifData!["ISOSpeedRatings"] as? NSArray
-        let ISOSpeedRatings : Double = ISOSpeedRatingsArray![0] as! Double
-        let CalibrationConstant : Double = 50
-        
+    
+        let BrightnessValue: Double = exifData?["BrightnessValue"] as!Double
+
+        print("Brillo: \(BrightnessValue)")
+/*
+        print("Exposición: \(ExposureTime)")
+        print("IsoSpeedRatings: \(ISOSpeedRatings)")
         //Calculating the luminosity
         let luminosity : Double = (CalibrationConstant * FNumber * FNumber ) / ( ExposureTime * ISOSpeedRatings )
-    
+        print("Luminosidad: \(luminosity)")
         if scanningPauseBecauseDeviceMoved {
             return
         }
@@ -269,8 +370,8 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
             return
         }
         
-        detectIfRayIsShown(luminosity: luminosity)
-    
+        detectIfRayIsShown(luminosity: luminosity, exposure: ExposureTime, iso: ISOSpeedRatings)
+    */
     }
     
     func deviceMoved() -> Bool{
@@ -355,7 +456,7 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
     }
     
     
-    func detectIfRayIsShown(luminosity: Double){
+    func detectIfRayIsShown(luminosity: Double, exposure: Double, iso: Double){
 
         if scanningPauseBetweenPhotoGap {
             if luminosity > (referenceLuminosity - referenceLuminosity * 0.1 ) && (luminosity < referenceLuminosity + referenceLuminosity * 0.1) {
@@ -380,12 +481,31 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
             print("Inicializo valor de refencia al detectar rayo en \(referenceLuminosity)")
             scanningPauseBetweenPhotoGap = true
             setControlLuminosityTimer(active: true)
-            photoTaken()
+            
+            photoTaken(exposure: exposure, iso: iso)
             
         }
-        self.lastValue = luminosity
+        
     }
  
     
-    
+}
+extension PhotoViewController: AVCapturePhotoCaptureDelegate{
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        guard error == nil else {
+            return
+        }
+        
+        guard let imageData = photo.fileDataRepresentation() else {
+            return
+        }
+        
+        let stillImage = UIImage(data: imageData)
+        customAlbumManager.save(photo: stillImage!, toAlbum: customAlbumManager.photoAlbumName) { (success, error) in
+            if !success{
+                print("Error guardando foto")
+            }
+            self.changeConfigAfterTakingPhoto()
+        }
+    }
 }

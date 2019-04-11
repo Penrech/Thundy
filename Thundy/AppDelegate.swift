@@ -13,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var orientationLock = UIInterfaceOrientationMask.all
+    var customPhotosManager = CustomPhotoAlbum()
+    let isAppLoadBefore = "appLoadedBefore"
     
     struct AppUtility {
         static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {

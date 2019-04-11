@@ -18,7 +18,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     @IBOutlet weak var buttonDelete: UIBarButtonItem!
     @IBOutlet weak var emptyStateView: UIView!
     
-    var customPhotoManager = CustomPhotoAlbum()
+    var customPhotoManager: CustomPhotoAlbum = (UIApplication.shared.delegate as! AppDelegate).customPhotosManager
     
     var allPhotos : PHFetchResult<PHAsset>? = nil
     
@@ -48,7 +48,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        
         collectionView.delegate = self
         collectionView.dataSource = self
         

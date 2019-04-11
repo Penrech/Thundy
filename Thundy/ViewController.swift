@@ -15,7 +15,6 @@ class ViewController: UIViewController {
     let normalLogoImage = UIImage(named: "Logo")
     let blinkLogoImage = UIImage(named: "parpadeando")
     let defaultText = "Let's catch some friends for Thundy"
-    let albumName = "Thundy"
     var images: [UIImage]?
     
     var imagesButton = UIBarButtonItem()
@@ -190,11 +189,21 @@ class ViewController: UIViewController {
    
     func loadCameraView(){
         reStoreInitialState()
-    
+        
+        let preferences = UserDefaults.standard
+        let key = (UIApplication.shared.delegate as! AppDelegate).isAppLoadBefore
         OperationQueue.main.addOperation {
-            if let cameraViewController = self.storyboard?.instantiateViewController(withIdentifier: "photoViewController") {
-                self.present(cameraViewController, animated: true, completion: nil)
+            if preferences.object(forKey: key) == nil {
+                if let tutorialViewControler = self.storyboard?.instantiateViewController(withIdentifier: "TutorialPager") as? TutorialPagerViewController {
+                    tutorialViewControler.infoTab = false
+                    self.navigationController?.pushViewController(tutorialViewControler, animated: true)
+                }
+            } else {
+                if let cameraViewController = self.storyboard?.instantiateViewController(withIdentifier: "photoViewController") {
+                    self.present(cameraViewController, animated: true, completion: nil)
+                }
             }
+            
         }
         
     }
@@ -298,7 +307,8 @@ class ViewController: UIViewController {
     }
     
     @objc func showInfo(){
-        print("Show Info")
+        let infoViewController = self.storyboard?.instantiateViewController(withIdentifier: "TutorialPager")
+        self.navigationController?.pushViewController(infoViewController!, animated: true)
     }
 
 }
