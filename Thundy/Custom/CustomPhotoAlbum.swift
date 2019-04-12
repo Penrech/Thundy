@@ -10,11 +10,14 @@ import Foundation
 import UIKit
 import Photos
 
+//Esta clase incluye todas las variables y métodos necesarios para guardar imagenes en un album custom dentro de la galería
+
 class CustomPhotoAlbum {
     
     let photoAlbumName = "Thundy"
     var albumReference: PHAssetCollection!
     
+    //Esta función obtiene el album con el nombre correspondiente, si este album no existe, llama a la función crear album para crearlo
     func getAlbum(title: String, completionHandler: @escaping (PHAssetCollection?) -> ()) {
         DispatchQueue.global(qos: .background).async { [weak self] in
             let fetchOptions = PHFetchOptions()
@@ -33,6 +36,7 @@ class CustomPhotoAlbum {
         }
     }
     
+    //Esta función se encarga de crear el album
     func createAlbum(withTitle title: String, completionHandler: @escaping (PHAssetCollection?) -> ()) {
         DispatchQueue.global(qos: .background).async {
             var placeholder: PHObjectPlaceholder?
@@ -52,6 +56,7 @@ class CustomPhotoAlbum {
         }
     }
     
+    //Esta función guarda una foto en el album
     func save(photo: UIImage, toAlbum titled: String, completionHandler: @escaping (Bool, Error?) -> ()) {
         getAlbum(title: titled) { (album) in
             DispatchQueue.global(qos: .background).async {
@@ -68,6 +73,7 @@ class CustomPhotoAlbum {
         }
     }
     
+    //Esta función obtiene todas las fotos del album
     func getPhotos(albumTitle: String, completionHandler: @escaping (_ success: Bool, _ quantity: Int?, _ photos: PHFetchResult<PHAsset>?) -> ()){
         let fetchOptions = PHFetchOptions()
         var allPhotos : PHFetchResult<PHAsset>? = nil
@@ -88,6 +94,7 @@ class CustomPhotoAlbum {
         }
     }
     
+    //Esta función borra una o más fotos y devuelve las restantes.
     func deletePhotos(assetsToDelete: [PHAsset], completionHandler: @escaping (_ success: Bool, _ error: Error?, _ remainPhotos: PHFetchResult<PHAsset>?) -> ()){
         var remainPhotos: PHFetchResult<PHAsset>?
         PHPhotoLibrary.shared().performChanges({

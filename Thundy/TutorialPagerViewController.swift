@@ -8,10 +8,14 @@
 
 import UIKit
 
+//Este view controller gestiona el tutorial
+
 class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDataSource {
 
     var viewControllerList:[UIViewController] = []
     
+    //Este tutorial aparece cuando un usuario abre por primera vez la cámara y también cuando el usuario entra en la vista tutorial de forma manual
+    //En caso de entrar de forma manual, las opciones y acciones que el usuario ve no son exactamente las mismas. Para determinar esto está esta variable.
     var infoTab: Bool = true
     
     var customAlbumManager: CustomPhotoAlbum = (UIApplication.shared.delegate as! AppDelegate).customPhotosManager
@@ -33,6 +37,7 @@ class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDat
         loadAlbum(infoTab: infoTab)
     }
     
+    //En caso de que el usuario entre por primera vez a la cámara, le aparece el tutorial que de fondo intenta crear el album si este todavía no existe
     func loadAlbum(infoTab: Bool){
         if !infoTab{
             customAlbumManager.getAlbum(title: customAlbumManager.photoAlbumName) { (album) in
@@ -48,6 +53,7 @@ class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDat
         }
     }
     
+    //MARK: - métodos para gestionar el pager view controller
     func setUpViewControllers(infoTab: Bool){
         let vc1 = self.storyboard?.instantiateViewController(withIdentifier: "Step1")
         let vc2 = self.storyboard?.instantiateViewController(withIdentifier: "Step2")

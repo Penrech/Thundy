@@ -235,9 +235,10 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="3wd-yb-zon" firstAttribute="leading" secondItem="Sbt-g7-ghp" secondAttribute="leading" constant="32" id="7iS-A3-0ld"/>
+                                    <constraint firstItem="3wd-yb-zon" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Sbt-g7-ghp" secondAttribute="leading" constant="32" id="7iS-A3-0ld"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="centerX" secondItem="Sbt-g7-ghp" secondAttribute="centerX" id="RKC-a3-Mzw"/>
-                                    <constraint firstAttribute="trailing" secondItem="3wd-yb-zon" secondAttribute="trailing" constant="32" id="TE6-Ms-KIJ"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3wd-yb-zon" secondAttribute="trailing" constant="32" id="TE6-Ms-KIJ"/>
+                                    <constraint firstItem="3wd-yb-zon" firstAttribute="centerX" secondItem="Sbt-g7-ghp" secondAttribute="centerX" id="jOO-2S-JAo"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="top" secondItem="Sbt-g7-ghp" secondAttribute="centerY" id="qh7-N5-4Pl"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="top" secondItem="3wd-yb-zon" secondAttribute="bottom" constant="16" id="rhJ-n3-lYj"/>
                                 </constraints>
@@ -452,7 +453,6 @@
         <!--View Controller-->
         <scene sceneID="KhI-d4-Npn">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aIM-sa-GqQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="Step1" id="PtV-C3-35h" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VLU-jj-XFo">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -494,6 +494,7 @@
                         <viewLayoutGuide key="safeArea" id="PHP-8o-yW9"/>
                     </view>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aIM-sa-GqQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1977" y="-645"/>
         </scene>
@@ -523,7 +524,6 @@
         <!--View Controller-->
         <scene sceneID="aWh-ey-aA5">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="PCr-Gg-C9W" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="Step2" id="tud-EJ-cLZ" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VAx-t8-O39">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -566,13 +566,13 @@
                         <viewLayoutGuide key="safeArea" id="DNU-7P-yga"/>
                     </view>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PCr-Gg-C9W" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1210" y="-645"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="aRN-a1-Zys">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nqx-y8-pUp" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="Step3" id="ZCP-1G-5VQ" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3zg-0a-0ZZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -614,13 +614,13 @@
                         <viewLayoutGuide key="safeArea" id="M8C-47-1Zz"/>
                     </view>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nqx-y8-pUp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-438" y="-645"/>
         </scene>
         <!--Tutorial Step View Controller-->
         <scene sceneID="rZj-qB-ex9">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Xkx-Es-6cO" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="Step4" id="38l-BA-NSZ" customClass="TutorialStepViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2rS-ba-fyJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -684,6 +684,7 @@
                         <viewLayoutGuide key="safeArea" id="OAl-aS-NnG"/>
                     </view>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Xkx-Es-6cO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="288.80000000000001" y="-645.42728635682158"/>
         </scene>

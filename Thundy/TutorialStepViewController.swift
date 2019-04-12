@@ -8,9 +8,8 @@
 
 import UIKit
 
+//Esta clase está asociada al último view controller que se muestra y se encarga de gestionar el botón que envia al usuario a la vista de la cámara
 class TutorialStepViewController: UIViewController {
-
-
     override func viewDidLoad() {
         super.viewDidLoad()
   
@@ -24,7 +23,6 @@ class TutorialStepViewController: UIViewController {
                     self.present(cameraViewController, animated: true, completion: nil)
                     self.removeFromParent()
                     parentPager.navigationController?.popViewController(animated: true)
-                    
                 }
             }
         }
