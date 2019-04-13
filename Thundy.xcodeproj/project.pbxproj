@@ -17,6 +17,7 @@
 		B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37922525812005DF25F /* DetailImageViewController.swift */; };
 		B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */; };
 		B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37D22526644005DF25F /* UIApplication+statusBar.swift */; };
+		B971351B2261EFAD004146B5 /* ButtonForToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B971351A2261EFAD004146B5 /* ButtonForToolbar.swift */; };
 		B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB1225B646E00C16640 /* Date+Milis.swift */; };
 		B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB3225B965900C16640 /* RoundedCard.swift */; };
 		B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9814E0F224F9AA700F1C0CC /* RoundButton.swift */; };
@@ -45,6 +46,7 @@
 		B958C37922525812005DF25F /* DetailImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailImageViewController.swift; sourceTree = "<group>"; };
 		B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Fetch.swift"; sourceTree = "<group>"; };
 		B958C37D22526644005DF25F /* UIApplication+statusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+statusBar.swift"; sourceTree = "<group>"; };
+		B971351A2261EFAD004146B5 /* ButtonForToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonForToolbar.swift; sourceTree = "<group>"; };
 		B972EDB1225B646E00C16640 /* Date+Milis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Milis.swift"; sourceTree = "<group>"; };
 		B972EDB3225B965900C16640 /* RoundedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCard.swift; sourceTree = "<group>"; };
 		B9814E0F224F9AA700F1C0CC /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				B9814E0F224F9AA700F1C0CC /* RoundButton.swift */,
 				B972EDB3225B965900C16640 /* RoundedCard.swift */,
 				B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */,
+				B971351A2261EFAD004146B5 /* ButtonForToolbar.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */,
 				B90566AC225DFD97001DDFC2 /* TutorialStepViewController.swift in Sources */,
 				B90566AE225E22F9001DDFC2 /* TutorialPagerViewController.swift in Sources */,
+				B971351B2261EFAD004146B5 /* ButtonForToolbar.swift in Sources */,
 				B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */,
 				B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */,
 				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,

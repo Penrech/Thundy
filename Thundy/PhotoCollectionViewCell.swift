@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class PhotoCollectionViewCell: UICollectionViewCell {
     
@@ -27,5 +28,34 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                 self.checkSelectedIndicator.isHidden = true
             }
         }
+    }
+    
+    func setImage(asset: PHAsset){
+        let cellHeight = self.frame.height
+        let cellWidth = self.frame.width
+        self.libraryImage.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
+        self.libraryImage.fetchImage(asset: asset, contentMode: .aspectFill, targetSize: self.frame.size)
+    }
+    
+    func setImageDetail(asset: PHAsset){
+        let width = asset.pixelWidth
+        let height = asset.pixelHeight
+        let deviceHeight = UIScreen.main.bounds.height
+        let deviceWidth = UIScreen.main.bounds.width
+        var newHeight: CGFloat = CGFloat(height)
+        var newWidth: CGFloat = CGFloat(width)
+        
+        let proportion = CGFloat(height) / CGFloat(width)
+        newWidth = deviceWidth
+        newHeight = deviceWidth * proportion
+        let positionY = (deviceHeight - newHeight) / 2
+        self.libraryImage.frame = CGRect(x: 0, y: positionY, width: newWidth, height: newHeight)
+        self.libraryImage.fetchImage(asset: asset, contentMode: .aspectFill)
+        
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        print("Class: \(self.hash) - layoutSubViews")
     }
 }

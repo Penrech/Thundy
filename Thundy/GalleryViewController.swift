@@ -26,12 +26,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     var selectionModeEnabled = false
     var slideShowModeEnabled = false
     var navBarsHidden = false
-    
-    var lastIndex: IndexPath?
-    var lastAnchor: CGPoint?
-    var lastCenter: CGPoint?
-    var lastFrame: CGRect?
-
+  
     let defaultViewTitle = "Your awesome photos!"
     let selectedPhotosViewTitle = "%d Photos selected"
     let selectedPhotoViewTitle = "%d Photo selected"
@@ -73,6 +68,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         navigationController?.toolbar.isTranslucent = false
         navigationController?.toolbar.barTintColor = UIColor.defaultBlue
         navigationController?.toolbar.tintColor = UIColor.defaultWhite
+        print(" Valor de translates : \(navigationController?.toolbar.translatesAutoresizingMaskIntoConstraints)" )
         
         let longPressGR = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(longPressGR:)))
         longPressGR.minimumPressDuration = 0.5
@@ -211,12 +207,11 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if !navBarsHidden {
-            loadImages()
-        }
 
-        let value = UIInterfaceOrientation.portrait.rawValue
-        UIDevice.current.setValue(value, forKey: "orientation")
+        loadImages()
+   
+        /*let value = UIInterfaceOrientation.portrait.rawValue
+        UIDevice.current.setValue(value, forKey: "orientation")*/
         navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
         DispatchQueue.main.async {
             self.navigationItem.title = "Your awesome photos!"
@@ -230,7 +225,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return
         }
         statusBarView.backgroundColor = UIColor.defaultBlue
-        
         
     }
     
@@ -261,9 +255,11 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         let asset = allPhotos?.object(at: indexPath.row)
     
         if !slideShowModeEnabled {
-            cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFill, targetSize: cell.libraryImage.frame.size)
+            cell.setImage(asset: asset!)
+            //cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFill, targetSize: cell.libraryImage.frame.size)
         } else {
-            cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFit)
+            cell.setImageDetail(asset: asset!)
+            //cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFit)
         }
         
         return cell
@@ -322,48 +318,11 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return true
         }
         
-        /*if let destinationViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailImageViewController"){
-            /*let customWindow = UIWindow(frame: UIScreen.main.bounds)
-            let detailViewController = destinationViewController as! DetailImageViewController
-            let asset = self.allPhotos?.object(at: indexPath.row)
-            detailViewController.asset = asset!*/
-            let customWindow = (UIApplication.shared.delegate as! AppDelegate).detailWindow
-            let detailViewController = customWindow.rootViewController as! DetailImageViewController
-            let asset = self.allPhotos?.object(at: indexPath.row)
-            detailViewController.asset = asset!
-            customWindow.makeKeyAndVisible()
-        }
-        //animateBeforeDetail(indexPath: indexPath)
-        /*if let cell = collectionView.cellForItem(at: indexPath)  {
-            collectionView.allowsSelection = false
-            let photoCell = cell as! PhotoCollectionViewCell
-            
-            UIView.animate(withDuration: 0.3, animations: {
-                photoCell.layer.anchorPoint = self.view.layer.anchorPoint
-                photoCell.center = self.view.center
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
-                self.navBarsHidden = true
-                self.setNeedsStatusBarAppearanceUpdate()
-                photoCell.libraryImage.contentMode = .scaleAspectFit
-                photoCell.frame = UIScreen.main.bounds
-                photoCell.contentView.backgroundColor = UIColor.black
-                
-                self.collectionView.bringSubviewToFront(photoCell)
-            }) { (completado) in
-                if let destinationViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailImageViewController"){
-                    let detailViewController = destinationViewController as! DetailImageViewController
-                    let asset = self.allPhotos?.object(at: indexPath.row)
-                    detailViewController.asset = asset!
-                    self.present(detailViewController, animated: false, completion: nil)
-                }
-            }
-            
-        }*/
-
-        
         //performSegue(withIdentifier: "showImageInDetail", sender: indexPath.row)*/
         if !slideShowModeEnabled{
+            print("ContentOffset antes: \(collectionView.contentOffset)")
             slideShowImage(moveToClicked: indexPath)
+            print("ContentOffset despuse: \(collectionView.contentOffset)")
         } else {
             if !navigationController!.navigationBar.isHidden && !navigationController!.toolbar.isHidden{
                 navigationController?.setToolbarHidden(true, animated: true)
@@ -373,6 +332,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                     self.setNeedsStatusBarAppearanceUpdate()
                 }
                 
+                
             } else {
                 navigationController?.setToolbarHidden(false, animated: true)
                 navigationController?.setNavigationBarHidden(false, animated: true)
@@ -380,73 +340,14 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 UIView.animate(withDuration: 0.15) {
                     self.setNeedsStatusBarAppearanceUpdate()
                 }
+                
             }
-
+            
         }
         
         return false
      }
-    
-    func animateBeforeDetail(indexPath: IndexPath){
-        if let cell = collectionView.cellForItem(at: indexPath)  {
-            collectionView.allowsSelection = false
-            collectionView.contentInsetAdjustmentBehavior = .never
-            let photoCell = cell as! PhotoCollectionViewCell
-            let anchor = photoCell.layer.anchorPoint
-            let center = photoCell.center
-            let frame = photoCell.frame
-            
-            UIView.animate(withDuration: 0.3, animations: {
-                photoCell.layer.anchorPoint = self.view.layer.anchorPoint
-                photoCell.center = self.view.center
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
-                self.navBarsHidden = true
-                self.setNeedsStatusBarAppearanceUpdate()
-                photoCell.libraryImage.contentMode = .scaleAspectFit
-                photoCell.frame = UIScreen.main.bounds
-                photoCell.contentView.backgroundColor = UIColor.black
-                
-                self.collectionView.bringSubviewToFront(photoCell)
-            }) { (completado) in
-                if let destinationViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailImageViewController"){
-                    let detailViewController = destinationViewController as! DetailImageViewController
-                    let asset = self.allPhotos?.object(at: indexPath.row)
-                    detailViewController.asset = asset!
-                    self.lastIndex = indexPath
-                    self.lastAnchor = anchor
-                    self.lastCenter = center
-                    self.lastFrame = frame
-                    self.present(detailViewController, animated: false, completion: nil)
-                }
-            }
-            
-        }
-    }
-
-    func animateAfterDetail(){
-        guard let indexPath = self.lastIndex,let anchorPoint = self.lastAnchor, let centerPoint = self.lastCenter , let frame = self.lastFrame, let cell = collectionView.cellForItem(at: indexPath) else  {
-            self.navBarsHidden = false
-            self.loadImages()
-            return
-        }
-        
-        let photoCell = cell as! PhotoCollectionViewCell
-        
-        photoCell.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
-        UIView.animate(withDuration: 0.3, animations: {
-            photoCell.layer.anchorPoint = anchorPoint
-            photoCell.center = centerPoint
-            self.navBarsHidden = false
-            self.setNeedsStatusBarAppearanceUpdate()
-            photoCell.libraryImage.contentMode = .scaleAspectFill
-            photoCell.frame = frame
-            photoCell.contentView.backgroundColor = .clear
-        }) { (completado) in
-            self.collectionView.allowsSelection = true
-        }
-    }
+  
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         showSelectionTitle()
@@ -557,6 +458,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
     func slideShowImage(moveToClicked: IndexPath){
+
         self.collectionView.backgroundColor = .black
         
         self.collectionView.contentInsetAdjustmentBehavior = .never
@@ -584,7 +486,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
         
         self.collectionView.scrollToItem(at: moveToClicked, at: .centeredHorizontally, animated: false)
-        
         
     }
     
