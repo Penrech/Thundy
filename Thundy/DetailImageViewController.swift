@@ -12,63 +12,31 @@ import Photos
 class DetailImageViewController: UIViewController, UIScrollViewDelegate {
 
     var asset = PHAsset()
-    
-    var viewFullyLoaded = false
-    var clipping: CGRect!
-    var screenSize: CGRect!
+
+    var positionY: CGFloat = 0
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailImageView: UIImageView!
-    @IBOutlet weak var LeftImageConstraint: NSLayoutConstraint!
-    @IBOutlet weak var RightLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var TopImageConstraint: NSLayoutConstraint!
-    @IBOutlet weak var BottomImageConstraint: NSLayoutConstraint!
-    
+  
     @IBAction func closeDetail(_ sender: Any) {
-       /* let mainWindow = (UIApplication.shared.delegate as! AppDelegate).window
-        let actualWindow = (UIApplication.shared.delegate as! AppDelegate).detailWindow
-        actualWindow.close
-        mainWindow?.makeKeyAndVisible()*/
         dismiss(animated: true, completion: nil)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         scrollView.minimumZoomScale = 1.0
         scrollView.maximumZoomScale = 6.0
         scrollView.delegate = self
-    
+        scrollView.clipsToBounds = true
+        
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapScrollView))
         doubleTapRecognizer.numberOfTapsRequired = 2
         detailImageView.addGestureRecognizer(doubleTapRecognizer)
         
-        detailImageView.fetchImage(asset: asset, contentMode: .aspectFit)
-        clipping = detailImageView.contentClippingRect
-        screenSize = UIScreen.main.bounds
-        setConstraints(element: screenSize.width)
-        
-
-    }
-    
-
-    
-    func setConstraints(element: CGFloat){
-     
-        var proportion: CGFloat = 1
-        var scaledHeight = clipping.height
-        var scaledWidth = clipping.width
-        
-        proportion = scaledHeight / scaledWidth
-        scaledWidth = element
-        scaledHeight = scaledWidth * proportion
-        
-        print(screenSize)
-        print(scaledWidth)
-        print(scaledHeight)
-        let imageScaledSize = CGRect(x: 0, y: 0.5, width: scaledWidth  , height: scaledHeight)
-        
-        detailImageView.frame = imageScaledSize
-        //detailImageView.contentMode = .scaleAspectFill
+        setImageDetail(asset: asset)
     }
     
     func manageChangeOfOrientation(portrait: Bool){
@@ -80,18 +48,29 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
-        if scrollView.zoomScale == 1 {
+      /*  if scrollView.zoomScale == 1 {
             scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
         } else {
             scrollView.setZoomScale(1, animated: true)
 
-        }
+        }*/
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        /*let tamañoImagen = detailImageView.contentClippingRect
-        print("tamaño")
-        print(tamañoImagen)*/
+        print("ContentOffset: \(scrollView.contentOffset)")
+        let deviceHeight = UIScreen.main.bounds.height
+        let actualFrame = detailImageView.frame
+        let newHeight = actualFrame.height
+        let position = (deviceHeight - newHeight) / 2
+        let actualX = actualFrame.minX
+        let actualY = actualFrame.minY
+        print("Position y: \(position) ")
+        let positionNormalized = max(position, 0)
+        print("Posicion Normalizada: \(positionNormalized)")
+        let newFrame = CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)
+        
+        detailImageView.frame = newFrame
+ 
     }
     
     func zoomRectForScale(scale: CGFloat, center: CGPoint) -> CGRect {
@@ -129,9 +108,9 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         print("hola")
         super.viewWillTransition(to: size, with: coordinator)
         if UIDevice.current.orientation.isLandscape {
-            setConstraints(element: size.height)
+           
         } else {
-            setConstraints(element: size.width)
+           
         }
     }
     
@@ -141,15 +120,24 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     override var prefersStatusBarHidden: Bool{
         return true
     }
- 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    func setImageDetail(asset: PHAsset){
+        let width = asset.pixelWidth
+        let height = asset.pixelHeight
+        let deviceHeight = UIScreen.main.bounds.height
+        let deviceWidth = UIScreen.main.bounds.width
+        var newHeight: CGFloat = CGFloat(height)
+        var newWidth: CGFloat = CGFloat(width)
+        
+        let proportion = CGFloat(height) / CGFloat(width)
+        newWidth = deviceWidth
+        newHeight = deviceWidth * proportion
+        positionY = (deviceHeight - newHeight) / 2
+        self.detailImageView.frame = CGRect(x: 0, y: positionY, width: newWidth, height: newHeight)
+        self.detailImageView.fetchImage(asset: asset, contentMode: .aspectFit)
+        self.detailImageView.layer.anchorPoint = self.view.layer.anchorPoint
+        
     }
-    */
+
 
 }
