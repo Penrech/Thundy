@@ -43,13 +43,13 @@ class ViewController: UIViewController {
         }
     }
     
-    /*override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
     
     override var shouldAutorotate: Bool {
         return true
-    }*/
+    }
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
@@ -63,30 +63,9 @@ class ViewController: UIViewController {
         }
         statusBarView.backgroundColor = .clear
 
-        if UIApplication.shared.statusBarOrientation.isPortrait {
-            UIView.setAnimationsEnabled(true)
-            showAllOnceViewRotatedToPortrait()
-        }
-        
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { context in
-            
-        }, completion: { context in
-            // turn animations back on.
-            UIView.setAnimationsEnabled(true)
-            self.showAllOnceViewRotatedToPortrait()
-        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if UIApplication.shared.statusBarOrientation.isLandscape{
-            hideAllIfCommingFromLandscape()
-            UIView.setAnimationsEnabled(false)
-        }
-        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
-        
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
@@ -94,27 +73,6 @@ class ViewController: UIViewController {
 
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
-    }
-    
-    func hideAllIfCommingFromLandscape(){
-        logoImage.isHidden = true
-        labelTexto.isHidden = true
-        buttonStart.isHidden = true
-        navigationController?.setNavigationBarHidden(true, animated: false)
-    }
-    
-    func showAllOnceViewRotatedToPortrait(){
-        UIView.animate(withDuration: 0.3) {
-            self.logoImage.isHidden = false
-            self.labelTexto.isHidden = false
-            self.buttonStart.isHidden = false
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
-        }
-        
-    }
-    
     func startTimer(){
         if let blinkTimer = blinkTimer {
             if !blinkTimer.isValid {

@@ -26,6 +26,11 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     var selectionModeEnabled = false
     var slideShowModeEnabled = false
     var navBarsHidden = false
+    
+    var lastIndex: IndexPath?
+    var lastAnchor: CGPoint?
+    var lastCenter: CGPoint?
+    var lastFrame: CGRect?
 
     let defaultViewTitle = "Your awesome photos!"
     let selectedPhotosViewTitle = "%d Photos selected"
@@ -206,9 +211,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        loadImages()
-        
+        if !navBarsHidden {
+            loadImages()
+        }
+
         let value = UIInterfaceOrientation.portrait.rawValue
         UIDevice.current.setValue(value, forKey: "orientation")
         navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
@@ -217,11 +223,15 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
         navigationController?.navigationBar.topItem?.title = ""
         navigationController?.hidesBarsOnSwipe = true
+        navigationController?.toolbar.autoresizesSubviews = false
+        navigationController?.setNavigationBarHidden(false, animated: false)
         
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
         }
         statusBarView.backgroundColor = UIColor.defaultBlue
+        
+        
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -235,6 +245,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
     }
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let allPhotos = allPhotos{
@@ -310,7 +322,46 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return true
         }
         
-        //performSegue(withIdentifier: "showImageInDetail", sender: indexPath.row)
+        /*if let destinationViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailImageViewController"){
+            /*let customWindow = UIWindow(frame: UIScreen.main.bounds)
+            let detailViewController = destinationViewController as! DetailImageViewController
+            let asset = self.allPhotos?.object(at: indexPath.row)
+            detailViewController.asset = asset!*/
+            let customWindow = (UIApplication.shared.delegate as! AppDelegate).detailWindow
+            let detailViewController = customWindow.rootViewController as! DetailImageViewController
+            let asset = self.allPhotos?.object(at: indexPath.row)
+            detailViewController.asset = asset!
+            customWindow.makeKeyAndVisible()
+        }
+        //animateBeforeDetail(indexPath: indexPath)
+        /*if let cell = collectionView.cellForItem(at: indexPath)  {
+            collectionView.allowsSelection = false
+            let photoCell = cell as! PhotoCollectionViewCell
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                photoCell.layer.anchorPoint = self.view.layer.anchorPoint
+                photoCell.center = self.view.center
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                self.navBarsHidden = true
+                self.setNeedsStatusBarAppearanceUpdate()
+                photoCell.libraryImage.contentMode = .scaleAspectFit
+                photoCell.frame = UIScreen.main.bounds
+                photoCell.contentView.backgroundColor = UIColor.black
+                
+                self.collectionView.bringSubviewToFront(photoCell)
+            }) { (completado) in
+                if let destinationViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailImageViewController"){
+                    let detailViewController = destinationViewController as! DetailImageViewController
+                    let asset = self.allPhotos?.object(at: indexPath.row)
+                    detailViewController.asset = asset!
+                    self.present(detailViewController, animated: false, completion: nil)
+                }
+            }
+            
+        }*/
+
+        
+        //performSegue(withIdentifier: "showImageInDetail", sender: indexPath.row)*/
         if !slideShowModeEnabled{
             slideShowImage(moveToClicked: indexPath)
         } else {
@@ -335,6 +386,67 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         return false
      }
+    
+    func animateBeforeDetail(indexPath: IndexPath){
+        if let cell = collectionView.cellForItem(at: indexPath)  {
+            collectionView.allowsSelection = false
+            collectionView.contentInsetAdjustmentBehavior = .never
+            let photoCell = cell as! PhotoCollectionViewCell
+            let anchor = photoCell.layer.anchorPoint
+            let center = photoCell.center
+            let frame = photoCell.frame
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                photoCell.layer.anchorPoint = self.view.layer.anchorPoint
+                photoCell.center = self.view.center
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                self.navBarsHidden = true
+                self.setNeedsStatusBarAppearanceUpdate()
+                photoCell.libraryImage.contentMode = .scaleAspectFit
+                photoCell.frame = UIScreen.main.bounds
+                photoCell.contentView.backgroundColor = UIColor.black
+                
+                self.collectionView.bringSubviewToFront(photoCell)
+            }) { (completado) in
+                if let destinationViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailImageViewController"){
+                    let detailViewController = destinationViewController as! DetailImageViewController
+                    let asset = self.allPhotos?.object(at: indexPath.row)
+                    detailViewController.asset = asset!
+                    self.lastIndex = indexPath
+                    self.lastAnchor = anchor
+                    self.lastCenter = center
+                    self.lastFrame = frame
+                    self.present(detailViewController, animated: false, completion: nil)
+                }
+            }
+            
+        }
+    }
+
+    func animateAfterDetail(){
+        guard let indexPath = self.lastIndex,let anchorPoint = self.lastAnchor, let centerPoint = self.lastCenter , let frame = self.lastFrame, let cell = collectionView.cellForItem(at: indexPath) else  {
+            self.navBarsHidden = false
+            self.loadImages()
+            return
+        }
+        
+        let photoCell = cell as! PhotoCollectionViewCell
+        
+        photoCell.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        UIView.animate(withDuration: 0.3, animations: {
+            photoCell.layer.anchorPoint = anchorPoint
+            photoCell.center = centerPoint
+            self.navBarsHidden = false
+            self.setNeedsStatusBarAppearanceUpdate()
+            photoCell.libraryImage.contentMode = .scaleAspectFill
+            photoCell.frame = frame
+            photoCell.contentView.backgroundColor = .clear
+        }) { (completado) in
+            self.collectionView.allowsSelection = true
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         showSelectionTitle()
@@ -508,7 +620,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
-        if segue.identifier == "showImageInDetail"{
+        if segue.identifier == "ImageToDetail"{
             if let elementPosition = sender as? Int {
                 let asset = allPhotos?.object(at: elementPosition)
                 let controlerDestino = segue.destination as! DetailImageViewController

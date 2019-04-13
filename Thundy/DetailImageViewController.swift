@@ -25,6 +25,10 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var BottomImageConstraint: NSLayoutConstraint!
     
     @IBAction func closeDetail(_ sender: Any) {
+       /* let mainWindow = (UIApplication.shared.delegate as! AppDelegate).window
+        let actualWindow = (UIApplication.shared.delegate as! AppDelegate).detailWindow
+        actualWindow.close
+        mainWindow?.makeKeyAndVisible()*/
         dismiss(animated: true, completion: nil)
     }
     override func viewDidLoad() {
@@ -45,6 +49,8 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         
 
     }
+    
+
     
     func setConstraints(element: CGFloat){
      
@@ -133,7 +139,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         return .slide
     }
     override var prefersStatusBarHidden: Bool{
-        return viewFullyLoaded
+        return true
     }
  
     /*

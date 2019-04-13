@@ -126,7 +126,7 @@
                     <connections>
                         <outlet property="collectionView" destination="ai4-kO-RcT" id="cbc-8M-lPs"/>
                         <outlet property="emptyStateView" destination="zx2-YE-sm1" id="oh6-pt-u2V"/>
-                        <segue destination="7Rl-fI-NdV" kind="show" identifier="showImageInDetail" id="XFc-0k-lrD"/>
+                        <segue destination="7Rl-fI-NdV" kind="presentation" identifier="ImageToDetail" id="2F0-Qc-32e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JsN-DX-lZ2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -136,22 +136,29 @@
         <!--Detail Image View Controller-->
         <scene sceneID="Zhh-Bo-g4e">
             <objects>
-                <viewController id="7Rl-fI-NdV" customClass="DetailImageViewController" customModule="Thundy" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailImageViewController" id="7Rl-fI-NdV" customClass="DetailImageViewController" customModule="Thundy" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TWl-2r-1zi">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Y4-ur-Rkc">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Y4-ur-Rkc">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mqp-EK-vEQ">
-                                        <rect key="frame" x="0.0" y="-64" width="375" height="667"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                    <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mqp-EK-vEQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                     </imageView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="mqp-EK-vEQ" secondAttribute="trailing" id="HZx-6T-W6F"/>
+                                    <constraint firstAttribute="bottom" secondItem="mqp-EK-vEQ" secondAttribute="bottom" id="aOJ-VT-6jc"/>
+                                    <constraint firstItem="mqp-EK-vEQ" firstAttribute="centerY" secondItem="1Y4-ur-Rkc" secondAttribute="centerY" id="cYs-aG-Hu4"/>
+                                    <constraint firstItem="mqp-EK-vEQ" firstAttribute="top" secondItem="1Y4-ur-Rkc" secondAttribute="top" id="ned-2s-RDK"/>
+                                    <constraint firstItem="mqp-EK-vEQ" firstAttribute="centerX" secondItem="1Y4-ur-Rkc" secondAttribute="centerX" id="wWb-7U-i9o"/>
+                                    <constraint firstItem="mqp-EK-vEQ" firstAttribute="leading" secondItem="1Y4-ur-Rkc" secondAttribute="leading" id="xpQ-Hr-iBE"/>
+                                </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iyQ-Lo-HRi">
-                                <rect key="frame" x="32" y="88" width="36" height="36"/>
+                                <rect key="frame" x="32" y="44" width="36" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="UYv-Ah-112"/>
                                     <constraint firstAttribute="width" constant="36" id="pQM-4x-fpD"/>

@@ -29,6 +29,7 @@ class PhotoViewController: UIViewController {
     var controlLuxTimer: Timer!
     var scanningPauseBecauseDeviceMoved = false
     var scanningPauseBetweenPhotoGap = false
+    var scanningPauseWhenIsTakingPhoto = false
     
     var referenceAttitude: CMAttitude?
     
@@ -49,7 +50,7 @@ class PhotoViewController: UIViewController {
 
     var stillImageOutput: AVCapturePhotoOutput?
     
-    var photosBeenTaken = [photoTook]()
+    var shouldCloseViewController = false
     
     // MARK: - Outlets
     
@@ -68,7 +69,14 @@ class PhotoViewController: UIViewController {
         
     }
     @IBAction func closePhotoViewController(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
+        let statusBarOrientation = UIApplication.shared.statusBarOrientation
+        if statusBarOrientation != .portrait {
+            shouldCloseViewController = true
+            UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        } else {
+            dismiss(animated: true, completion: nil)
+        }
+        
     }
     
     // MARK: - view functions
@@ -116,6 +124,9 @@ class PhotoViewController: UIViewController {
                 self?.updateVideoOrientation()
             })
             UIView.setAnimationsEnabled(true)
+            if self!.shouldCloseViewController {
+                self!.dismiss(animated: true, completion: nil)
+            }
         })
     }
     
@@ -197,14 +208,20 @@ class PhotoViewController: UIViewController {
         }
         
         let statusBarOrientation = UIApplication.shared.statusBarOrientation
+        print("##StatusBar Orientation: \(statusBarOrientation.rawValue)")
         let videoOrientation: AVCaptureVideoOrientation = statusBarOrientation.videoOrientation ?? .portrait
         
         if videoPreviewLayer.connection!.videoOrientation == videoOrientation {
             return
         }
         
+        if let imageOutputConnection = stillImageOutput?.connection(with: AVMediaType.video) {
+            imageOutputConnection.videoOrientation = videoOrientation
+        }
+        
         videoPreviewLayer.frame = view.bounds
         videoPreviewLayer.connection!.videoOrientation = videoOrientation
+        print("##Orientacion video : \(videoPreviewLayer.connection?.videoOrientation.rawValue)")
         videoPreviewLayer.removeAllAnimations()
     }
     
@@ -242,6 +259,7 @@ class PhotoViewController: UIViewController {
         motionManager.stopDeviceMotionUpdates()
         scanningPauseBecauseDeviceMoved = false
         scanningPauseBetweenPhotoGap = false
+        scanningPauseWhenIsTakingPhoto = false
         showAlertToUser(show: false)
         restoreVariables()
         
@@ -271,12 +289,12 @@ class PhotoViewController: UIViewController {
         photoSettings.flashMode = .off
         
         stillImageOutput?.isHighResolutionCaptureEnabled = true
-        let captura = CMSyncGetTime(captureSession.masterClock!).seconds
-        photosBeenTaken.append(photoTook(id: captura, luminosity: luminosityWhenDetected))
-        print("Se captura ahora: \(captura)")
-        stillImageOutput?.capturePhoto(with: photoSettings, delegate: self)
-        
-        showAlertView()
+    
+        scanningPauseWhenIsTakingPhoto = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.stillImageOutput?.capturePhoto(with: photoSettings, delegate: self)
+        }
+        //showAlertView()
     }
     
     // Este método muestra una animación similar a un flash para indicar de forma visual que un rayo ha sido capturado
@@ -312,6 +330,11 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
         
         print("luminosidad: \(luminosity)")
     
+        //Si una foto está siendo tomada, se paraliza el proceso de escaneo. Con esto se evitan errores de sincronización
+        if scanningPauseWhenIsTakingPhoto {
+            return
+        }
+        
         //Si el dispositivo se ha movido, la app espera unos segundos para que el terminal vuelva a ser sostenido firmemente
         if scanningPauseBecauseDeviceMoved {
             return
@@ -455,10 +478,6 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
     //Esta es la función principal encargada de detectar si se da un rayo o no.
     func detectIfRayIsShown(luminosity: Double){
 
-        if luminosity == nil{
-            return
-        }
-        
         //Aqui se detecta si tras un rayo la luz a vuelto a su luminosidad original o no
         if scanningPauseBetweenPhotoGap {
             if luminosity > (referenceLuminosity - referenceLuminosity * 0.1 ) && (luminosity < referenceLuminosity + referenceLuminosity * 0.1) {
@@ -477,9 +496,9 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
         let porcentajeAumentoLuminosidad = 0.25
 
         if luminosity > lastValue + lastValue * porcentajeAumentoLuminosidad {
-            rayCapturedNumber += 1
+            //rayCapturedNumber += 1
             print("Rayo \(rayCapturedNumber))")
-            referenceLuminosity = lastValue
+            referenceLuminosity = luminosity
             
             print("Inicializo valor de refencia al detectar rayo en \(referenceLuminosity)")
             scanningPauseBetweenPhotoGap = true
@@ -503,52 +522,37 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
         guard let imageData = photo.fileDataRepresentation() else {
             return
         }
-        print("Metadata----")
-        print(photo.metadata)
-        print(photo.photoCount)
-        print("Timestampcapturada: \(photo.timestamp.seconds)")
-        let tiempoDeCaptura = photo.timestamp.seconds
-        let upperTime = tiempoDeCaptura + tiempoDeCaptura * 0.01
-        let downTime = tiempoDeCaptura - tiempoDeCaptura * 0.01
-        var indexToRemove: Int?
-        for (index, photoTook) in photosBeenTaken.enumerated(){
-            if photoTook.id < upperTime && photoTook.id > downTime {
-                //Tomar foto
-                
-                let luminosidadInicial = photoTook.luminosity
-                let luminosidadFinal = calcularLuminosidad(capturedImage: photo)
-                print("Luminosidad Inicial: \(luminosidadInicial)")
-                print("Luminosidad Final: \(luminosidadFinal)")
-                
-                let upperLuminosidad = luminosidadFinal + luminosidadFinal * 0.05
-                let downLuminosidad = luminosidadFinal - luminosidadFinal * 0.05
-                
-                if luminosidadInicial < upperLuminosidad && luminosidadInicial > downLuminosidad{
-                    print("La foto tiene rayo")
-                }
-                
-                indexToRemove = index
-                break
+        
+        //Aqui compruebo que la imagen resultante tenga una luminosidad similar al momento exacto donde se ha detectado el rayo
+        //Pasa cierto tiempo entre que la detección se realiza y la foto finalmente se procesa. Esto puede resultar en que el rayo ya no esté visible
+        //cuando la foto está procesada
+        //Para evitar en la medida de lo posible fotos en negro, se realiza la siguiente comprobación
+        if let luminosidadInicial = referenceLuminosity {
+            let luminosidadFinal = calcularLuminosidad(capturedImage: photo)
+            let luminosidadInicialMásConstante = luminosidadInicial + luminosidadInicial * 0.05
+       
+            if luminosidadFinal >= luminosidadInicialMásConstante {
+                print("@@Luminosidad Inicial: \(luminosidadInicial)")
+                print("@@Luminosidad Final: \(luminosidadFinal)")
+                print("@@La foto tiene rayo")
+                self.saveAndSetPhoto(imageData: imageData)
             }
         }
-        if let index = indexToRemove {
-            photosBeenTaken.remove(at: index)
-        }
+        scanningPauseWhenIsTakingPhoto = false
+    }
+    
+    func saveAndSetPhoto(imageData: Data){
         
         let stillImage = UIImage(data: imageData)
         customAlbumManager.save(photo: stillImage!, toAlbum: customAlbumManager.photoAlbumName) { (success, error) in
-            print("Error guardado foto")
-            print(error)
+            if success{
+                OperationQueue.main.addOperation {
+                    self.rayCapturedNumber += 1
+                    self.showAlertView()
+                }
+            }
         }
     }
     
-    func saveAndSetPhoto(){
-        
-    }
-    
 }
-struct photoTook {
-    var id: Double
-    var luminosity: Double
-    
-}
+
