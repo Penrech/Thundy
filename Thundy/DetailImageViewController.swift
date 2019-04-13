@@ -48,12 +48,12 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
-      /*  if scrollView.zoomScale == 1 {
+      if scrollView.zoomScale == 1 {
             scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
         } else {
             scrollView.setZoomScale(1, animated: true)
 
-        }*/
+        }
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
@@ -63,7 +63,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         let newHeight = actualFrame.height
         let position = (deviceHeight - newHeight) / 2
         let actualX = actualFrame.minX
-        let actualY = actualFrame.minY
+    
         print("Position y: \(position) ")
         let positionNormalized = max(position, 0)
         print("Posicion Normalizada: \(positionNormalized)")
@@ -73,13 +73,25 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
  
     }
     
+    func newYPosition() -> CGFloat {
+        let deviceHeight = UIScreen.main.bounds.height
+        let actualFrame = detailImageView.frame
+        let newHeight = actualFrame.height
+        let position = (deviceHeight - newHeight) / 2
+
+        let positionNormalized = max(position, 0)
+        
+        return positionNormalized
+    }
+    
     func zoomRectForScale(scale: CGFloat, center: CGPoint) -> CGRect {
         var zoomRect = CGRect.zero
         zoomRect.size.height = detailImageView.frame.size.height / scale
         zoomRect.size.width  = detailImageView.frame.size.width  / scale
         let newCenter = scrollView.convert(center, from: detailImageView)
+        let offsetY = newYPosition()
         zoomRect.origin.x = newCenter.x - (zoomRect.size.width / 2.0)
-        zoomRect.origin.y = newCenter.y - (zoomRect.size.height / 2.0)
+        zoomRect.origin.y = newCenter.y - (zoomRect.size.height / 2.0) - newYPosition()
         return zoomRect
     }
     
