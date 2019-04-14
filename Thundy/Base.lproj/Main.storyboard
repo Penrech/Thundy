@@ -126,7 +126,7 @@
                     <connections>
                         <outlet property="collectionView" destination="ai4-kO-RcT" id="cbc-8M-lPs"/>
                         <outlet property="emptyStateView" destination="zx2-YE-sm1" id="oh6-pt-u2V"/>
-                        <segue destination="7Rl-fI-NdV" kind="presentation" identifier="ImageToDetail" id="2F0-Qc-32e"/>
+                        <segue destination="7Rl-fI-NdV" kind="show" identifier="ImageToDetail" id="2F0-Qc-32e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JsN-DX-lZ2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -150,56 +150,20 @@
                                     </imageView>
                                 </subviews>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iyQ-Lo-HRi">
-                                <rect key="frame" x="32" y="44" width="36" height="36"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="36" id="UYv-Ah-112"/>
-                                    <constraint firstAttribute="width" constant="36" id="pQM-4x-fpD"/>
-                                </constraints>
-                                <color key="tintColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" image="close">
-                                    <color key="titleColor" red="0.92549019610000005" green="0.93725490199999995" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="closeDetail:" destination="7Rl-fI-NdV" eventType="touchUpInside" id="rLm-4f-bur"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1kb-Zy-cYU">
-                                <rect key="frame" x="239" y="44" width="36" height="36"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="36" id="05m-a0-Nnp"/>
-                                    <constraint firstAttribute="width" constant="36" id="P0Z-9W-pgV"/>
-                                </constraints>
-                                <color key="tintColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" image="share"/>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s54-aL-PUA">
-                                <rect key="frame" x="307" y="44" width="36" height="36"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="36" id="5kz-Fl-TvH"/>
-                                    <constraint firstAttribute="height" constant="36" id="Yhg-7G-xB1"/>
-                                </constraints>
-                                <color key="tintColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" image="delete"/>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
-                            <constraint firstItem="Kbw-rk-dBf" firstAttribute="trailing" secondItem="s54-aL-PUA" secondAttribute="trailing" constant="32" id="0Pb-jj-teA"/>
                             <constraint firstItem="1Y4-ur-Rkc" firstAttribute="bottom" secondItem="TWl-2r-1zi" secondAttribute="bottom" id="0VB-3i-Sp1"/>
-                            <constraint firstItem="s54-aL-PUA" firstAttribute="leading" secondItem="1kb-Zy-cYU" secondAttribute="trailing" constant="32" id="7oB-fn-Iwj"/>
                             <constraint firstItem="1Y4-ur-Rkc" firstAttribute="centerX" secondItem="TWl-2r-1zi" secondAttribute="centerX" id="B8f-lH-Q8L"/>
                             <constraint firstItem="1Y4-ur-Rkc" firstAttribute="trailing" secondItem="TWl-2r-1zi" secondAttribute="trailing" id="Eub-Iu-Sgo"/>
-                            <constraint firstItem="iyQ-Lo-HRi" firstAttribute="top" secondItem="Kbw-rk-dBf" secondAttribute="top" constant="24" id="RoF-kz-sa6"/>
-                            <constraint firstItem="1kb-Zy-cYU" firstAttribute="centerY" secondItem="s54-aL-PUA" secondAttribute="centerY" id="Sxh-QN-Pyc"/>
                             <constraint firstItem="1Y4-ur-Rkc" firstAttribute="leading" secondItem="TWl-2r-1zi" secondAttribute="leading" id="cv1-JZ-yiE"/>
                             <constraint firstItem="1Y4-ur-Rkc" firstAttribute="centerY" secondItem="TWl-2r-1zi" secondAttribute="centerY" id="dNs-Do-wcf"/>
                             <constraint firstItem="1Y4-ur-Rkc" firstAttribute="top" secondItem="TWl-2r-1zi" secondAttribute="top" id="peA-RB-8ET"/>
-                            <constraint firstItem="iyQ-Lo-HRi" firstAttribute="leading" secondItem="Kbw-rk-dBf" secondAttribute="leading" constant="32" id="qka-uh-91D"/>
-                            <constraint firstItem="s54-aL-PUA" firstAttribute="top" secondItem="Kbw-rk-dBf" secondAttribute="top" constant="24" id="xeq-SK-ebF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Kbw-rk-dBf"/>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="detailImageView" destination="mqp-EK-vEQ" id="dyZ-9K-LKz"/>
                         <outlet property="scrollView" destination="1Y4-ur-Rkc" id="hog-Fx-2eR"/>
@@ -537,6 +501,9 @@
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="X6h-z5-EAv">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="hkC-mr-UZy"/>
                     </connections>
@@ -718,13 +685,10 @@
         <image name="NumberThunder" width="1000" height="1000"/>
         <image name="NumberThunderSombra" width="1000" height="1000"/>
         <image name="brigthness" width="1000" height="1000"/>
-        <image name="close" width="1000" height="1000"/>
         <image name="closeSombra" width="1000" height="1000"/>
-        <image name="delete" width="1000" height="1000"/>
         <image name="logoFondo" width="1000" height="1000"/>
         <image name="noImages" width="1000" height="1000"/>
         <image name="scan" width="1000" height="1000"/>
-        <image name="share" width="1000" height="1000"/>
         <image name="startSelection" width="1000" height="1000"/>
         <image name="steady" width="1000" height="1000"/>
     </resources>

@@ -12,7 +12,8 @@ import UIKit
 
     @IBInspectable var sizeOfImage: CGFloat = 36.0 {
         didSet{
-            self.image = self.image?.escalarImagen(nuevaAnchura: sizeOfImage)
+            let image = self.image?.escalarImagen(nuevaAnchura: sizeOfImage)
+            self.setBackgroundImage(image, for: .normal, barMetrics: .default)
         }
     }
     

@@ -409,6 +409,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 let asset = allPhotos?.object(at: elementPosition)
                 let controlerDestino = segue.destination as! DetailImageViewController
                 controlerDestino.asset = asset!
+                CATransaction.setDisableActions(true)
             }
         }
     }
