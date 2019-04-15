@@ -161,7 +161,6 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        //navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.setToolbarHidden(false, animated: true)
         navigationController?.hidesBarsOnSwipe = false
     
@@ -183,26 +182,14 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        print("hola")
         super.viewWillTransition(to: size, with: coordinator)
-        /*if UIDevice.current.orientation.isLandscape {
-           
-        } else {
-           
-        }*/
+       
         coordinator.animate(alongsideTransition: { (transitionContext) in
              self.setImageWhenRotate(landscape: UIDevice.current.orientation.isLandscape)
         }) { (completion) in
             
         }
-        /*coordinator.animate(alongsideTransition: nil, completion: {
-            _ in
-            
-            // Your code here
-            //self.setImageWhenRotate(landscape: UIDevice.current.orientation.isLandscape)
-        })*/
-        print("Landscape: \(UIDevice.current.orientation.isLandscape)")
-       
+        
     }
     
     
@@ -215,43 +202,14 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setImageDetail(asset: PHAsset){
-        /*let width = asset.pixelWidth
-        let height = asset.pixelHeight
-        let deviceHeight = UIScreen.main.bounds.height
-        let deviceWidth = UIScreen.main.bounds.width
-       
         
-        
-        var newHeight: CGFloat = CGFloat(height)
-        var newWidth: CGFloat = CGFloat(width)
-        
-        var proportion = CGFloat(height) / CGFloat(width)
-        newWidth = deviceWidth
-        newHeight = deviceWidth * proportion
-        
-        if newHeight >= deviceHeight {
-            proportion = CGFloat(width) / CGFloat(height)
-            newHeight = deviceHeight
-            newWidth = deviceHeight * proportion
-            positionX = (deviceWidth - newWidth) / 2
-            biggerThanProportion = true
-        } else {
-            positionY = (deviceHeight - newHeight) / 2
-        }
-        
-        self.detailImageView.frame = CGRect(x: positionX, y: positionY, width: newWidth, height: newHeight)
-        print("positionX: \(positionX)")
-        print("positionY: \(positionY)")
-        */
         let longSide = UIScreen.main.bounds.height
         let shortSide = UIScreen.main.bounds.width
         
         setSizeOfImage(screenLongSide: longSide, screenShortSide: shortSide)
-       
-        //self.detailImageView.frame = CGRect(x: 0, y: positionY, width: newWidth, height: newHeight)
+    
         self.detailImageView.fetchImage(asset: asset, contentMode: .aspectFit)
      
-        
     }
     
     func setSizeOfImage(screenLongSide: CGFloat, screenShortSide: CGFloat){
@@ -276,9 +234,9 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         self.detailImageView.frame = CGRect(x: positionX, y: positionY, width: newShortSide, height: newLongSide)
         
     }
-    
+  
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("ContentOffset: \(scrollView.contentOffset)")
+        print("ScrollView: \(scrollView.contentOffset)")
     }
     
     func setImageWhenRotate(landscape: Bool){
@@ -286,34 +244,8 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         let currentOffset = scrollView.contentOffset
         let lastScreenWidth = UIScreen.main.bounds.height
         let lastScreenHeight = UIScreen.main.bounds.width
-        print("ContentOffser antes de girar: \(currentOffset)")
+       
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
-        
-        /*let width = asset.pixelWidth
-        let height = asset.pixelHeight
-        let deviceHeight = UIScreen.main.bounds.width
-        let deviceWidth = UIScreen.main.bounds.height
-        var newHeight: CGFloat = CGFloat(height)
-        var newWidth: CGFloat = CGFloat(width)
-        
-        var proportion = CGFloat(height) / CGFloat(width)
-        newWidth = deviceWidth
-        newHeight = deviceWidth * proportion
-        
-        if newHeight >= deviceHeight {
-            proportion = CGFloat(width) / CGFloat(height)
-            newHeight = deviceHeight
-            newWidth = deviceHeight * proportion
-            positionX = (deviceWidth - newWidth) / 2
-            biggerThanProportion = true
-        } else {
-            positionY = (deviceHeight - newHeight) / 2
-        }
-        
-        self.detailImageView.frame = CGRect(x: positionX, y: positionY, width: newWidth, height: newHeight)*/
-        
-        let longSide = UIDevice.current.orientation.isPortrait ? UIScreen.main.bounds.width : UIScreen.main.bounds.height
-        let shortSide = UIDevice.current.orientation.isPortrait ? UIScreen.main.bounds.height : UIScreen.main.bounds.width
         
         let lastWidth = detailImageView.bounds.width * currentZoom
         let lastHeight = detailImageView.bounds.height * currentZoom
@@ -321,86 +253,41 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         print("Last Height = \(lastHeight)")
         
         setSizeOfImage(screenLongSide: UIScreen.main.bounds.height , screenShortSide: UIScreen.main.bounds.width)
-        
-        print("New width: \(detailImageView.bounds.width * currentZoom)")
-        print("New Height: \(detailImageView.bounds.height * currentZoom)")
-        /*let newCenter = convertCenter(lastWidth: lastWidth, lastHeight: lastHeight, newWidth: detailImageView.frame.width, newHeight: detailImageView.frame.height, center: currentCenter)
-        print("LastCenter: \(currentCenter)")
-        print("NewCenter: \(newCenter)")
-        scrollView.zoom(to: zoomRectForScale(scale: currentZoom, center: newCenter ), animated: false)*/
+
         scrollView.setZoomScale(currentZoom, animated: false)
-        print("ContentOffset despues de girar: \(scrollView.contentOffset)")
+
         scrollView.contentOffset = convertOffset(lastScreenWidth: lastScreenWidth, lastScreenHeight: lastScreenHeight, newScreenWidth: UIScreen.main.bounds.width, newScreenHeight: UIScreen.main.bounds.height, lastWidth: lastWidth, lastHeight: lastHeight, newWidth: detailImageView.bounds.width * currentZoom, newHeight: detailImageView.bounds.height * currentZoom, oldContentOffset: currentOffset)
-        print("ContentOffset despues de corregirlo: \(scrollView.contentOffset)")
-        //scrollView.contentOffset = convertOffset(lastWidth: lastWidth, lastHeight: lastHeight, newWidth: detailImageView.frame.height, newHeight: detailImageView.frame.width, center: currentOffset)
-      
-        /*let newWidth = UIScreen.main.bounds.height
-        let newHeight = UIScreen.main.bounds.width
-        let currentZoom = scrollView.zoomScale
-        scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
-        let newFrame = CGRect(x: detailImageView.frame.minY, y: detailImageView.frame.minX, width: detailImageView.frame.height, height: detailImageView.frame.width)
-        detailImageView.frame = newFrame
-        scrollView.setZoomScale(currentZoom, animated: false)
-        /*var deviceHeight = UIScreen.main.bounds.height
-        var deviceWidth = UIScreen.main.bounds.width
-        if landscape{
-        var deviceWidth = UIScreen.main.bounds.height
-        var deviceHeight = UIScreen.main.bounds.width
-        }
-        print("Width: \(deviceWidth)")
-        print("Height: \(deviceHeight)")
-        let width = asset.pixelWidth
-        let height = asset.pixelHeight
-        var newHeight: CGFloat = CGFloat(height)
-        var newWidth: CGFloat = CGFloat(width)
-        
-        var proportion = CGFloat(height) / CGFloat(width)
-        newWidth = deviceWidth
-        newHeight = deviceWidth * proportion
-        positionY = (deviceHeight - newHeight) / 2
-        
-        if newHeight >= deviceHeight {
-            proportion = CGFloat(width) / CGFloat(height)
-            newHeight = deviceHeight
-            newWidth = deviceHeight * proportion
-            positionY = (deviceWidth - newWidth) / 2
-            self.detailImageView.frame = CGRect(x: positionY, y: 0, width: newWidth, height: newHeight)
-            biggerThanProportion = true
-        } else {
-            self.detailImageView.frame = CGRect(x: 0, y: positionY, width: newWidth, height: newHeight)
-        }
-        
-        //self.detailImageView.layer.anchorPoint = self.view.layer.anchorPoint*/
-        */
+       
     }
     
     func convertOffset(lastScreenWidth: CGFloat, lastScreenHeight: CGFloat, newScreenWidth: CGFloat, newScreenHeight: CGFloat, lastWidth: CGFloat, lastHeight: CGFloat, newWidth: CGFloat, newHeight: CGFloat, oldContentOffset: CGPoint) -> CGPoint{
 
-        let offsetX = oldContentOffset.x * (newHeight / lastWidth)
-        let offsetY = oldContentOffset.y * (newWidth / lastHeight)
-        //let newXContentOffset = max(min((newWidth / (lastWidth / (oldContentOffset.x  * offsetX))), newWidth - scrollView.frame.width) , 0)
-        //let newYContentOffset = max(min((newHeight / (lastHeight / (oldContentOffset.y * offsetY))), newHeight - scrollView.frame.height), 0)
-        //let newXContentOffset = max(min(offsetX, newWidth - scrollView.frame.width) , 0)
-        //let newYContentOffset = max(min(offsetY, newHeight - scrollView.frame.height), 0)
+        print("OldOffet.x \(oldContentOffset.x)")
+        print("OldOffset.y \(oldContentOffset.y)")
+        if oldContentOffset.x <= 0.0 && oldContentOffset.y <= 0.0 {
+            return oldContentOffset
+        }
         
-       
-        let viewWidth = self.view.frame.width
-        let viewHeight = self.view.frame.height
-        let maxWidthContent = lastWidth - lastScreenWidth
-        let maxHeightContent = lastHeight - lastScreenHeight
+        var newPositionX = oldContentOffset.x + lastScreenWidth / 2
+        var newPositionY = oldContentOffset.y + lastScreenHeight / 2
         
+        let maxWidthContent = max(lastWidth - lastScreenWidth, lastScreenWidth)
         let xPercentage = (oldContentOffset.x * 100) / maxWidthContent
-        let yPercentage = (oldContentOffset.y * 100) / maxHeightContent
-        
         let newMaxWidthContent = newWidth - newScreenWidth
+        
+        newPositionX = (newMaxWidthContent * xPercentage) / 100
+    
+        let maxHeightContent = max(lastHeight - lastScreenHeight, lastScreenWidth)
+        let yPercentage = (oldContentOffset.y * 100) / maxHeightContent
         let newMaxHeightContent = newHeight - newScreenHeight
         
-        let newPositionX = (newMaxWidthContent * xPercentage) / 100
-        let newPositionY = (newMaxHeightContent * yPercentage) / 100
+        newPositionY = (newMaxHeightContent * yPercentage) / 100
         
-        let newXContentOffset = max(min(newPositionX, newWidth - scrollView.frame.width) , 0)
-        let newYContentOffset = max(min(newPositionY, newHeight - scrollView.frame.height), 0)
-        
+        let minOffsetX = max(newMaxWidthContent / 2, 0)
+        let minOffsetY = max(newMaxHeightContent / 2, 0)
+    
+        //return CGPoint(x: max(min(newPositionX, newWidth - newScreenWidth) , minOffsetX), y: max(min( newPositionY, newHeight - newScreenHeight), minOffsetY))
+        //return CGPoint(x: max(newPositionX, minOffsetX), y: max(newPositionY, minOffsetY))
         return CGPoint(x: newPositionX, y: newPositionY)
     }
 
