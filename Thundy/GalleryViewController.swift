@@ -32,8 +32,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     let photoToDelete = "%d photo"
     let photosToDelete = "%d photos"
     
-    let imageSelectionModeEnabled = UIImage(named: "endSelection")!.escalarImagen(nuevaAnchura: 34)
-    let imageSelectionModeDisabled = UIImage(named: "startSelection")!.escalarImagen(nuevaAnchura: 34)
+    let imageSelectionModeEnabled = UIImage(named: "endSelection")!.escalarImagen(nuevaAnchura: 28)
+    let imageSelectionModeDisabled = UIImage(named: "startSelection")!.escalarImagen(nuevaAnchura: 28)
 
     var selectButton: UIBarButtonItem!
     
@@ -55,9 +55,12 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         if selectButton == nil {
             selectButton = UIBarButtonItem(image: imageSelectionModeDisabled, style: .plain, target: self, action: #selector(clickOnSelectionButton))
         }
+        
+        let sizeOfDefaultBackIcon = navigationController?.navigationBar.backIndicatorImage
+        print("size : \(sizeOfDefaultBackIcon)")
     
-        deleteButton = UIBarButtonItem(image: UIImage(named: "delete")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(deleteImages))
-        shareButton = UIBarButtonItem(image: UIImage(named: "share")?.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(shareImages))
+        deleteButton = UIBarButtonItem(image: UIImage(named: "delete")?.escalarImagen(nuevaAnchura: 28), style: .plain, target: self, action: #selector(deleteImages))
+        shareButton = UIBarButtonItem(image: UIImage(named: "share")?.escalarImagen(nuevaAnchura: 28), style: .plain, target: self, action: #selector(shareImages))
         deleteButton.isEnabled = false
         shareButton.isEnabled = false
         toolbarDefault = [spacer, shareButton, spacer, deleteButton, spacer]

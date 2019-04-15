@@ -17,7 +17,10 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     var positionX: CGFloat = 0
     var closeViewControllerButton = UIBarButtonItem()
     
-    var biggerThanProportion = false
+    var startOrientation = UIDevice.current.orientation
+    
+    var initialWidth: CGFloat = 0
+    var initialHeight: CGFloat = 0
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailImageView: UIImageView!
@@ -36,6 +39,9 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         scrollView.maximumZoomScale = 4.5
         scrollView.delegate = self
         scrollView.clipsToBounds = true
+        print("ScrollView ancla: \(scrollView.layer.anchorPoint)")
+        print("ScrollView centro: \(scrollView.center)")
+    
         
         self.extendedLayoutIncludesOpaqueBars = true
         //self.edgesForExtendedLayout = .bottom
@@ -50,7 +56,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func initBarsButtons(){
-       closeViewControllerButton = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 46), style: .plain, target: self, action: #selector(closeDetail2(_:)))
+       closeViewControllerButton = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 35), style: .plain, target: self, action: #selector(closeDetail2(_:)))
         navigationItem.leftBarButtonItem = closeViewControllerButton
     
     }
@@ -73,6 +79,11 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        
+        print("Zoom scale: \(scrollView.zoomScale)")
+        if scrollView.zoomScale < scrollView.minimumZoomScale {
+            return
+        }
         print("ContentOffset: \(scrollView.contentOffset)")
         let deviceHeight = UIScreen.main.bounds.height
         let deviceWidth = UIScreen.main.bounds.width
@@ -80,15 +91,69 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
        
         let newHeight = actualFrame.height
         let newWidth = actualFrame.width
-        let position = UIDevice.current.orientation.isLandscape ? (deviceWidth - newWidth) / 2 : (deviceHeight - newHeight) / 2
+        var position: CGFloat = 0
+        var positionNormalized = max(position , 0)
+        
         let actualX = actualFrame.minX
         let actualY = actualFrame.minY
-        let positionNormalized = max(position, 0)
         
-        let newFrame = UIDevice.current.orientation.isLandscape ? CGRect(x: positionNormalized, y: actualY , width: actualFrame.width, height: actualFrame.height) : CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)
+        var newFrame = CGRect.zero
+        
+        /*if (newWidth / scrollView.zoomScale) == deviceWidth {
+            positionY = (deviceHeight - newHeight) / 2
+            position = positionY
+            positionNormalized = max(position , 0)
+            
+            newFrame = CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)
+            
+        } else if (newHeight / scrollView.zoomScale) == deviceHeight {
+            positionX = (deviceWidth - newWidth) / 2
+            position = positionX
+            positionNormalized = max(position , 0)
+            
+            newFrame = CGRect(x: positionNormalized, y: actualY , width: actualFrame.width, height: actualFrame.height)
+            
+        }*/
+        
+        if UIDevice.current.orientation.isLandscape {
+            if initialWidth == deviceWidth {
+                positionY = (deviceHeight - newHeight) / 2
+                position = positionY
+                positionNormalized = max(position , 0)
+                
+                newFrame = CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)
+        
+            } else {
+                positionX = (deviceWidth - newWidth) / 2
+                position = positionX
+                positionNormalized = max(position , 0)
+                
+                newFrame = CGRect(x: positionNormalized, y: actualY , width: actualFrame.width, height: actualFrame.height)
+            }
+            
+        } else {
+            if initialHeight == deviceHeight {
+                positionX = (deviceWidth - newWidth) / 2
+                position = positionX
+                positionNormalized = max(position , 0)
+                
+                newFrame = CGRect(x: positionNormalized, y: actualY , width: actualFrame.width, height: actualFrame.height)
+                
+            } else {
+                positionY = (deviceHeight - newHeight) / 2
+                position = positionY
+                positionNormalized = max(position , 0)
+                
+                newFrame = CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)
+            }
+        }
+        //let position = UIDevice.current.orientation.isLandscape ? (deviceWidth - newWidth) / 2 : (deviceHeight - newHeight) / 2
+        
+        print("posicion: \(positionNormalized)")
+       /* newFrame = UIDevice.current.orientation.isLandscape ? CGRect(x: positionNormalized, y: actualY , width: actualFrame.width, height: actualFrame.height) : CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)*/
         
         detailImageView.frame = newFrame
-        print("Tamaño: X : \(detailImageView.frame.width) , Y: \(detailImageView.frame.height)")
+        //print("Tamaño: X : \(detailImageView.frame.width) , Y: \(detailImageView.frame.height)")
         
  
     }
@@ -231,6 +296,9 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
             positionY = (screenLongSide - newLongSide) / 2
         }
         
+        initialWidth = newShortSide
+        initialHeight = newLongSide
+        
         self.detailImageView.frame = CGRect(x: positionX, y: positionY, width: newShortSide, height: newLongSide)
         
     }
@@ -244,7 +312,9 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         let currentOffset = scrollView.contentOffset
         let lastScreenWidth = UIScreen.main.bounds.height
         let lastScreenHeight = UIScreen.main.bounds.width
+        let centerOfImage = CGPoint(x: detailImageView.frame.midX, y: detailImageView.frame.midY)
        
+        print("Centro de la imagen: \(centerOfImage)")
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
         
         let lastWidth = detailImageView.bounds.width * currentZoom
@@ -262,14 +332,14 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     
     func convertOffset(lastScreenWidth: CGFloat, lastScreenHeight: CGFloat, newScreenWidth: CGFloat, newScreenHeight: CGFloat, lastWidth: CGFloat, lastHeight: CGFloat, newWidth: CGFloat, newHeight: CGFloat, oldContentOffset: CGPoint) -> CGPoint{
 
-        print("OldOffet.x \(oldContentOffset.x)")
+        /*print("OldOffet.x \(oldContentOffset.x)")
         print("OldOffset.y \(oldContentOffset.y)")
         if oldContentOffset.x <= 0.0 && oldContentOffset.y <= 0.0 {
             return oldContentOffset
         }
         
-        var newPositionX = oldContentOffset.x + lastScreenWidth / 2
-        var newPositionY = oldContentOffset.y + lastScreenHeight / 2
+        var newPositionX = oldContentOffset.x
+        var newPositionY = oldContentOffset.y
         
         let maxWidthContent = max(lastWidth - lastScreenWidth, lastScreenWidth)
         let xPercentage = (oldContentOffset.x * 100) / maxWidthContent
@@ -288,8 +358,67 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     
         //return CGPoint(x: max(min(newPositionX, newWidth - newScreenWidth) , minOffsetX), y: max(min( newPositionY, newHeight - newScreenHeight), minOffsetY))
         //return CGPoint(x: max(newPositionX, minOffsetX), y: max(newPositionY, minOffsetY))
-        return CGPoint(x: newPositionX, y: newPositionY)
+        return CGPoint(x: newPositionX, y: newPositionY)*/
+        
+        var posisicionX = oldContentOffset.x
+        var posicionY = oldContentOffset.y
+        
+        switch oldContentOffset.x {
+        case oldContentOffset.x where oldContentOffset.x <= 0:
+            posisicionX = 0
+        case oldContentOffset.x where oldContentOffset.x + lastScreenWidth >= lastWidth :
+            posisicionX = newWidth - newScreenWidth
+        case oldContentOffset.x where oldContentOffset.x + lastScreenHeight >= lastWidth:
+            posisicionX = newWidth - newScreenWidth
+        default:
+            let centerOfViewX = oldContentOffset.x + lastScreenWidth / 2
+            let proportionX = centerOfViewX / lastWidth
+            posisicionX = newWidth * proportionX - (newScreenWidth / 2)
+        }
+        
+        switch oldContentOffset.y {
+        case oldContentOffset.y where oldContentOffset.y <= 0:
+            posicionY = 0
+        case oldContentOffset.y where oldContentOffset.y + lastScreenHeight >= lastHeight:
+            posicionY = newHeight - newScreenHeight
+        case oldContentOffset.y where oldContentOffset.y + lastScreenWidth >= lastHeight:
+            posicionY = newHeight - newScreenHeight
+        default:
+            let centerOfViewY = oldContentOffset.y + lastScreenHeight / 2
+            let proportionY = centerOfViewY / lastHeight
+            posicionY = newHeight * proportionY - (newScreenHeight / 2)
+        }
+       
+        
+       /* let centerOfViewX = oldContentOffset.x <= 0 ?  0.0 :  oldContentOffset.x + (lastScreenWidth / 2)
+        let centerOfViewY = oldContentOffset.y <= 0 ? 0.0 : oldContentOffset.y + (lastScreenHeight / 2)
+        let proportionX = centerOfViewX / lastWidth
+        let proportionY = centerOfViewY / lastHeight
+        
+        let leftCornerPositionX = newWidth * proportionX
+        let leftCornerPositionY = newHeight * proportionY
+        let newPositionX = leftCornerPositionX + lastScreenWidth > newWidth ? max(newWidth - newScreenWidth, 0) : leftCornerPositionX - (newScreenWidth / 2)
+        let newPositionY = leftCornerPositionY + lastScreenHeight > newHeight ? max(newHeight - newScreenHeight, 0) : leftCornerPositionY - (newScreenHeight / 2)
+        
+        return CGPoint(x: min(max(newPositionX , 0) , max(newWidth - newScreenWidth, 0) ), y: min(max(newPositionY , 0), max(newHeight - newScreenHeight , 0)))*/
+        return CGPoint(x: min(max(posisicionX , 0) , max(newWidth - newScreenWidth, 0) ), y: min(max(posicionY , 0), max(newHeight - newScreenHeight , 0)))
     }
 
+    func handleOrientation() -> CGFloat{
+        var multiplier: CGFloat = 1
+        switch startOrientation {
+        case .landscapeRight:
+            if UIDevice.current.orientation == UIDeviceOrientation.portrait{
+                multiplier = -1
+            }
+        case .portrait:
+            if UIDevice.current.orientation == UIDeviceOrientation.landscapeLeft{
+                multiplier = -1
+            }
+        default: break
+        }
+        
+        return multiplier
+    }
 
 }
