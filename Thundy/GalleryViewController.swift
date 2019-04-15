@@ -44,6 +44,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     var toolbarDefault = [UIBarButtonItem]()
     
+    var shouldCloseViewController = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
