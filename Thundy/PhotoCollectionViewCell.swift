@@ -30,6 +30,10 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    override func willTransition(from oldLayout: UICollectionViewLayout, to newLayout: UICollectionViewLayout) {
+        print("transiciona a nuevo layout")
+    }
+    
     func setImage(asset: PHAsset){
         let cellHeight = self.frame.height
         let cellWidth = self.frame.width
