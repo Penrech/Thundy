@@ -63,3 +63,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         print("Class: \(self.hash) - layoutSubViews")
     }
 }
+
+extension PhotoCollectionViewCell {
+    //MARK :- new Methods
+}

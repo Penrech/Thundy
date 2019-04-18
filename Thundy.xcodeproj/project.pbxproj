@@ -21,6 +21,9 @@
 		B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB1225B646E00C16640 /* Date+Milis.swift */; };
 		B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB3225B965900C16640 /* RoundedCard.swift */; };
 		B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9814E0F224F9AA700F1C0CC /* RoundButton.swift */; };
+		B99501A62265C5DA00CC1F35 /* Phasset+share.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501A52265C5DA00CC1F35 /* Phasset+share.swift */; };
+		B99501AF2265E34700CC1F35 /* GalleryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */; };
+		B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */; };
 		B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */; };
 		B9C2F639225CAA59004B4A81 /* CustomPhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */; };
 		B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */; };
@@ -50,6 +53,9 @@
 		B972EDB1225B646E00C16640 /* Date+Milis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Milis.swift"; sourceTree = "<group>"; };
 		B972EDB3225B965900C16640 /* RoundedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCard.swift; sourceTree = "<group>"; };
 		B9814E0F224F9AA700F1C0CC /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		B99501A52265C5DA00CC1F35 /* Phasset+share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Phasset+share.swift"; sourceTree = "<group>"; };
+		B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryDetailViewController.swift; sourceTree = "<group>"; };
+		B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewCell.swift; sourceTree = "<group>"; };
 		B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoAlbum.swift; sourceTree = "<group>"; };
 		B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ext.swift"; sourceTree = "<group>"; };
@@ -99,6 +105,7 @@
 				B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */,
 				B9302DFD22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift */,
 				B972EDB1225B646E00C16640 /* Date+Milis.swift */,
+				B99501A52265C5DA00CC1F35 /* Phasset+share.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -139,8 +146,10 @@
 				B9F9255D224F842900CD2F9C /* ViewController.swift */,
 				B958C36F225228B4005DF25F /* PhotoViewController.swift */,
 				B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */,
+				B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */,
 				B958C37922525812005DF25F /* DetailImageViewController.swift */,
 				B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */,
+				B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */,
 				B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */,
 				B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */,
 				B9F9255F224F842900CD2F9C /* Main.storyboard */,
@@ -233,12 +242,15 @@
 				B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */,
 				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,
 				B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */,
+				B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */,
+				B99501AF2265E34700CC1F35 /* GalleryDetailViewController.swift in Sources */,
 				B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */,
 				B9F9255E224F842900CD2F9C /* ViewController.swift in Sources */,
 				B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */,
 				B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */,
 				B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */,
 				B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */,
+				B99501A62265C5DA00CC1F35 /* Phasset+share.swift in Sources */,
 				B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */,
 				B9F9255C224F842900CD2F9C /* AppDelegate.swift in Sources */,
 				B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */,

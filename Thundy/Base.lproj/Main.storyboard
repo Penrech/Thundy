@@ -100,7 +100,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="rg2-jj-wth" firstAttribute="leading" secondItem="zx2-YE-sm1" secondAttribute="leading" constant="16" id="8Kz-zK-Pmr"/>
                                     <constraint firstItem="rg2-jj-wth" firstAttribute="centerX" secondItem="nlw-8F-hdV" secondAttribute="centerX" id="IOy-i0-n62"/>
@@ -127,11 +127,12 @@
                         <outlet property="collectionView" destination="ai4-kO-RcT" id="cbc-8M-lPs"/>
                         <outlet property="emptyStateView" destination="zx2-YE-sm1" id="oh6-pt-u2V"/>
                         <segue destination="7Rl-fI-NdV" kind="show" identifier="ImageToDetail" id="2F0-Qc-32e"/>
+                        <segue destination="Yw7-Ja-6Zm" kind="show" identifier="imageToGalleryDetail" id="OKR-Ri-1on"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JsN-DX-lZ2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1878.75" y="-690.84507042253517"/>
+            <point key="canvasLocation" x="1878" y="-645"/>
         </scene>
         <!--Detail Image View Controller-->
         <scene sceneID="Zhh-Bo-g4e">
@@ -171,7 +172,76 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C9y-8U-6Kb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2818" y="-690"/>
+            <point key="canvasLocation" x="2679" y="-645"/>
+        </scene>
+        <!--Gallery Detail View Controller-->
+        <scene sceneID="4lY-ac-oDZ">
+            <objects>
+                <viewController storyboardIdentifier="GalleryDetailViewController" extendedLayoutIncludesOpaqueBars="YES" id="Yw7-Ja-6Zm" customClass="GalleryDetailViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="LSQ-ri-Qjn">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="McF-Xd-MKL">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="z9r-6w-ZxJ">
+                                    <size key="itemSize" width="375" height="605"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="of7-83-n6D" customClass="PhotoDetailViewCell" customModule="Thundy" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="-1" width="375" height="605"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="605"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="daz-hg-Bp1">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="605"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZUL-pm-AMu">
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="649"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                </scrollView>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="daz-hg-Bp1" secondAttribute="trailing" id="29X-ov-MiI"/>
+                                            <constraint firstItem="daz-hg-Bp1" firstAttribute="top" secondItem="of7-83-n6D" secondAttribute="top" id="7an-6N-Kv6"/>
+                                            <constraint firstAttribute="bottom" secondItem="daz-hg-Bp1" secondAttribute="bottom" id="DkP-Sj-XRm"/>
+                                            <constraint firstItem="daz-hg-Bp1" firstAttribute="leading" secondItem="of7-83-n6D" secondAttribute="leading" id="eKL-3P-55c"/>
+                                            <constraint firstItem="daz-hg-Bp1" firstAttribute="centerX" secondItem="of7-83-n6D" secondAttribute="centerX" id="nkC-fS-OqK"/>
+                                            <constraint firstItem="daz-hg-Bp1" firstAttribute="centerY" secondItem="of7-83-n6D" secondAttribute="centerY" id="tG4-xA-zTZ"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="detailImageView" destination="ZUL-pm-AMu" id="yvJ-BV-x5A"/>
+                                            <outlet property="scrollView" destination="daz-hg-Bp1" id="9kA-cb-tEm"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="McF-Xd-MKL" firstAttribute="bottom" secondItem="LSQ-ri-Qjn" secondAttribute="bottom" id="0mQ-zZ-6zd"/>
+                            <constraint firstItem="McF-Xd-MKL" firstAttribute="leading" secondItem="LSQ-ri-Qjn" secondAttribute="leading" id="awf-Fw-59W"/>
+                            <constraint firstItem="McF-Xd-MKL" firstAttribute="trailing" secondItem="LSQ-ri-Qjn" secondAttribute="trailing" id="fY3-7y-0HK"/>
+                            <constraint firstItem="McF-Xd-MKL" firstAttribute="top" secondItem="LSQ-ri-Qjn" secondAttribute="top" id="q6b-ri-PFk"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Bb5-XO-xch"/>
+                    </view>
+                    <connections>
+                        <outlet property="collectionView" destination="McF-Xd-MKL" id="Qcd-bN-Z6T"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lrg-C2-Dd0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2677.5999999999999" y="-1375.8620689655174"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">

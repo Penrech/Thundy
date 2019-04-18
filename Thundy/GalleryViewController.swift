@@ -26,6 +26,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     var selectionModeEnabled = false
     var slideShowModeEnabled = false
     var navBarsHidden = false
+    
+    var commingFromHome = true
   
     let defaultViewTitle = "Your awesome photos!"
     let selectedPhotosViewTitle = "%d Photos selected"
@@ -97,6 +99,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 } else {
                     //No hay elementos, mostrar empty view
                     print("Album vacio")
+                    self.allPhotos = photos
                     self.showEmptyState(show: true)
                     
                 }
@@ -117,15 +120,14 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 if !self.emptyStateView.isHidden {
                     self.emptyStateView.isHidden = true
                 }
-                
                 if self.selectButton == nil {
                    self.selectButton = UIBarButtonItem(image: self.imageSelectionModeDisabled, style: .plain, target: self, action: #selector(self.clickOnSelectionButton))
                 }
                 self.navigationItem.setRightBarButton(self.selectButton, animated: true)
-                self.collectionView.reloadData()
                 self.collectionView.collectionViewLayout.invalidateLayout()
                 self.collectionView.allowsMultipleSelection = true
             }
+            self.collectionView.reloadData()
         }
     }
     
@@ -190,17 +192,18 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @objc func shareImages(){
        
-        var imagenesACompartir: [UIImage] = []
+        var imagenesACompartirURL: [URL] = []
         if let listaDeImagenesSeleccionadas = self.collectionView.indexPathsForSelectedItems {
             for indexPath in listaDeImagenesSeleccionadas{
                 let asset = self.allPhotos?.object(at: indexPath.row)
-                let image = UIImage().getAssetImage(asset: asset!)
-                imagenesACompartir.append(image)
-                
+                let imagenUrl = UIImage().shareImage(asset: asset!)
+                if let url = imagenUrl{
+                    imagenesACompartirURL.append(url)
+                }
             }
         }
         
-        let activityViewController = UIActivityViewController(activityItems: imagenesACompartir, applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: imagenesACompartirURL, applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
             
     }
@@ -208,24 +211,35 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+    
         loadImages()
-   
-        /*let value = UIInterfaceOrientation.portrait.rawValue
-        UIDevice.current.setValue(value, forKey: "orientation")*/
-        navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
-        DispatchQueue.main.async {
-            self.navigationItem.title = "Your awesome photos!"
-        }
-        navigationController?.navigationBar.topItem?.title = ""
-        navigationController?.hidesBarsOnSwipe = true
-        navigationController?.toolbar.autoresizesSubviews = false
-        navigationController?.setNavigationBarHidden(false, animated: false)
         
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
         }
-        statusBarView.backgroundColor = UIColor.defaultBlue
+
+        navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.navigationItem.title = self.defaultViewTitle
+                self.navigationController?.toolbar.isTranslucent = false
+                self.navigationController?.toolbar.backgroundColor = UIColor.defaultBlue
+              
+                if !self.commingFromHome {
+                    statusBarView.backgroundColor = UIColor.defaultBlue
+                }
+            })
+        }
+        
+        if commingFromHome {
+            statusBarView.backgroundColor = UIColor.defaultBlue
+        }
+        
+        navigationController?.setToolbarHidden(true, animated: true)
+        navigationController?.navigationBar.topItem?.title = ""
+        navigationController?.hidesBarsOnSwipe = true
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        
         
     }
     
@@ -274,9 +288,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
         let screenSize = UIScreen.main.bounds
         return CGSize(width: screenSize.width , height: screenSize.height)
-    }
-        
-    }
+    
+        }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         
@@ -324,7 +337,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return true
         }
         
-        performSegue(withIdentifier: "ImageToDetail", sender: indexPath.row)
+        //performSegue(withIdentifier: "ImageToDetail", sender: indexPath.row)
+        performSegue(withIdentifier: "imageToGalleryDetail", sender: indexPath)
         /*if !slideShowModeEnabled{
             print("ContentOffset antes: \(collectionView.contentOffset)")
             slideShowImage(moveToClicked: indexPath)
@@ -336,6 +350,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 navBarsHidden = true
                 UIView.animate(withDuration: 0.15) {
                     self.setNeedsStatusBarAppearanceUpdate()
+                    self.collectionView.backgroundColor = .black
                 }
                 
                 
@@ -345,6 +360,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 navBarsHidden = false
                 UIView.animate(withDuration: 0.15) {
                     self.setNeedsStatusBarAppearanceUpdate()
+                    self.collectionView.backgroundColor = .clear
                 }
                 
             }
@@ -463,8 +479,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
     func slideShowImage(moveToClicked: IndexPath){
-        
-        self.collectionView.backgroundColor = .black
+         self.extendedLayoutIncludesOpaqueBars = true
+     
         
         self.collectionView.contentInsetAdjustmentBehavior = .never
         self.slideShowModeEnabled = true
@@ -495,6 +511,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
     func backToNormalGallery(){
+         self.extendedLayoutIncludesOpaqueBars = false
         collectionView.contentInsetAdjustmentBehavior = .always
         slideShowModeEnabled = false
         collectionView.reloadData()
@@ -532,7 +549,26 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 controlerDestino.asset = asset!
                 CATransaction.setDisableActions(true)
             }
+        } else if segue.identifier == "imageToGalleryDetail"{
+            if let element = sender as? IndexPath {
+                print("Element: \(element)")
+                commingFromHome = false
+                let controlerDestino = segue.destination as! GalleryDetailViewController
+                controlerDestino.allPhotos = allPhotos
+                controlerDestino.delegate = self
+                print("Allphotos: \(allPhotos)")
+                controlerDestino.startIndexPath = element
+                CATransaction.setDisableActions(true)
+            }
         }
     }
 
+}
+extension GalleryViewController: SendAllDeleted {
+    func allDeleted(deleted: Bool) {
+        if deleted{
+            showEmptyState(show: true)
+        }
+    }
+    
 }

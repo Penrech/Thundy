@@ -149,10 +149,6 @@ class PhotoViewController: UIViewController {
             return
         }
         
-        if !captureDevice.isExposureModeSupported(.continuousAutoExposure){
-            return
-        }
-        
         //Arrancamos la sesión
         do {
             //Convertimos el device (La camara) a un input
