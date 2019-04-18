@@ -13,33 +13,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var detailWindow = UIWindow(frame: UIScreen.main.bounds)
-    var orientationLock = UIInterfaceOrientationMask.all
     var customPhotosManager = CustomPhotoAlbum()
     let isAppLoadBefore = "appLoadedBefore"
     
-    struct AppUtility {
-        static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
-            if let delegate = UIApplication.shared.delegate as? AppDelegate {
-                delegate.orientationLock = orientation
-            }
-        }
-        
-        static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
-            self.lockOrientation(orientation)
-            UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
-        }
-    }
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let detailImageWindow = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailImageViewController")
         self.detailWindow.rootViewController = detailImageWindow
         return true
-    }
-    
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return self.orientationLock
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

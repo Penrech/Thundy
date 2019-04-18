@@ -186,6 +186,8 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
         navigationController?.toolbar.isTranslucent = true
         navigationController?.toolbar.backgroundColor = UIColor.defaultBlueTranslucent
+        navigationController?.setToolbarHidden(true, animated: true)
+        navigationController?.setNavigationBarHidden(true, animated: true)
         
     }
 
@@ -212,7 +214,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override var prefersStatusBarHidden: Bool{
-        return false
+        return true
     }
     
     func setImageDetail(asset: PHAsset){

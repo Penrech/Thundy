@@ -21,6 +21,8 @@
 		B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB1225B646E00C16640 /* Date+Milis.swift */; };
 		B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB3225B965900C16640 /* RoundedCard.swift */; };
 		B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9814E0F224F9AA700F1C0CC /* RoundButton.swift */; };
+		B9844B2D226889A200CB78F2 /* UIDevice+notch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9844B2C226889A200CB78F2 /* UIDevice+notch.swift */; };
+		B9844B2F2268AACA00CB78F2 /* UIView+anchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9844B2E2268AACA00CB78F2 /* UIView+anchor.swift */; };
 		B99501A62265C5DA00CC1F35 /* Phasset+share.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501A52265C5DA00CC1F35 /* Phasset+share.swift */; };
 		B99501AF2265E34700CC1F35 /* GalleryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */; };
 		B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */; };
@@ -53,6 +55,8 @@
 		B972EDB1225B646E00C16640 /* Date+Milis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Milis.swift"; sourceTree = "<group>"; };
 		B972EDB3225B965900C16640 /* RoundedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCard.swift; sourceTree = "<group>"; };
 		B9814E0F224F9AA700F1C0CC /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
+		B9844B2C226889A200CB78F2 /* UIDevice+notch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+notch.swift"; sourceTree = "<group>"; };
+		B9844B2E2268AACA00CB78F2 /* UIView+anchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+anchor.swift"; sourceTree = "<group>"; };
 		B99501A52265C5DA00CC1F35 /* Phasset+share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Phasset+share.swift"; sourceTree = "<group>"; };
 		B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryDetailViewController.swift; sourceTree = "<group>"; };
 		B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewCell.swift; sourceTree = "<group>"; };
@@ -106,6 +110,8 @@
 				B9302DFD22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift */,
 				B972EDB1225B646E00C16640 /* Date+Milis.swift */,
 				B99501A52265C5DA00CC1F35 /* Phasset+share.swift */,
+				B9844B2C226889A200CB78F2 /* UIDevice+notch.swift */,
+				B9844B2E2268AACA00CB78F2 /* UIView+anchor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -238,6 +244,7 @@
 				B90566AC225DFD97001DDFC2 /* TutorialStepViewController.swift in Sources */,
 				B90566AE225E22F9001DDFC2 /* TutorialPagerViewController.swift in Sources */,
 				B971351B2261EFAD004146B5 /* ButtonForToolbar.swift in Sources */,
+				B9844B2D226889A200CB78F2 /* UIDevice+notch.swift in Sources */,
 				B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */,
 				B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */,
 				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,
@@ -254,6 +261,7 @@
 				B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */,
 				B9F9255C224F842900CD2F9C /* AppDelegate.swift in Sources */,
 				B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */,
+				B9844B2F2268AACA00CB78F2 /* UIView+anchor.swift in Sources */,
 				B9C2F639225CAA59004B4A81 /* CustomPhotoAlbum.swift in Sources */,
 				B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */,
 				B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */,

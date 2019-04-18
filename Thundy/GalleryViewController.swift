@@ -18,11 +18,19 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     @IBOutlet weak var buttonDelete: UIBarButtonItem!
     @IBOutlet weak var emptyStateView: UIView!
     
+    @IBOutlet weak var safeAreaLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var superViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var safeAreaTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var superViewTrailingConstraint: NSLayoutConstraint!
+    
     var customPhotoManager: CustomPhotoAlbum = (UIApplication.shared.delegate as! AppDelegate).customPhotosManager
     
     var allPhotos : PHFetchResult<PHAsset>? = nil
     
-    let numOfColumns = 3
+    let numberOfColumnsPortrait = 3
+    let numberOfColumnsLandscape = 5
+    
+    var numOfColumns = 3
     var selectionModeEnabled = false
     var slideShowModeEnabled = false
     var navBarsHidden = false
@@ -84,8 +92,31 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         return .slide
     }
     
-    override var prefersStatusBarHidden: Bool{
+    /*override var prefersStatusBarHidden: Bool{
         return navBarsHidden
+    }*/
+    
+    func adjustConstraints(){
+        if UIDevice.current.hasNotch{
+            safeAreaLeadingConstraint.priority = .defaultLow
+            safeAreaTrailingConstraint.priority = .defaultLow
+            superViewLeadingConstraint.priority = .defaultHigh
+            superViewTrailingConstraint.priority = .defaultHigh
+        } else {
+            safeAreaLeadingConstraint.priority = .defaultHigh
+            safeAreaTrailingConstraint.priority = .defaultHigh
+            superViewLeadingConstraint.priority = .defaultLow
+            superViewTrailingConstraint.priority = .defaultLow
+        }
+    }
+    
+    func adjustToRotation(){
+        if UIDevice.current.orientation.isLandscape{
+            numOfColumns = numberOfColumnsLandscape
+        } else {
+            numOfColumns = numberOfColumnsPortrait
+        }
+        collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func loadImages(){
@@ -208,10 +239,18 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (animation) in
+            self.adjustToRotation()
+        }) { (completion) in
+            
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-    
+        adjustConstraints()
+        adjustToRotation()
         loadImages()
         
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
@@ -242,11 +281,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         
     }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
-    
+ 
     override var shouldAutorotate: Bool {
         return true
     }

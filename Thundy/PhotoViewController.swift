@@ -133,7 +133,6 @@ class PhotoViewController: UIViewController {
     //Vuelvo a colocar el dispositivo en modo portrait
     override func viewWillDisappear(_ animated: Bool) {
         stopScanning()
-        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
     }
     
     // MARK: - configuración de la cámara

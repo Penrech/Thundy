@@ -25,6 +25,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var logoImage: UIImageView!
     @IBOutlet weak var labelTexto: UILabel!
+    @IBOutlet weak var labelTextoPortrait: UILabel!
     @IBOutlet weak var buttonStart: RoundButton!
     @IBAction func comenzarConLaApp(_ sender: Any) {
         askForPermissions()
@@ -34,18 +35,18 @@ class ViewController: UIViewController {
         images = [blinkLogoImage!, normalLogoImage!]
         startTimer()
 
-        imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(showInfo))
-        infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 36), style: .plain, target: self, action: #selector(goToImages))
+        imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(showInfo))
+        infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(goToImages))
         
         navigationItem.rightBarButtonItems = [imagesButton, infoButton]
-        for item in navigationItem.rightBarButtonItems! {
+        /*for item in navigationItem.rightBarButtonItems! {
             item.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
-        }
+        }*/
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    /*override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
-    }
+    }*/
     
     override var shouldAutorotate: Bool {
         return true
@@ -171,7 +172,9 @@ class ViewController: UIViewController {
             if self.permissionError {
                 self.permissionError = false
                 self.labelTexto.numberOfLines = 1
+                self.labelTextoPortrait.numberOfLines = 1
                 self.labelTexto.text = self.defaultText
+                self.labelTextoPortrait.text = self.defaultText
                 self.logoImage.image = self.normalLogoImage
                 
                 self.startTimer()
@@ -185,36 +188,40 @@ class ViewController: UIViewController {
             
             self.logoImage.image = UIImage(named: "triste")
             self.labelTexto.numberOfLines = 2
+            self.labelTextoPortrait.numberOfLines = 2
             self.permissionError = true
             
             self.labelTexto.text = error.rawValue
+            self.labelTextoPortrait.text = error.rawValue
         }
     }
     
     func requestPermissionAgain(error: PermissionRequest){
-        let alertController = UIAlertController(title: "Need Permission", message: error.rawValue, preferredStyle: .alert)
-        let accionCancelar = UIAlertAction(title: "Cancel", style: .cancel, handler: {(completion) in
-            switch error{
-            case .Camera:
-                self.showErrorIfNotPermission(error: .NoCameraPermission)
-            case .LibraryToSave:
-                self.showErrorIfNotPermission(error: .NoLibraryPermission)
-            case .LibraryToShow:
-                self.showErrorIfNotPermission(error: .NoLibraryPermissionGallery)
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Need Permission", message: error.rawValue, preferredStyle: .alert)
+            let accionCancelar = UIAlertAction(title: "Cancel", style: .cancel, handler: {(completion) in
+                switch error{
+                case .Camera:
+                    self.showErrorIfNotPermission(error: .NoCameraPermission)
+                case .LibraryToSave:
+                    self.showErrorIfNotPermission(error: .NoLibraryPermission)
+                case .LibraryToShow:
+                    self.showErrorIfNotPermission(error: .NoLibraryPermissionGallery)
+                }
+            })
+            let accionSettings = UIAlertAction(title: "Go To Settings", style: .default) { (alert) in
+                guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                    return
+                }
+                if UIApplication.shared.canOpenURL(settingsUrl){
+                    UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+                }
             }
-        })
-        let accionSettings = UIAlertAction(title: "Go To Settings", style: .default) { (alert) in
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
-                return
-            }
-            if UIApplication.shared.canOpenURL(settingsUrl){
-                UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
-            }
+            
+            alertController.addAction(accionCancelar)
+            alertController.addAction(accionSettings)
+            self.present(alertController, animated: true, completion: nil)
         }
-        
-        alertController.addAction(accionCancelar)
-        alertController.addAction(accionSettings)
-        present(alertController, animated: true, completion: nil)
     }
     
     func albumCreationError(){
@@ -256,7 +263,9 @@ class ViewController: UIViewController {
         PHPhotoLibrary.requestAuthorization { (status) in
             switch status {
             case .authorized:
-                self.navigationController?.pushViewController(galleryViewController!, animated: true)
+                DispatchQueue.main.async {
+                    self.navigationController?.pushViewController(galleryViewController!, animated: true)
+                }
             case .denied, .restricted, .notDetermined:
                     self.requestPermissionAgain(error: .LibraryToShow)
             }
