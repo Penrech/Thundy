@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         images = [blinkLogoImage!, normalLogoImage!]
         startTimer()
-
+        navigationController?.addCustomTransitioning()
         imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(showInfo))
         infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(goToImages))
         
