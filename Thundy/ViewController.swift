@@ -156,7 +156,6 @@ class ViewController: UIViewController {
                     self.performSegue(withIdentifier: "showCamera", sender: nil)
                 }
             }
-            
         }
         
     }
@@ -299,10 +298,10 @@ extension ViewController: UIViewControllerTransitioningDelegate {
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         toCameraTransition.transitionMode = .Dismiss
-        let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview?.superview)
+        let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview)
         print("Altura: \(circleButtonRect.minY + circleButtonRect.height / 2)")
         print("AlturaMedia: \(circleButtonRect.midY)")
-        //toCameraTransition.origin = CGPoint(x: circleButtonRect.minX + circleButtonRect.width / 2, y: circleButtonRect.minY + circleButtonRect.height / 2)
+        print("Altura noormal: \(self.buttonStart.frame)")
         toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
         toCameraTransition.buttonRect = circleButtonRect
         toCameraTransition.circleColor = self.buttonStart.backgroundColor

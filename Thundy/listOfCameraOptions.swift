@@ -16,9 +16,11 @@ class ListOfCameraOptions {
     
     let initialISOoption: ISOoption?
     let initialExposureOption: ExposureOption?
+    let initialSensibilityOption = 1
     
     var defaultISOoption: ISOoption? = nil
     var defaultExposureOption: ExposureOption? = nil
+    
     var ISOoptions: [ISOoption] = [ISOoption(id: 0, option: 100),
                                    ISOoption(id: 1, option: 200),
                                    ISOoption(id: 2, option: 300),
@@ -33,6 +35,8 @@ class ListOfCameraOptions {
                                              ExposureOption(id: 2, option: CMTime(value: 1, timescale: 500), name: "1/500"),
                                              ExposureOption(id: 3, option: CMTime(value: 1, timescale: 800), name: "1/800"),
                                              ExposureOption(id: 4, option: CMTime(value: 1, timescale: 1000), name: "1/1000")]
+    
+    var SensitibilityOptions : [Double] = [0.4, 0.25, 0.1]
     
     init() {
         defaultISOoption = ISOoptions[1]

@@ -102,12 +102,23 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         } else {
             
             guard let toView = transitionContext.view(forKey: .to) else { return }
+            guard let toViewController = transitionContext.viewController(forKey: .to)  else { print("no hay toviewcontroller");return }
+            guard let fromViewController = transitionContext.viewController(forKey: .from) as? PhotoViewController else { print("no hay fromviewController");return }
+          
+            
             print("Toview Frame = \(toView.frame)")
             guard let returningControllerView = transitionContext.view(forKey: .from) else { return }
             print("ReturningFrame = \(returningControllerView.frame)")
             let originalCenter = returningControllerView.center
             let originalSize = returningControllerView.frame.size
             let originalColor = returningControllerView.backgroundColor
+            
+            //Get frame of circle
+            circle = UIView(frame: frameForCircle(center: originalCenter, size: originalSize, start: origin))
+            //circle = UIView(frame: buttonRect!)
+            circle?.layer.cornerRadius = circle!.frame.size.height / 2
+            circle?.clipsToBounds = true
+            circle?.center = origin
             
             print("Origen inicial: \(origin)")
             //origin.y += checkIfStatusBarHeightMustBeAdded(toView: toView, fromView: returningControllerView)

@@ -22,11 +22,24 @@ extension UIImage {
         let nuevoTamañoImagen = CGSize(width: nuevaAnchura, height: nuevaAltura)
         
         UIGraphicsBeginImageContextWithOptions(nuevoTamañoImagen, false, 0.0)
+    
         self.draw(in: CGRect(x: 0, y: 0, width: nuevaAnchura, height: nuevaAltura))
         
         let nuevaImagen: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return nuevaImagen ?? self
+    }
+    func addShadow(shadowHeight: CGFloat) -> UIImage{
+        let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
+        let shadowContext: CGContext = CGContext(data: nil, width: Int(size.width), height: Int(size.height + shadowHeight), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        
+        shadowContext.setShadow(offset: CGSize(width: 0, height: -shadowHeight), blur: 5, color: UIColor.black.cgColor)
+        shadowContext.draw(cgImage!, in: CGRect(x: 0, y: shadowHeight, width: size.width, height: size.height))
+        
+        let shadowedCGImage = shadowContext.makeImage()
+        let shadowedImage = shadowedCGImage != nil ? UIImage(cgImage: shadowedCGImage!) : self
+        
+        return shadowedImage
     }
     func getAssetImage(asset: PHAsset) -> UIImage{
         let manager = PHImageManager.default()

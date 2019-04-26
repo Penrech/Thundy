@@ -76,6 +76,7 @@ class CustomPhotoAlbum {
     //Esta función obtiene todas las fotos del album
     func getPhotos(albumTitle: String, completionHandler: @escaping (_ success: Bool, _ quantity: Int?, _ photos: PHFetchResult<PHAsset>?) -> ()){
         let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         var allPhotos : PHFetchResult<PHAsset>? = nil
         
         getAlbum(title: albumTitle) { (album) in
@@ -103,7 +104,9 @@ class CustomPhotoAlbum {
             }
         }, completionHandler: { (success, error) in
             if let album = self.albumReference{
-                remainPhotos = PHAsset.fetchAssets(in: album, options: PHFetchOptions())
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+                remainPhotos = PHAsset.fetchAssets(in: album, options: fetchOptions)
             }
             completionHandler(success, error, remainPhotos)
         })

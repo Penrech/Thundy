@@ -34,11 +34,13 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
 
         // 6
         let container = transitionContext.containerView
+        let toViewFrame = toView.frame
         container.backgroundColor = UIColor.white
         if presenting {
             container.addSubview(toView)
         } else {
             if TypeOfTransition.shared.currentTransition == .ImageSlide {
+                toView.frame = fromView.frame
                 container.addSubview(toView)
             } else {
                 container.insertSubview(toView, belowSubview: fromView)
@@ -46,7 +48,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
         }
  
         // 7
-        let toViewFrame = toView.frame
+        
         
         switch TypeOfTransition.shared.currentTransition {
         case .DefaultSlide:
@@ -74,12 +76,12 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                     }
                     
                 } else {
-                   /*if let collectionView = toView.subviews[0] as? UICollectionView {
-                        
-                        collectionView.scrollToItem(at: currentIndexPath, at: .centeredVertically, animated: false)
-                        collectionView.collectionViewLayout.invalidateLayout()
-                        
-                    }*/
+                   if let collectionView = toView.subviews[0] as? UICollectionView {
+                        collectionView.frame = toView.frame
+                        /*collectionView.scrollToItem(at: currentIndexPath, at: .centeredVertically, animated: false)
+                        collectionView.collectionViewLayout.invalidateLayout()*/
+                
+                    }
                     snapshotView.frame = currentFrame
                     snapshotView.fetchImage(asset: currentAsset, contentMode: .aspectFill)
                     snapshotView.clipsToBounds = true
@@ -102,6 +104,8 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                                 snapshotView.frame = CGRect(x: toView.frame.origin.x + (toView.frame.width / 2) - (newDimensions.width / 2), y: toView.frame.origin.y + (toView.frame.height / 2) - (newDimensions.height / 2), width: newDimensions.width, height: newDimensions.height)
                             } else {
                                 if let collectionView = toView.subviews[0] as? UICollectionView {
+                                    print("collectionViewFrame: \(collectionView.frame)")
+                                    collectionView.frame = toView.frame
                                     let attributes: UICollectionViewLayoutAttributes? = collectionView.layoutAttributesForItem(at: indexPath)
                                     let cellRect: CGRect? = attributes?.frame
                                     let cellRect2 = collectionView.cellForItem(at: indexPath)!
@@ -110,9 +114,23 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                                     print("@Cell3 rect: \(attributes?.bounds)")
                                     print("View Frame: \(toView.frame)")
                                     let cellFrameInSuperview = collectionView.convert(cellRect ?? CGRect.zero, to: collectionView.superview)
+                                    /*var origin = cellFrameInSuperview.origin
+                                    
+
+                                    let xWidthPercentage = origin.x / toViewFrame.width
+                                    let yHeightPercentage = origin.y / toViewFrame.height
+                                    let newXPosition = fromView.frame.width * xWidthPercentage
+                                    let newYPosition = fromView.frame.height * yHeightPercentage
+                                    let newOrigin = CGPoint(x: newXPosition, y: newYPosition)
+                                    print("Nuevo origen: \(newOrigin)")
+                                    origin = newOrigin
+                                    let cellPrueba = CGRect(origin: newOrigin, size: cellFrameInSuperview.size)*/
+
+
                                     //let newDimensions = collectionView.cellForItem(at: indexPath)!.frame
                                     //print("new frame position: \(newDimensions)")
                                     snapshotView.frame = cellFrameInSuperview
+                                    //snapshotView.frame = cellPrueba
                                 }
                                 if let galleryViewController = toViewController as? GalleryViewController {
                                     let attributes: UICollectionViewLayoutAttributes? = galleryViewController.collectionView.layoutAttributesForItem(at: indexPath)
@@ -127,12 +145,13 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
             }
 
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1) {
-                toView.frame = toViewFrame
                 
                 switch TypeOfTransition.shared.currentTransition {
                 case .DefaultSlide:
+                    toView.frame = toViewFrame
                     fromView.frame = CGRect(x: self.presenting ? -fromView.frame.width : fromView.frame.width, y: fromView.frame.origin.y, width: fromView.frame.width, height: fromView.frame.height)
                 case .UpDownSlide:
+                    toView.frame = toViewFrame
                    fromView.frame = CGRect(x: fromView.frame.origin.x, y: self.presenting ? -fromView.frame.height : fromView.frame.height, width: fromView.frame.width, height: fromView.frame.height)
                 case .ImageSlide:
                     fromView.alpha = self.presenting ? 0 : 1

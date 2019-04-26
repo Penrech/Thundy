@@ -60,7 +60,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        print("Class: \(self.hash) - layoutSubViews")
+        
     }
 }
 

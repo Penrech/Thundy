@@ -251,7 +251,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         adjustToRotation()
         loadImages()
         
-        
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
         }
@@ -268,6 +267,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
 
         statusBarView.backgroundColor = UIColor.defaultBlue
         navigationController?.navigationBar.topItem?.title = ""
+        toolbarItems = []
         navigationController?.hidesBarsOnSwipe = true
         navigationController?.setNavigationBarHidden(false, animated: false)
         
@@ -305,8 +305,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         let asset = allPhotos?.object(at: indexPath.row)
     
         cell.setImage(asset: asset!)
-        
-        print("@Posicion celda : \(cell.frame)")
         
         if asset?.localIdentifier == TypeOfTransition.shared.currentAsset?.localIdentifier {
             cell.isHidden = true

@@ -67,10 +67,14 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
             layout.scrollDirection = .horizontal
         }
         
-        
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapScrollView))
         doubleTapRecognizer.numberOfTapsRequired = 2
         collectionView.addGestureRecognizer(doubleTapRecognizer)
+        
+        let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTapGesture))
+        singleTapRecognizer.numberOfTapsRequired = 1
+        singleTapRecognizer.require(toFail: doubleTapRecognizer)
+        collectionView.addGestureRecognizer(singleTapRecognizer)
   
         actualPage = startIndexPath.row
         collectionView.layoutIfNeeded()
@@ -97,6 +101,9 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
             superViewLeadingConstraint.priority = .defaultLow
             superViewTrailingConstraint.priority = .defaultLow
         }
+    }
+    @objc func handleSingleTapGesture(recognizer: UITapGestureRecognizer){
+        hideToolbars(show: !navBarsVisible)
     }
    @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
         let actualIndexPath = collectionView.indexPathsForVisibleItems[0]

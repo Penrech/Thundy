@@ -17,6 +17,7 @@ class PhotoViewController: UIViewController {
     
     let isoKey = "isoKey"
     let exposureKey =  "exposureKey"
+    let sensibilityKey = "sensibilityKey"
     let optionsViewShowHeight = 225
     
     let scanImage = UIImage(named: "scan")
@@ -71,6 +72,7 @@ class PhotoViewController: UIViewController {
     @IBOutlet weak var isoStackView: UIStackView!
     @IBOutlet weak var exposureSlider: UISlider!
     @IBOutlet weak var exposureStackView: UIStackView!
+    @IBOutlet weak var sensibilitySlider: UISlider!
     @IBOutlet weak var optionsView: UIView! {
         didSet{
             optionsView.layer.cornerRadius = 24
@@ -87,6 +89,10 @@ class PhotoViewController: UIViewController {
     @IBAction func ExposureOptionsChange(_ sender: Any) {
        exposureSlider.value = round(self.exposureSlider.value)
         setNewExposure(value: Int(exposureSlider!.value))
+    }
+    @IBAction func SensibilityOptionsChange(_ sender: Any) {
+        sensibilitySlider.value = round(self.sensibilitySlider.value)
+        setNewSensibility(value: Int(sensibilitySlider!.value))
     }
     
     @IBOutlet weak var scanButton: UIButton!
@@ -121,6 +127,9 @@ class PhotoViewController: UIViewController {
     }
     
     @IBAction func closePhotoViewController(_ sender: Any) {
+        let homeControlller = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.children[0] as! ViewController
+        print("homeController: \(homeControlller)")
+        self.transitioningDelegate = homeControlller
         dismiss(animated: true, completion: nil)
         //navigationController?.popViewController(animated: true)
     }
@@ -131,6 +140,9 @@ class PhotoViewController: UIViewController {
         super.viewDidLoad()
         
         setInitialExposureValues()
+        
+        closeButton.setImage(closeButton.image(for: .normal)!.addShadow(shadowHeight: 35), for: .normal)
+        thunderIcon.image = thunderIcon.image?.addShadow(shadowHeight: 35)
         
         motionManager = CMMotionManager()
         
@@ -485,36 +497,15 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
             self.oldMinBrightness = abs(brightness)
         }
         
-        /*print("Brillo no normalizado: \(brightness)")
-        print("Brillo normalizado: \(brightness + oldMinBrightness)")*/
-        let FNumber : Double = exifData?["FNumber"] as! Double
-        let ExposureTime : Double = exifData?["ExposureTime"] as! Double
-        let ISOSpeedRatingsArray = exifData!["ISOSpeedRatings"] as? NSArray
-        let ISOSpeedRatings : Double = ISOSpeedRatingsArray![0] as! Double
-        let CalibrationConstant : Double = 50
-        
-        let luminosity : Double = (CalibrationConstant * FNumber * FNumber ) / ( ExposureTime * ISOSpeedRatings )
-        //let normalizedBrightness = brightness + oldMinBrightness
-        //return luminosity
-        //return normalizedBrightness
         return brightness
     }
     
     func calcularLuminosidad(capturedImage: AVCapturePhoto) -> Double{
         
         let exifData = capturedImage.metadata["{Exif}"] as? NSMutableDictionary
-        
         let brightness : Double = exifData?["BrightnessValue"] as! Double
-        let FNumber : Double = exifData?["FNumber"] as! Double
-        let ExposureTime : Double = exifData?["ExposureTime"] as! Double
-        let ISOSpeedRatingsArray = exifData!["ISOSpeedRatings"] as? NSArray
-        let ISOSpeedRatings : Double = ISOSpeedRatingsArray![0] as! Double
-        let CalibrationConstant : Double = 50
         
-        let luminosity : Double = (CalibrationConstant * FNumber * FNumber ) / ( ExposureTime * ISOSpeedRatings )
-        let normalizedBrightness = brightness + oldMinBrightness
-        //return luminosity
-        return normalizedBrightness
+        return brightness
     }
     
     //Esta función utiliza los sensores del dispositivo para determinar si esta estable o si se mueve.
@@ -613,10 +604,14 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
     
     //Esta es la función principal encargada de detectar si se da un rayo o no.
     func detectIfRayIsShown(luminosity: Double, buffer: CMSampleBuffer){
+        
+        let normalizedLuminosity = max(luminosity + oldMinBrightness, 0)
+        let normalizedLastValue = max(lastValue ?? 0 + oldMinBrightness, 0)
+        let normalizedReferenceLuminosity = max(referenceLuminosity ?? 0 + oldMinBrightness, 0)
 
         //Aqui se detecta si tras un rayo la luz a vuelto a su luminosidad original o no
         if scanningPauseBetweenPhotoGap {
-            if luminosity > (referenceLuminosity - referenceLuminosity * 0.1 ) && (luminosity < referenceLuminosity + referenceLuminosity * 0.1) {
+            if normalizedLuminosity > (normalizedReferenceLuminosity - normalizedReferenceLuminosity * 0.1 ) && (normalizedLuminosity < normalizedReferenceLuminosity + normalizedReferenceLuminosity * 0.1) {
                 scanningPauseBetweenPhotoGap = false
                 print("La iluminación se ha restablecido")
             } else {
@@ -628,35 +623,19 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
             print("Inicializó lastValue la primera vez o tras cambios")
         }
         
-        let normalizedLuminosity = max(luminosity + oldMinBrightness, 0)
-        let normalizedLastValue = max(lastValue + oldMinBrightness, 0)
         //Este porcentaje determina la sensibilidad a la que se detectan los rayos
-        let porcentajeAumentoLuminosidad = 0.25
-        print("Luminosidad: \(normalizedLuminosity)")
-        print("LastValue: \(normalizedLastValue)")
+        let porcentajeAumentoLuminosidad = getSensibility()
+        print("##Porcentaje: \(porcentajeAumentoLuminosidad)")
+        print("##Luminosidad: \(normalizedLuminosity)")
+        print("##LastValue: \(normalizedLastValue)")
         if normalizedLuminosity > normalizedLastValue + normalizedLastValue * porcentajeAumentoLuminosidad {
-            //rayCapturedNumber += 1
-            print("Rayo \(rayCapturedNumber))")
+
             referenceLuminosity = luminosity
             
-            guard let imageBuffer = CMSampleBufferGetImageBuffer(buffer) else { return }
-            
-            //Creamos la imagen con la info del buffer
-            let ciImage = CIImage(cvImageBuffer: imageBuffer)
-            print("CIIMAGE: \(ciImage)")
-            let image = UIImage(ciImage: ciImage)
-            print("IMAGE: \(image)")
-            scanningPauseBetweenPhotoGap = true
-            self.customAlbumManager.save(photo: image, toAlbum: customAlbumManager.photoAlbumName) { (success, error) in
-                print("success :\(success)")
-                print("error: \(error)")
-                self.scanningPauseBetweenPhotoGap = false
-            }
-            
-            /*print("Inicializo valor de refencia al detectar rayo en \(referenceLuminosity)")
+            print("Inicializo valor de refencia al detectar rayo en \(referenceLuminosity + oldMinBrightness)")
             scanningPauseBetweenPhotoGap = true
             setControlLuminosityTimer(active: true)
-            photoTaken(luminosityWhenDetected: luminosity)*/
+            photoTaken(luminosityWhenDetected: luminosity)
             
         }
         self.lastValue = luminosity
@@ -681,12 +660,14 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
         //cuando la foto está procesada
         //Para evitar en la medida de lo posible fotos en negro, se realiza la siguiente comprobación
         if let luminosidadInicial = referenceLuminosity {
-            let luminosidadFinal = calcularLuminosidad(capturedImage: photo)
-            let luminosidadInicialMásConstante = luminosidadInicial + luminosidadInicial * 0.05
-       
+            let luminosidadInicialNormalizada = luminosidadInicial + oldMinBrightness
+            let luminosidadFinal = calcularLuminosidad(capturedImage: photo) + oldMinBrightness
+            let luminosidadInicialMásConstante = luminosidadInicialNormalizada + luminosidadInicialNormalizada * 0.05
+            
+            print("@@Luminosidad Inicial: \(luminosidadInicialMásConstante)")
+            print("@@Luminosidad Final: \(luminosidadFinal)")
             if luminosidadFinal >= luminosidadInicialMásConstante {
-                print("@@Luminosidad Inicial: \(luminosidadInicial)")
-                print("@@Luminosidad Final: \(luminosidadFinal)")
+                
                 print("@@La foto tiene rayo")
                 self.saveAndSetPhoto(imageData: imageData)
             }
@@ -724,6 +705,11 @@ extension PhotoViewController {
                 ListOfCameraOptions.shared.defaultExposureOption = ListOfCameraOptions.shared.ExposureOptions.first(where: {$0.id == exposureId})
             } else {
                 preferences.set(defaultExposure.id, forKey: exposureKey)
+            }
+            if let sensibilityValue = preferences.value(forKey: sensibilityKey) as? Int {
+                sensibilitySlider.value = Float(sensibilityValue)
+            } else {
+                preferences.set(ListOfCameraOptions.shared.initialSensibilityOption, forKey: sensibilityKey)
             }
         }
     }
@@ -775,24 +761,11 @@ extension PhotoViewController {
         }
    
     }
-    
-    /*func setPositionOfSliders(){
-        if let defaultISO = ListOfCameraOptions.shared.defaultISOoption {
-            if let index = supportedISO.firstIndex(where: {$0.id == defaultISO.id}) {
-                isoSlider.value = Float(index)
-            }
-        }
-        
-        if let defaultExposure = ListOfCameraOptions.shared.defaultExposureOption {
-            if let index = supportedExposure.firstIndex(where: {$0.id == defaultExposure.id}) {
-                exposureSlider.value = Float(index)
-            }
-        }
-    }*/
-    
+ 
     func restoreValues(){
         let initialIso = ListOfCameraOptions.shared.initialISOoption
         let initialExposure = ListOfCameraOptions.shared.initialExposureOption
+        let initialSensibility = ListOfCameraOptions.shared.initialSensibilityOption
         if let isoSupported = supportedISO.firstIndex(where: {$0.id == initialIso?.id}){
             isoSlider.value = Float(isoSupported)
             setNewIso(value: isoSupported)
@@ -807,6 +780,23 @@ extension PhotoViewController {
             exposureSlider.value = 0
             setNewExposure(value: 0)
         }
+        sensibilitySlider.value = Float(initialSensibility)
+        setNewSensibility(value: initialSensibility)
+    }
+    
+    func setNewSensibility(value: Int){
+        if !captureSession.isRunning {
+            return
+        }
+        
+        let preferences = UserDefaults.standard
+        preferences.set(value, forKey: sensibilityKey)
+    
+    }
+    
+    func getSensibility() -> Double{
+        let sensibility = ListOfCameraOptions.shared.SensitibilityOptions[Int(sensibilitySlider.value)]
+        return sensibility
     }
     
     func setNewIso(value: Int){
