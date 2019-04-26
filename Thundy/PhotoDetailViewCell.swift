@@ -26,6 +26,7 @@ class PhotoDetailViewCell: UICollectionViewCell {
     var initialHeight: CGFloat = 0
     
     var asset: PHAsset?
+
     
     
     @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {

@@ -61,12 +61,13 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
     }
 
     @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
-      if scrollView.zoomScale == 1 {
+      /*if scrollView.zoomScale == 1 {
             scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
         } else {
             scrollView.setZoomScale(1, animated: true)
 
-        }
+        }*/
+        navigationController?.popViewController(animated: true)
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
@@ -311,3 +312,4 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
 
 
 }
+

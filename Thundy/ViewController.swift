@@ -22,7 +22,10 @@ class ViewController: UIViewController {
     
     var blinkTimer: Timer!
     var permissionError = false
+    
+    let toCameraTransition = TransitionPopAnimator()
 
+    @IBOutlet weak var downView: UIView!
     @IBOutlet weak var logoImage: UIImageView!
     @IBOutlet weak var labelTexto: UILabel!
     @IBOutlet weak var labelTextoPortrait: UILabel!
@@ -39,19 +42,9 @@ class ViewController: UIViewController {
         infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(goToImages))
         
         navigationItem.rightBarButtonItems = [imagesButton, infoButton]
-        /*for item in navigationItem.rightBarButtonItems! {
-            item.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)
-        }*/
+        
     }
-    
-    /*override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }*/
-    
-    override var shouldAutorotate: Bool {
-        return true
-    }
-    
+   
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
     }
@@ -159,7 +152,8 @@ class ViewController: UIViewController {
                 }
             } else {
                 if let cameraViewController = self.storyboard?.instantiateViewController(withIdentifier: "photoViewController") {
-                    self.present(cameraViewController, animated: true, completion: nil)
+                    //self.present(cameraViewController, animated: true, completion: nil)
+                    self.performSegue(withIdentifier: "showCamera", sender: nil)
                 }
             }
             
@@ -278,5 +272,41 @@ class ViewController: UIViewController {
         self.navigationController?.pushViewController(infoViewController!, animated: true)
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showCamera"{
+            let controller = segue.destination as! PhotoViewController
+            controller.transitioningDelegate = self
+            if UIDevice.current.orientation.isLandscape {
+                controller.hideStatusBar = true
+            }
+            //controller.modalPresentationStyle = .custom
+        }
+    }
 }
-
+extension ViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        toCameraTransition.transitionMode = .Present
+        toCameraTransition.circleColor = self.buttonStart.backgroundColor
+        let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview?.superview)
+        //toCameraTransition.origin = CGPoint(x: circleButtonRect.minX + circleButtonRect.width / 2, y: circleButtonRect.minY + circleButtonRect.height / 2)
+        toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
+        toCameraTransition.buttonRect = circleButtonRect
+        
+        return toCameraTransition
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        toCameraTransition.transitionMode = .Dismiss
+        let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview?.superview)
+        print("Altura: \(circleButtonRect.minY + circleButtonRect.height / 2)")
+        print("AlturaMedia: \(circleButtonRect.midY)")
+        //toCameraTransition.origin = CGPoint(x: circleButtonRect.minX + circleButtonRect.width / 2, y: circleButtonRect.minY + circleButtonRect.height / 2)
+        toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
+        toCameraTransition.buttonRect = circleButtonRect
+        toCameraTransition.circleColor = self.buttonStart.backgroundColor
+        
+        return toCameraTransition
+    }
+}

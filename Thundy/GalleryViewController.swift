@@ -61,6 +61,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -91,11 +92,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return .slide
     }
-    
-    /*override var prefersStatusBarHidden: Bool{
-        return navBarsHidden
-    }*/
-    
+
     func adjustConstraints(){
         if UIDevice.current.hasNotch{
             safeAreaLeadingConstraint.priority = .defaultLow
@@ -116,7 +113,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             numOfColumns = numberOfColumnsPortrait
         }
-        collectionView.collectionViewLayout.invalidateLayout()
+      collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func loadImages(){
@@ -240,11 +237,12 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { (animation) in
+         self.adjustToRotation()
+        /*coordinator.animate(alongsideTransition: { (animation) in
             self.adjustToRotation()
         }) { (completion) in
             
-        }
+        }*/
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -252,6 +250,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         adjustConstraints()
         adjustToRotation()
         loadImages()
+        
         
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
             return
@@ -264,22 +263,23 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 self.navigationController?.toolbar.isTranslucent = false
                 self.navigationController?.toolbar.backgroundColor = UIColor.defaultBlue
               
-                if !self.commingFromHome {
-                    statusBarView.backgroundColor = UIColor.defaultBlue
-                }
             })
         }
-        
-        if commingFromHome {
-            statusBarView.backgroundColor = UIColor.defaultBlue
-        }
-        
-        navigationController?.setToolbarHidden(true, animated: true)
+
+        statusBarView.backgroundColor = UIColor.defaultBlue
         navigationController?.navigationBar.topItem?.title = ""
         navigationController?.hidesBarsOnSwipe = true
         navigationController?.setNavigationBarHidden(false, animated: false)
         
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        TypeOfTransition.shared.currentTransition = .DefaultSlide
+        
+        if !navigationController!.isToolbarHidden {
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
     }
  
     override var shouldAutorotate: Bool {
@@ -304,14 +304,17 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! PhotoCollectionViewCell
         let asset = allPhotos?.object(at: indexPath.row)
     
-        if !slideShowModeEnabled {
-            cell.setImage(asset: asset!)
-            //cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFill, targetSize: cell.libraryImage.frame.size)
+        cell.setImage(asset: asset!)
+        
+        print("@Posicion celda : \(cell.frame)")
+        
+        if asset?.localIdentifier == TypeOfTransition.shared.currentAsset?.localIdentifier {
+            cell.isHidden = true
         } else {
-            cell.setImageDetail(asset: asset!)
-            //cell.libraryImage.fetchImage(asset: asset!, contentMode: .aspectFit)
+            cell.isHidden = false
         }
         
+  
         return cell
     }
     
@@ -372,35 +375,17 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return true
         }
         
+        //Comentado para compilarla en la mona
         //performSegue(withIdentifier: "ImageToDetail", sender: indexPath.row)
+        let attributes: UICollectionViewLayoutAttributes? = collectionView.layoutAttributesForItem(at: indexPath)
+        let cellRect: CGRect? = attributes?.frame
+        let cellFrameInSuperview = collectionView.convert(cellRect ?? CGRect.zero, to: collectionView.superview)
+        let asset = allPhotos?.object(at: indexPath.row)
+    
+        TypeOfTransition.shared.setCellForAnimation(cellFrame: cellFrameInSuperview, indexPath: indexPath, cellAsset: asset!)
+        TypeOfTransition.shared.currentTransition = .ImageSlide
         performSegue(withIdentifier: "imageToGalleryDetail", sender: indexPath)
-        /*if !slideShowModeEnabled{
-            print("ContentOffset antes: \(collectionView.contentOffset)")
-            slideShowImage(moveToClicked: indexPath)
-            print("ContentOffset despuse: \(collectionView.contentOffset)")
-        } else {
-            if !navigationController!.navigationBar.isHidden && !navigationController!.toolbar.isHidden{
-                navigationController?.setToolbarHidden(true, animated: true)
-                navigationController?.setNavigationBarHidden(true, animated: true)
-                navBarsHidden = true
-                UIView.animate(withDuration: 0.15) {
-                    self.setNeedsStatusBarAppearanceUpdate()
-                    self.collectionView.backgroundColor = .black
-                }
-                
-                
-            } else {
-                navigationController?.setToolbarHidden(false, animated: true)
-                navigationController?.setNavigationBarHidden(false, animated: true)
-                navBarsHidden = false
-                UIView.animate(withDuration: 0.15) {
-                    self.setNeedsStatusBarAppearanceUpdate()
-                    self.collectionView.backgroundColor = .clear
-                }
-                
-            }
-            
-        }*/
+       
         return false
      }
   
@@ -447,7 +432,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         let indexPath = self.collectionView.indexPathForItem(at: point)
         
         if let indexPath = indexPath {
-            var cell = self.collectionView.cellForItem(at: indexPath)
             setSelectionMode(on: true, selectIndexPath: indexPath)
         }
     }
@@ -500,7 +484,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         case .Cell:
             return (screenWidth / CGFloat(numOfColumns)) * 0.95
         case .TopMargin:
-            return screenWidth  * 0.025
+            return screenWidth  * (0.05 / (CGFloat(numOfColumns) - 1))
+            //return screenWidth  * 0.025
         }
     }
     
@@ -582,7 +567,9 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 let asset = allPhotos?.object(at: elementPosition)
                 let controlerDestino = segue.destination as! DetailImageViewController
                 controlerDestino.asset = asset!
-                CATransaction.setDisableActions(true)
+                //controlerDestino.transitioningDelegate = self
+                //controlerDestino.modalPresentationStyle = .custom
+                //CATransaction.setDisableActions(true)
             }
         } else if segue.identifier == "imageToGalleryDetail"{
             if let element = sender as? IndexPath {
@@ -593,7 +580,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 controlerDestino.delegate = self
                 print("Allphotos: \(allPhotos)")
                 controlerDestino.startIndexPath = element
-                CATransaction.setDisableActions(true)
+                //TypeOfTransition.shared.currentTransition = .UpDownSlide
+                //CATransaction.setDisableActions(true)
             }
         }
     }
@@ -607,3 +595,5 @@ extension GalleryViewController: SendAllDeleted {
     }
     
 }
+
+

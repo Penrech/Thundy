@@ -37,7 +37,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     func setImage(asset: PHAsset){
         let cellHeight = self.frame.height
         let cellWidth = self.frame.width
-        self.libraryImage.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
+        //self.libraryImage.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
         self.libraryImage.fetchImage(asset: asset, contentMode: .aspectFill, targetSize: self.frame.size)
     }
     

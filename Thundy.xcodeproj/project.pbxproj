@@ -9,10 +9,12 @@
 /* Begin PBXBuildFile section */
 		B90566AC225DFD97001DDFC2 /* TutorialStepViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */; };
 		B90566AE225E22F9001DDFC2 /* TutorialPagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */; };
+		B92CE5E92271F5310048F687 /* TransitionPopAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92CE5E82271F5310048F687 /* TransitionPopAnimator.swift */; };
 		B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9302DFD22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift */; };
 		B95165AF2269C1050009AAB5 /* TransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95165AE2269C1050009AAB5 /* TransitionAnimator.swift */; };
 		B95165B12269C27B0009AAB5 /* TransitionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95165B02269C27B0009AAB5 /* TransitionCoordinator.swift */; };
 		B95165B32269C2B60009AAB5 /* UINavigationController+customTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95165B22269C2B60009AAB5 /* UINavigationController+customTransition.swift */; };
+		B95165BE2269E0CD0009AAB5 /* TypeOfTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95165BD2269E0CD0009AAB5 /* TypeOfTransition.swift */; };
 		B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C36F225228B4005DF25F /* PhotoViewController.swift */; };
 		B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */; };
 		B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C373225233E0005DF25F /* UIButton+Animation.swift */; };
@@ -20,7 +22,6 @@
 		B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37922525812005DF25F /* DetailImageViewController.swift */; };
 		B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */; };
 		B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37D22526644005DF25F /* UIApplication+statusBar.swift */; };
-		B96F452E2268D6E700F2F54C /* ExpandAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96F452D2268D6E700F2F54C /* ExpandAnimator.swift */; };
 		B971351B2261EFAD004146B5 /* ButtonForToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B971351A2261EFAD004146B5 /* ButtonForToolbar.swift */; };
 		B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB1225B646E00C16640 /* Date+Milis.swift */; };
 		B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB3225B965900C16640 /* RoundedCard.swift */; };
@@ -32,6 +33,8 @@
 		B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */; };
 		B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */; };
 		B9C2F639225CAA59004B4A81 /* CustomPhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */; };
+		B9D7666C2270B3B20092D168 /* optionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D7666B2270B3B20092D168 /* optionsTableViewCell.swift */; };
+		B9D7666E2270B7450092D168 /* listOfCameraOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */; };
 		B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */; };
 		B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */; };
 		B9F8A11F224F8F5A003E1028 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */; };
@@ -47,10 +50,12 @@
 /* Begin PBXFileReference section */
 		B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialStepViewController.swift; sourceTree = "<group>"; };
 		B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPagerViewController.swift; sourceTree = "<group>"; };
+		B92CE5E82271F5310048F687 /* TransitionPopAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionPopAnimator.swift; sourceTree = "<group>"; };
 		B9302DFD22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIInterfaceOrientation+Video.swift"; sourceTree = "<group>"; };
 		B95165AE2269C1050009AAB5 /* TransitionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionAnimator.swift; sourceTree = "<group>"; };
 		B95165B02269C27B0009AAB5 /* TransitionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionCoordinator.swift; sourceTree = "<group>"; };
 		B95165B22269C2B60009AAB5 /* UINavigationController+customTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+customTransition.swift"; sourceTree = "<group>"; };
+		B95165BD2269E0CD0009AAB5 /* TypeOfTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeOfTransition.swift; sourceTree = "<group>"; };
 		B958C36F225228B4005DF25F /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Orientation.swift"; sourceTree = "<group>"; };
 		B958C373225233E0005DF25F /* UIButton+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Animation.swift"; sourceTree = "<group>"; };
@@ -58,7 +63,6 @@
 		B958C37922525812005DF25F /* DetailImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailImageViewController.swift; sourceTree = "<group>"; };
 		B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Fetch.swift"; sourceTree = "<group>"; };
 		B958C37D22526644005DF25F /* UIApplication+statusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+statusBar.swift"; sourceTree = "<group>"; };
-		B96F452D2268D6E700F2F54C /* ExpandAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandAnimator.swift; sourceTree = "<group>"; };
 		B971351A2261EFAD004146B5 /* ButtonForToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonForToolbar.swift; sourceTree = "<group>"; };
 		B972EDB1225B646E00C16640 /* Date+Milis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Milis.swift"; sourceTree = "<group>"; };
 		B972EDB3225B965900C16640 /* RoundedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCard.swift; sourceTree = "<group>"; };
@@ -70,6 +74,8 @@
 		B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewCell.swift; sourceTree = "<group>"; };
 		B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoAlbum.swift; sourceTree = "<group>"; };
+		B9D7666B2270B3B20092D168 /* optionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = optionsTableViewCell.swift; sourceTree = "<group>"; };
+		B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = listOfCameraOptions.swift; sourceTree = "<group>"; };
 		B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ext.swift"; sourceTree = "<group>"; };
 		B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scale.swift"; sourceTree = "<group>"; };
 		B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
@@ -95,6 +101,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B95165B42269CFC50009AAB5 /* CellAnimation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CellAnimation;
+			sourceTree = "<group>";
+		};
 		B9814E0E224F9A7F00F1C0CC /* Custom */ = {
 			isa = PBXGroup;
 			children = (
@@ -154,6 +167,7 @@
 		B9F9255A224F842900CD2F9C /* Thundy */ = {
 			isa = PBXGroup;
 			children = (
+				B95165B42269CFC50009AAB5 /* CellAnimation */,
 				B9814E0E224F9A7F00F1C0CC /* Custom */,
 				B9F8A11B224F8F3E003E1028 /* Fonts */,
 				B9F8A118224F8CE1003E1028 /* Extensions */,
@@ -167,13 +181,16 @@
 				B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */,
 				B90566AB225DFD97001DDFC2 /* TutorialStepViewController.swift */,
 				B90566AD225E22F9001DDFC2 /* TutorialPagerViewController.swift */,
+				B9D7666B2270B3B20092D168 /* optionsTableViewCell.swift */,
 				B9F9255F224F842900CD2F9C /* Main.storyboard */,
 				B9F92562224F842A00CD2F9C /* Assets.xcassets */,
 				B9F92564224F842A00CD2F9C /* LaunchScreen.storyboard */,
 				B9F92567224F842A00CD2F9C /* Info.plist */,
-				B96F452D2268D6E700F2F54C /* ExpandAnimator.swift */,
 				B95165AE2269C1050009AAB5 /* TransitionAnimator.swift */,
+				B92CE5E82271F5310048F687 /* TransitionPopAnimator.swift */,
 				B95165B02269C27B0009AAB5 /* TransitionCoordinator.swift */,
+				B95165BD2269E0CD0009AAB5 /* TypeOfTransition.swift */,
+				B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */,
 			);
 			path = Thundy;
 			sourceTree = "<group>";
@@ -261,14 +278,16 @@
 				B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */,
 				B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */,
 				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,
-				B96F452E2268D6E700F2F54C /* ExpandAnimator.swift in Sources */,
 				B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */,
 				B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */,
+				B92CE5E92271F5310048F687 /* TransitionPopAnimator.swift in Sources */,
 				B99501AF2265E34700CC1F35 /* GalleryDetailViewController.swift in Sources */,
 				B95165B12269C27B0009AAB5 /* TransitionCoordinator.swift in Sources */,
 				B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */,
 				B9F9255E224F842900CD2F9C /* ViewController.swift in Sources */,
+				B9D7666E2270B7450092D168 /* listOfCameraOptions.swift in Sources */,
 				B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */,
+				B9D7666C2270B3B20092D168 /* optionsTableViewCell.swift in Sources */,
 				B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */,
 				B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */,
 				B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */,
@@ -281,6 +300,7 @@
 				B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */,
 				B958C37A22525812005DF25F /* DetailImageViewController.swift in Sources */,
 				B95165B32269C2B60009AAB5 /* UINavigationController+customTransition.swift in Sources */,
+				B95165BE2269E0CD0009AAB5 /* TypeOfTransition.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

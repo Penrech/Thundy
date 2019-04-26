@@ -117,10 +117,20 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     }
     
     func closeViewController(){
+        navigationController?.setToolbarHidden(true, animated: true)
+        
         if noMorePhotos {
             self.delegate?.allDeleted(deleted: true)
         }
-        self.navigationController?.popViewController(animated: false)
+
+        let currentCellIndexPath = collectionView.indexPathsForVisibleItems[0]
+        let currentCell = collectionView.cellForItem(at: currentCellIndexPath)! as! PhotoDetailViewCell
+        let currentImageViewFrame = currentCell.detailImageView.frame
+        let asset = allPhotos?.object(at: currentCellIndexPath.row)
+        
+        TypeOfTransition.shared.currentTransition = .ImageSlide
+        TypeOfTransition.shared.setCellForAnimation(cellFrame: currentImageViewFrame, indexPath: currentCellIndexPath, cellAsset: asset!)
+        self.navigationController?.popViewController(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -182,41 +192,14 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         let collectionBounds = collectionView.bounds
         let actualCellNumber = indexPath.row
         let offsetX = CGFloat(actualCellNumber) * toBounds.width
-        collectionView.contentOffset = CGPoint(x: offsetX, y: 0)
-        //self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        /*let usualCenter: CGFloat = 0.5
-        print("AnchorPoint: \(collectionView.layer.anchorPoint)")
-        let collectionBounds = collectionView.bounds
-        //let actualCellNumber = (collectionBounds.minX / collectionBounds.width) + 1
-        let actualCellNumber = (collectionBounds.minX / collectionBounds.width)
-        let numberOfCells = (collectionBounds.maxX / collectionBounds.width) + 1
-        let maxDistance = numberOfCells * toBounds.width
-        let midleDistance = maxDistance / 2
-        //let newCenter = (actualCellNumber * collectionBounds.width) / 2
-        let newCenter = actualCellNumber * toBounds.width + (toBounds.width / 2)
-        let newAnchorPointX = (usualCenter * newCenter) / midleDistance
-        let newAnchor = CGPoint(x: newAnchorPointX, y: usualCenter)
-        collectionView.setAnchorPoint(newAnchor)*/
-         /*let usualCenter: CGFloat = 0.5
-         let collectionBounds = collectionView.bounds
-         let actualCellNumber = (collectionBounds.minX / collectionBounds.width) + 1
-         let midleDistance = collectionBounds.midX
-         let newCenter = (actualCellNumber * toBounds.width) / 2
-         let newAnchorPointX = (usualCenter * newCenter) / midleDistance
-         let newAnchor = CGPoint(x: newAnchorPointX, y: usualCenter)
-         collectionView.setAnchorPoint(newAnchor)*/
+       
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         let currentIndexPath2 = collectionView.indexPathsForVisibleItems[0]
         let currentCell = collectionView.cellForItem(at: currentIndexPath2) as! PhotoDetailViewCell
-     
-        print("Position: \(UIDevice.current.orientation.rawValue)")
-        print("New Size: \(size)")
-        /*viewRotating = true
-        self.collectionView.collectionViewLayout.invalidateLayout()*/
-        //moveOffset(toBounds: size)
-        
+    
+    
         if let indexAtCenter = currentIndexPath {
             prevIndexPathAtCenter = indexAtCenter
         }
@@ -276,15 +259,8 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         case hideAllBars
         case showAllbars
     }
-    
-    @objc func animacionesQueEmpiezan(){
-        print("Empieza animacion")
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        CATransaction.setDisableActions(true)
-    }
-    
+ 
+
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return .slide
     }
