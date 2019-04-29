@@ -24,8 +24,8 @@ class PhotoViewController: UIViewController {
     let pauseImage = UIImage(named: "pause")
     var scanning = false
     var lastValue: Double!
-    let maxGapBetweenPeaks = 500
-    let minGapBetweenPeaks = 50
+  /*  let maxGapBetweenPeaks = 500
+    let minGapBetweenPeaks = 50*/
     
     var oldMaxBrightness: Double = 0
     var oldMinBrightness: Double = 0
@@ -81,10 +81,10 @@ class PhotoViewController: UIViewController {
     }
     @IBOutlet weak var settingsButton: UIButton!
     
+    //Aqui controlo los sliders de opciones
     @IBAction func isoOptionsChange(_ sender: Any) {
        isoSlider.value = round(self.isoSlider.value)
         setNewIso(value: Int(isoSlider!.value))
-        print("New ISO")
     }
     @IBAction func ExposureOptionsChange(_ sender: Any) {
        exposureSlider.value = round(self.exposureSlider.value)
@@ -114,7 +114,6 @@ class PhotoViewController: UIViewController {
         if settingsWindowOpen {
             showOptionsView(show: false)
         } else {
-            //setPositionOfSliders()
             showOptionsView(show: true)
         }
     }
@@ -128,10 +127,10 @@ class PhotoViewController: UIViewController {
     
     @IBAction func closePhotoViewController(_ sender: Any) {
         let homeControlller = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.children[0] as! ViewController
-        print("homeController: \(homeControlller)")
+
         self.transitioningDelegate = homeControlller
         dismiss(animated: true, completion: nil)
-        //navigationController?.popViewController(animated: true)
+
     }
     
     // MARK: - view functions
@@ -163,10 +162,11 @@ class PhotoViewController: UIViewController {
                 OperationQueue.main.addOperation {
                     if !self.scanButton.isEnabled && self.captureSession.isRunning {
                         self.scanButton.isEnabled = true
+                        self.settingsButton.isEnabled = true
                     }
                 }
             } else {
-                let alerta = UIAlertController(title: "Unspected Error", message: "Thundy can't load it's photo album and unspected error occur. Please, try start it again.", preferredStyle: .alert)
+                let alerta = UIAlertController(title: "Unspected Error", message: "Thundy couldn't load it's photo album and unspected error occured. Please, try start it again.", preferredStyle: .alert)
                 alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (alerta) in
                     self.dismiss(animated: true, completion: nil)
                 }))
@@ -174,8 +174,10 @@ class PhotoViewController: UIViewController {
             }
         
         scanButton.isEnabled = false
+        settingsButton.isEnabled = false
     }
     
+    //Para mejorar la apariencia de la animación de entrada, oculto en un principio el menú de opciones, aquí lo activo de nuevo
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         optionsView.isHidden = false
@@ -186,16 +188,9 @@ class PhotoViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         UIView.setAnimationsEnabled(false)
-        print("Rotacion inicial: \(self.view.transform)")
-        //UIView.setAnimationsEnabled(false)
        coordinator.animate(alongsideTransition: { (contexto) in
-            print("Animaciones: \(contexto.containerView.layer.sublayers)")
-            
-            print("Rotacion animacion: \(self.view.transform)")
+     
             DispatchQueue.main.async(execute: {
-                /*self.view.subviews.forEach({$0.layer.removeAllAnimations()})
-                self.view.layer.removeAllAnimations()
-                self.view.layoutIfNeeded()*/
                 self.updateVideoOrientation()
                 UIView.setAnimationsEnabled(true)
             })
@@ -204,18 +199,10 @@ class PhotoViewController: UIViewController {
         }) { (contextoFinal) in
             
         }
-       /*coordinator.animate(alongsideTransition: nil, completion: { [weak self] (context) in
-            DispatchQueue.main.async(execute: {
-                self?.updateVideoOrientation()
-            })
-            UIView.setAnimationsEnabled(true)
-        })*/
+
     }
     
-    /*//Vuelvo a colocar el dispositivo en modo portrait
-    override func viewWillDisappear(_ animated: Bool) {
-        stopScanning()
-    }*/
+    //Cuando la vista desaparece desactivo el escaneo en caso de que aun esté activo
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         stopScanning()
@@ -252,6 +239,8 @@ class PhotoViewController: UIViewController {
                 if captureDevice.isLowLightBoostSupported {
                     captureDevice.automaticallyEnablesLowLightBoostWhenAvailable = true
                 }
+            // Si el dispositivo lo permite, introduzco una exposición e iso customizadas
+            // Si el dispositivo no lo permite, mantengo las que hay por defecto y desactivo la opción de poder utilizar ajustes avanzados
                 if captureDevice.isExposureModeSupported(.custom){
                     let preferences = UserDefaults.standard
                     
@@ -276,9 +265,12 @@ class PhotoViewController: UIViewController {
                     }
                     captureDevice.setExposureModeCustom(duration: exposureTime, iso: iso, completionHandler: nil)
                     initializeOptionsMenu(device: captureDevice)
+                } else {
+                    settingsButton.isHidden = true
                 }
             } catch {
                 print(error)
+                settingsButton.isHidden = true
             }
             captureDevice.unlockForConfiguration()
             
@@ -291,8 +283,7 @@ class PhotoViewController: UIViewController {
             
             OperationQueue.main.addOperation {
                 self.videoPreviewLayer?.frame = self.view.layer.frame
-                
-                print("videopreviewLayer: \(self.view.layer.frame)")
+            
                 self.view.layer.addSublayer(self.videoPreviewLayer!)
                 
                 self.updateVideoOrientation()
@@ -309,12 +300,15 @@ class PhotoViewController: UIViewController {
                 
                 if !self.scanButton.isEnabled && self.customAlbumManager.albumReference != nil {
                     self.scanButton.isEnabled = true
+                    self.settingsButton.isEnabled = true
                 }
-                
             }
             
         } catch {
             print(error)
+            let alerta = UIAlertController(title: "Unspected Error", message: "Thundy couldn't load the camera and unspected error occured. Please, try start it again.", preferredStyle: .alert)
+            alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (alerta) in
+                self.dismiss(animated: true, completion: nil)}))
             return
         }
     
@@ -325,7 +319,6 @@ class PhotoViewController: UIViewController {
     //Roto la capa de video preview, este método es llamado cuando el terminal cambia de orientación
     func updateVideoOrientation() {
     
-        print("Reoriento")
         guard let videoPreviewLayer = self.videoPreviewLayer else {
             return
         }
@@ -334,7 +327,7 @@ class PhotoViewController: UIViewController {
         }
         
         let statusBarOrientation = UIApplication.shared.statusBarOrientation
-        print("##StatusBar Orientation: \(statusBarOrientation.rawValue)")
+       
         let videoOrientation: AVCaptureVideoOrientation = statusBarOrientation.videoOrientation ?? .portrait
         
         if videoPreviewLayer.connection!.videoOrientation == videoOrientation {
@@ -350,9 +343,9 @@ class PhotoViewController: UIViewController {
        
         videoPreviewLayer.removeAllAnimations()
         
-        
     }
     
+    // MARK: - métodos de cambio de elementos de la interfaz
    override var shouldAutorotate: Bool {
         return true
     }
@@ -426,7 +419,6 @@ class PhotoViewController: UIViewController {
         DispatchQueue.global(qos: .userInitiated).async {
             self.stillImageOutput?.capturePhoto(with: photoSettings, delegate: self)
         }
-        //showAlertView()
     }
     
     // Este método muestra una animación similar a un flash para indicar de forma visual que un rayo ha sido capturado
@@ -443,7 +435,6 @@ class PhotoViewController: UIViewController {
         }
     }
 
-
 }
 
 // MARK: - Extensión para gestionar la detección de rayos
@@ -451,15 +442,12 @@ class PhotoViewController: UIViewController {
 extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptureVideoDataOutputSampleBufferDelegate{
    
     // Esta función analiza continuamente la luminosidad de la escena que está captando la cámara.
-    //Para ello podría hacerse con el valor de brillo o calculando la luminosidad
-    //El valor de brillo incluye números negativos y es menos fiable, así que se ha decidido por la luminosidad
-    //La luminosidad se puede calcular, básicamente, debido a que el dispositivo está continuamente recalculando su exposición variando su ISO.
-    //Estos cambios de iso son el factor que hace que la luminosidad varie. Si el dispositivo no pudiera auto ajustar su exposición, este método no funcionaría
-    //En caso de que eso ocurra no se configura la cámara y la app no puede funcionar correctamente, pero todos los iphone actuales pueden hacerlo.
+    // Para ello utilizo el valor del brillo de la escena para calcular cambios repentinos en de luminosidad
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         let luminosity : Double = calcularLuminosidad(sampleBuffer: sampleBuffer)
         
+        // Si la ventana de ajustes está abierta, se paraliza el proceso de escaneo para evitar errores.
         if settingsWindowOpen {
             return
         }
@@ -480,27 +468,32 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
             return
         }
         
-        
         //Está función será la encargada de detectar si se ha detectado o no un rayo
         detectIfRayIsShown(luminosity: luminosity, buffer: sampleBuffer)
     
     }
     
-    func calcularLuminosidad(sampleBuffer: CMSampleBuffer) -> Double{
+    //Esta función devuelve el valor de luminosidad de la escena y calcula el mínimo de brillo
+    //Ya que no hay forma de obtener cual es el brillo mínimo que puede tener una escena, se guarda una variable en la que
+    //Se almacena el brillo más bajo detectado, este valor está en constante actualización y se utiliza para normalizar todos
+    //los valores relacionados con la luminosidad con el fin de que su valor sea siempre mayor que 0
+    func calcularLuminosidad(sampleBuffer: CMSampleBuffer) -> Double {
         //Se extraen datos EXIF del buffer de datos
         let rawMetadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: CMAttachmentMode(kCMAttachmentMode_ShouldPropagate))
         let metadata = CFDictionaryCreateMutableCopy(nil, 0, rawMetadata) as NSMutableDictionary
         let exifData = metadata.value(forKey: "{Exif}") as? NSMutableDictionary
     
         let brightness : Double = exifData?["BrightnessValue"] as! Double
-        if -self.oldMinBrightness > brightness {
+        if -self.oldMinBrightness < brightness {
             self.oldMinBrightness = abs(brightness)
         }
-        
+        print("Brillo en bruto: \(brightness)")
+        print("Constante compensacion: \(oldMinBrightness)")
         return brightness
     }
     
-    func calcularLuminosidad(capturedImage: AVCapturePhoto) -> Double{
+    //Aquí se calcula la luminosidad de una foto ya tomada
+    func calcularLuminosidad(capturedImage: AVCapturePhoto) -> Double {
         
         let exifData = capturedImage.metadata["{Exif}"] as? NSMutableDictionary
         let brightness : Double = exifData?["BrightnessValue"] as! Double
@@ -605,8 +598,8 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
     //Esta es la función principal encargada de detectar si se da un rayo o no.
     func detectIfRayIsShown(luminosity: Double, buffer: CMSampleBuffer){
         
+        //Con el valor de mínima luminosidad, se normalizan todos los valores
         let normalizedLuminosity = max(luminosity + oldMinBrightness, 0)
-        let normalizedLastValue = max(lastValue ?? 0 + oldMinBrightness, 0)
         let normalizedReferenceLuminosity = max(referenceLuminosity ?? 0 + oldMinBrightness, 0)
 
         //Aqui se detecta si tras un rayo la luz a vuelto a su luminosidad original o no
@@ -618,21 +611,23 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
                 return
             }
         }
+        
         if lastValue == nil{
             self.lastValue = luminosity
             print("Inicializó lastValue la primera vez o tras cambios")
         }
         
+        let normalizedLastValue = max(lastValue + oldMinBrightness, 0)
+        
         //Este porcentaje determina la sensibilidad a la que se detectan los rayos
         let porcentajeAumentoLuminosidad = getSensibility()
-        print("##Porcentaje: \(porcentajeAumentoLuminosidad)")
-        print("##Luminosidad: \(normalizedLuminosity)")
-        print("##LastValue: \(normalizedLastValue)")
+        
         if normalizedLuminosity > normalizedLastValue + normalizedLastValue * porcentajeAumentoLuminosidad {
 
             referenceLuminosity = luminosity
-            
+        
             print("Inicializo valor de refencia al detectar rayo en \(referenceLuminosity + oldMinBrightness)")
+            
             scanningPauseBetweenPhotoGap = true
             setControlLuminosityTimer(active: true)
             photoTaken(luminosityWhenDetected: luminosity)
@@ -647,6 +642,7 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
 extension PhotoViewController: AVCapturePhotoCaptureDelegate{
     //Esta función es llamada una vez la foto es tomada, y llama a otra función del gestor del album para guardarla
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        
         guard error == nil else {
             return
         }
@@ -656,25 +652,21 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
         }
         
         //Aqui compruebo que la imagen resultante tenga una luminosidad similar al momento exacto donde se ha detectado el rayo
-        //Pasa cierto tiempo entre que la detección se realiza y la foto finalmente se procesa. Esto puede resultar en que el rayo ya no esté visible
-        //cuando la foto está procesada
+        //Pasa cierto tiempo , muy poco pero suficiente para perder un rayo en algunos casos, entre que la detección se realiza y la foto finalmente se procesa. Esto puede resultar en que el rayo ya no esté visible cuando la foto está procesada
         //Para evitar en la medida de lo posible fotos en negro, se realiza la siguiente comprobación
         if let luminosidadInicial = referenceLuminosity {
             let luminosidadInicialNormalizada = luminosidadInicial + oldMinBrightness
             let luminosidadFinal = calcularLuminosidad(capturedImage: photo) + oldMinBrightness
-            let luminosidadInicialMásConstante = luminosidadInicialNormalizada + luminosidadInicialNormalizada * 0.05
-            
-            print("@@Luminosidad Inicial: \(luminosidadInicialMásConstante)")
-            print("@@Luminosidad Final: \(luminosidadFinal)")
-            if luminosidadFinal >= luminosidadInicialMásConstante {
-                
-                print("@@La foto tiene rayo")
+       
+            if luminosidadFinal >= luminosidadInicialNormalizada {
+                print("Rayo detectado y guardado...")
                 self.saveAndSetPhoto(imageData: imageData)
             }
         }
         scanningPauseWhenIsTakingPhoto = false
     }
     
+    // En este método guardo finalmente la imagen tomada haciendo uso de mi clase destinada a gestionar las fotos
     func saveAndSetPhoto(imageData: Data){
         
         let stillImage = UIImage(data: imageData)
@@ -692,10 +684,12 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
 // MARK: - options view over
 
 extension PhotoViewController {
+    //En este método inicializo los valores por defecto de las opciones de ajustes. Si están guardados en preferences inicializo con los guardados
+    //Sino, guardo los que hay por defecto en preferences
     func setInitialExposureValues(){
         let preferences = UserDefaults.standard
         if let defaultIso = ListOfCameraOptions.shared.defaultISOoption, let defaultExposure = ListOfCameraOptions.shared.defaultExposureOption {
-            print("Entro aqui")
+   
             if let ISOId = preferences.value(forKey: isoKey) as? Int {
                 ListOfCameraOptions.shared.defaultISOoption = ListOfCameraOptions.shared.ISOoptions.first(where: {$0.id == ISOId})
             } else {
@@ -714,6 +708,8 @@ extension PhotoViewController {
         }
     }
     
+    //Aquí compruebo cuales de las opciones de iso y exposición definidas son compatibles con la cámara del dispositivo.
+    //En un principio el rango especificado es bastante común y todos los dispositivos deberían poder hacer uso de todas las opciones
     func initializeOptionsMenu(device: AVCaptureDevice){
     
         for iso in ListOfCameraOptions.shared.ISOoptions {
@@ -762,6 +758,7 @@ extension PhotoViewController {
    
     }
  
+    //Esta función es llamada cuando el usuario utiliza el botón de restaurar opciones a opciones por defecto
     func restoreValues(){
         let initialIso = ListOfCameraOptions.shared.initialISOoption
         let initialExposure = ListOfCameraOptions.shared.initialExposureOption
@@ -783,6 +780,9 @@ extension PhotoViewController {
         sensibilitySlider.value = Float(initialSensibility)
         setNewSensibility(value: initialSensibility)
     }
+    
+    // MARK: - métodos set
+    //Los siguientes métodos cambian el valor de alguno de los ajustes al valor especificado por el usuario
     
     func setNewSensibility(value: Int){
         if !captureSession.isRunning {
@@ -859,6 +859,7 @@ extension PhotoViewController {
         captureDevice.unlockForConfiguration()
     }
     
+    //En este método se gestiona cuando se debe mostrar o ocultar la ventana de ajustes
     func showOptionsView(show: Bool){
         if show {
             settingsWindowOpen = true

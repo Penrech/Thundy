@@ -9,14 +9,20 @@
 import UIKit
 import Photos
 
+//Este protocolo sirve para notificar a la vista padre de la celdad que se ha hecho zoom en ella
 protocol cellZoomDelegate: class {
     func cellDidZoom(toDefaultZoom: Bool)
 }
 
+//Esta clase es la de las celdas en vista detalle
 class PhotoDetailViewCell: UICollectionViewCell {
+    
+    //MARK: - outlets
     
     @IBOutlet weak var detailImageView: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
+    
+    //MARK: - variables
     
     var delegate : cellZoomDelegate?
     
@@ -27,8 +33,8 @@ class PhotoDetailViewCell: UICollectionViewCell {
     
     var asset: PHAsset?
 
-    
-    
+    //Esta función gestiona el doble tap en una celda, amplia la celda al máximo si esta en el zoom inicial, o la devuelve
+    // Al zoom inicial si está con un zoom distinto al estado inicial
     @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
         if scrollView.zoomScale == 1 {
             scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
@@ -38,6 +44,7 @@ class PhotoDetailViewCell: UICollectionViewCell {
         }
     }
     
+    //
     func recieveDataFromDoubleTap(recognizer: UITapGestureRecognizer) {
         if scrollView.zoomScale == 1 {
             scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: detailImageView)), animated: true)

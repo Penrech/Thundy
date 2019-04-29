@@ -128,6 +128,9 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         
         if noMorePhotos {
             self.delegate?.allDeleted(deleted: true)
+            TypeOfTransition.shared.currentTransition = .UpDownSlide
+            self.navigationController?.popViewController(animated: true)
+            return
         }
 
         let currentCellIndexPath = collectionView.indexPathsForVisibleItems[0]
@@ -368,7 +371,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         }
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    /*func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let x = scrollView.contentOffset.x
         let w = scrollView.bounds.size.width
         let currentPage = Int(ceil(x/w))
@@ -378,7 +381,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         let lastCell = collectionView.cellForItem(at: IndexPath(row: currentPage + 1, section: 0))
         print("@ScrollViewDidEndDecelerating")
         print("ContentOffset : \(collectionView.contentOffset)")
-        /*if currentPage == actualPage{
+        if currentPage == actualPage{
             return
         }
         
@@ -392,29 +395,13 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
                 dateFormater.dateStyle = .medium
                 self.navigationItem.title = dateFormater.string(from: date)
             }
-        }*/
+        }
         
-    }
+    }*/
     
-    /*func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Seleccionado \(indexPath)")
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        print("seleccionado \(indexPath)")
-        return true
-    }
-    
-    */func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        //let asset = allPhotos?.object(at: indexPath.row)
-        print("@willdisplaying \(indexPath)")
-    }
-    
-  
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        /*print("Deja de verse el indexPath \(indexPath)")
-        print("Celda visible: \(collectionView.indexPathsForVisibleItems)")*/
-        print("@didEndDisplaying \(indexPath)")
+
+    /*func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
         if let indiceActual = collectionView.indexPathsForVisibleItems.first{
             let asset = allPhotos?.object(at: indiceActual.row)
             UIView.animate(withDuration: 0.3) {
@@ -426,10 +413,9 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
             }
             
         }
-        /*let cellDeleted = cell as! PhotoDetailViewCell
-        cellDeleted.restoreZoom()*/
-    }
-
+       
+    }*/
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let allPhotos = allPhotos{
             return allPhotos.count
@@ -442,8 +428,6 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIndentifier, for: indexPath) as! PhotoDetailViewCell
         let asset = allPhotos?.object(at: indexPath.row)
-        
-        print("Nueva celda")
         
         cell.setImageDetail(asset: asset!)
         cell.delegate = self

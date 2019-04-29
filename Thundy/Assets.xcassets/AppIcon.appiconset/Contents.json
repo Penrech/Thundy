@@ -3,13 +3,13 @@
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "40.png",
+      "filename" : "IphoneNotification2x.png",
       "scale" : "2x"
     },
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "60.jpg",
+      "filename" : "notifications2x.png",
       "scale" : "3x"
     },
     {
@@ -50,7 +50,7 @@
     {
       "size" : "20x20",
       "idiom" : "ipad",
-      "filename" : "22.jpg",
+      "filename" : "notifications1x.png",
       "scale" : "1x"
     },
     {

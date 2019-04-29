@@ -480,7 +480,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zBd-yH-dqw">
-                                <rect key="frame" x="332" y="52" width="11" height="22.5"/>
+                                <rect key="frame" x="332" y="44" width="11" height="22.5"/>
                                 <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="19"/>
                                 <color key="textColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -488,7 +488,7 @@
                                 <size key="shadowOffset" width="0.0" height="1"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yeI-Oq-DHp">
-                                <rect key="frame" x="230" y="46.5" width="42" height="34"/>
+                                <rect key="frame" x="230" y="38.5" width="42" height="34"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="19"/>
                                 <size key="titleShadowOffset" width="0.0" height="1"/>
@@ -501,14 +501,14 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NumberThunder" translatesAutoresizingMaskIntoConstraints="NO" id="qN6-qN-4Qb">
-                                <rect key="frame" x="288" y="37.5" width="36" height="36"/>
+                                <rect key="frame" x="288" y="29.5" width="36" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="36" id="02G-tK-yyw"/>
                                     <constraint firstAttribute="height" constant="36" id="rtJ-B3-M2T"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9fn-DM-13p">
-                                <rect key="frame" x="32" y="37.5" width="36" height="36"/>
+                                <rect key="frame" x="32" y="29.5" width="36" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="DYu-V0-4Ei"/>
                                     <constraint firstAttribute="width" constant="36" id="z2s-mL-dZy"/>
@@ -527,10 +527,10 @@
                                 <color key="backgroundColor" red="0.40000000000000002" green="0.90196078430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KU6-fr-bn8" userLabel="steadyAlertView" customClass="RoundedCard" customModule="Thundy" customModuleProvider="target">
-                                <rect key="frame" x="32" y="105.5" width="311" height="397.5"/>
+                                <rect key="frame" x="32" y="97.5" width="311" height="405.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep the device steady" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="bte-G9-b0e">
-                                        <rect key="frame" x="46.5" y="59.5" width="218" height="278.5"/>
+                                        <rect key="frame" x="46.5" y="60.5" width="218" height="284"/>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="50"/>
                                         <color key="textColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -804,7 +804,7 @@
                             <constraint firstItem="Yu1-dF-DAm" firstAttribute="trailing" secondItem="zBd-yH-dqw" secondAttribute="trailing" constant="32" id="83S-fU-fPC"/>
                             <constraint firstItem="yeI-Oq-DHp" firstAttribute="centerY" secondItem="zBd-yH-dqw" secondAttribute="centerY" id="9ad-I8-0O5"/>
                             <constraint firstAttribute="bottom" secondItem="PCw-c9-Ype" secondAttribute="bottom" id="BBl-t4-sIV"/>
-                            <constraint firstItem="zBd-yH-dqw" firstAttribute="top" secondItem="Yu1-dF-DAm" secondAttribute="top" constant="32" id="CTI-ou-jv3"/>
+                            <constraint firstItem="zBd-yH-dqw" firstAttribute="top" secondItem="Yu1-dF-DAm" secondAttribute="top" constant="24" id="CTI-ou-jv3"/>
                             <constraint firstItem="DXp-DQ-GCc" firstAttribute="leading" secondItem="Yu1-dF-DAm" secondAttribute="leading" id="GuK-SX-Cut"/>
                             <constraint firstItem="zBd-yH-dqw" firstAttribute="leading" secondItem="qN6-qN-4Qb" secondAttribute="trailing" constant="8" id="HxS-Ai-hZp"/>
                             <constraint firstItem="KU6-fr-bn8" firstAttribute="top" secondItem="qN6-qN-4Qb" secondAttribute="bottom" constant="32" id="JDR-sa-uHs"/>

@@ -12,6 +12,8 @@ import Photos
 
 class ViewController: UIViewController {
 
+    // MARK: - variables
+    
     let normalLogoImage = UIImage(named: "Logo")
     let blinkLogoImage = UIImage(named: "parpadeando")
     let defaultText = "Let's catch some friends for Thundy"
@@ -24,6 +26,8 @@ class ViewController: UIViewController {
     var permissionError = false
     
     let toCameraTransition = TransitionPopAnimator()
+    
+    // MARK: - outlets
 
     @IBOutlet weak var downView: UIView!
     @IBOutlet weak var logoImage: UIImageView!
@@ -33,13 +37,21 @@ class ViewController: UIViewController {
     @IBAction func comenzarConLaApp(_ sender: Any) {
         askForPermissions()
     }
+    
+    //MARK: - métodos de la vista
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         images = [blinkLogoImage!, normalLogoImage!]
+        
         startTimer()
+        //Esta línea es importante, ya que define el conjunto de animaciones de transición que utiliza la aplicación, salvo las de acceder a la cámara
         navigationController?.addCustomTransitioning()
-        imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(showInfo))
-        infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(goToImages))
+        
+        /*imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(showInfo))
+        infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(goToImages))*/
+        imagesButton = UIBarButtonItem(image: UIImage(named: "info-1"), style: .plain, target: self, action: #selector(showInfo))
+        infoButton = UIBarButtonItem(image: UIImage(named: "galeria"), style: .plain, target: self, action: #selector(goToImages))
         
         navigationItem.rightBarButtonItems = [imagesButton, infoButton]
         
@@ -64,9 +76,14 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.hidesBarsOnSwipe = false
+        if navigationController!.isNavigationBarHidden {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
 
     }
 
+    //MARK: - métodos para controlar la animación de parpadeo
+    
     func startTimer(){
         if let blinkTimer = blinkTimer {
             if !blinkTimer.isValid {
@@ -88,6 +105,9 @@ class ViewController: UIViewController {
 
     }
     
+    //MARK: - métodos de permisos y accesos a otros view controllers
+    
+    //Este método comprueba que el usuario ha dado permiso al uso de la cámara y de la librería de imagenes antes de lanzar el viewcontroller de la cámara
     func askForPermissions(){
         //Compruebo que el dispositivo tiene cámaras
         let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
@@ -100,7 +120,6 @@ class ViewController: UIViewController {
             return
         }
     
-        
         let cameraPermissionStatus = AVCaptureDevice.authorizationStatus(for: .video)
         let savePhotosPermissionStatus = PHPhotoLibrary.authorizationStatus()
         
@@ -138,28 +157,28 @@ class ViewController: UIViewController {
         
     }
     
-   
+   //En este método cargo la vista de la cámara
+    //Compruebo si es la primera vez que el usuario ha utilizado la aplicación para lanzarle o no el tutorial
     func loadCameraView(){
         reStoreInitialState()
-        
-        let preferences = UserDefaults.standard
-        let key = (UIApplication.shared.delegate as! AppDelegate).isAppLoadBefore
+    
         OperationQueue.main.addOperation {
+            let preferences = UserDefaults.standard
+            let key = (UIApplication.shared.delegate as! AppDelegate).isAppLoadBefore
+            
             if preferences.object(forKey: key) == nil {
                 if let tutorialViewControler = self.storyboard?.instantiateViewController(withIdentifier: "TutorialPager") as? TutorialPagerViewController {
                     tutorialViewControler.infoTab = false
                     self.navigationController?.pushViewController(tutorialViewControler, animated: true)
                 }
             } else {
-                if let cameraViewController = self.storyboard?.instantiateViewController(withIdentifier: "photoViewController") {
-                    //self.present(cameraViewController, animated: true, completion: nil)
-                    self.performSegue(withIdentifier: "showCamera", sender: nil)
-                }
+                self.performSegue(withIdentifier: "showCamera", sender: nil)
             }
         }
         
     }
     
+    //Reinicio la interfaz que ha podido ser modificada en caso de mostrar un mensaje de error.
     func reStoreInitialState(){
         DispatchQueue.main.async {
             if self.permissionError {
@@ -175,6 +194,7 @@ class ViewController: UIViewController {
         }
     }
     
+    //Este método cambia la interfaz (El logo y el texto de la app) para mostrar un mensaje de error
     func showErrorIfNotPermission(error: PermissionErrors){
         DispatchQueue.main.async {
             self.stopBlinking()
@@ -189,6 +209,8 @@ class ViewController: UIViewController {
         }
     }
     
+    //En el caso de que el usuario halla rechazado anteriormente dar permiso a la app, se le vuelve a pedir permiso si intenta volver a acceder
+    //a alguna funcionalidad que lo necesite
     func requestPermissionAgain(error: PermissionRequest){
         DispatchQueue.main.async {
             let alertController = UIAlertController(title: "Need Permission", message: error.rawValue, preferredStyle: .alert)
@@ -217,33 +239,22 @@ class ViewController: UIViewController {
         }
     }
     
-    func albumCreationError(){
+    /*func albumCreationError(){
         let alertController = UIAlertController(title: "Media Error", message:"Error while creating Thundy photo album, please try again" , preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         
         present(alertController, animated: true, completion: nil)
-    }
+    }*/
     
+    //Este método detiene la animación de parpadeo del logotipo
     func stopBlinking(){
         if logoImage.isAnimating {
             logoImage.stopAnimating()
         }
         blinkTimer.invalidate()
     }
-    
-    enum PermissionErrors : String{
-        case NoCamera = "Thundy needs a device with camera to work properly"
-        case NoLibraryPermission = "Thundy needs permission to access the library in order to save photos"
-        case NoCameraPermission   = "Thundy needs permission to use the camera in order to take photos"
-        case NoLibraryPermissionGallery = "Thundy needs permission to access the library in order to show photos"
-    }
-    enum PermissionRequest: String {
-        case Camera = "You have denied camera use permission previously, but thundy needs that in order to take your thundy photos. Go to settings in order to give thundy permission, please."
-        case LibraryToSave = "You have denied library use permission previously, but thundy needs that in order to save your thundy photos. Go to settings in order to give thundy permission, please."
-        case LibraryToShow = "You have denied library use permission previously, but thundy needs that in order to show your thundy photos. Go to settings in order to give thundy permission, please."
-    }
-    
-
+   
+    //Este método carga la libreria de la app, siempre y cuando el usuario halla dado permiso
     @objc func goToImages(){
         let galleryViewController = self.storyboard?.instantiateViewController(withIdentifier: "galleryViewController")
         let galleryPermissionStatus = PHPhotoLibrary.authorizationStatus()
@@ -266,11 +277,13 @@ class ViewController: UIViewController {
 
     }
     
+    //Este método carga de nuevo el tutorial inicial
     @objc func showInfo(){
         let infoViewController = self.storyboard?.instantiateViewController(withIdentifier: "TutorialPager")
         self.navigationController?.pushViewController(infoViewController!, animated: true)
     }
 
+    //Aqui se inicia finalmente el viewcontroller de la cámara
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showCamera"{
             let controller = segue.destination as! PhotoViewController
@@ -278,17 +291,34 @@ class ViewController: UIViewController {
             if UIDevice.current.orientation.isLandscape {
                 controller.hideStatusBar = true
             }
-            //controller.modalPresentationStyle = .custom
         }
     }
+    
+    // MARK: - mensajes de error
+    
+    //Estos dos enumeradores funcionan como una librería para almacenar los diversos mensajes de error de este view controller
+    
+    enum PermissionErrors : String{
+        case NoCamera = "Thundy needs a device with camera to work properly"
+        case NoLibraryPermission = "Thundy needs permission to access the library in order to save photos"
+        case NoCameraPermission   = "Thundy needs permission to use the camera in order to take photos"
+        case NoLibraryPermissionGallery = "Thundy needs permission to access the library in order to show photos"
+    }
+    
+    enum PermissionRequest: String {
+        case Camera = "You have denied camera use permission previously, but thundy needs that in order to take your thundy photos. Go to settings in order to give thundy permission, please."
+        case LibraryToSave = "You have denied library use permission previously, but thundy needs that in order to save your thundy photos. Go to settings in order to give thundy permission, please."
+        case LibraryToShow = "You have denied library use permission previously, but thundy needs that in order to show your thundy photos. Go to settings in order to give thundy permission, please."
+    }
+    
 }
+// MARK: - animaciones de transición customizadas para acceder a la cámara
 extension ViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         toCameraTransition.transitionMode = .Present
         toCameraTransition.circleColor = self.buttonStart.backgroundColor
         let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview?.superview)
-        //toCameraTransition.origin = CGPoint(x: circleButtonRect.minX + circleButtonRect.width / 2, y: circleButtonRect.minY + circleButtonRect.height / 2)
         toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
         toCameraTransition.buttonRect = circleButtonRect
         
@@ -299,9 +329,6 @@ extension ViewController: UIViewControllerTransitioningDelegate {
         
         toCameraTransition.transitionMode = .Dismiss
         let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview)
-        print("Altura: \(circleButtonRect.minY + circleButtonRect.height / 2)")
-        print("AlturaMedia: \(circleButtonRect.midY)")
-        print("Altura noormal: \(self.buttonStart.frame)")
         toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
         toCameraTransition.buttonRect = circleButtonRect
         toCameraTransition.circleColor = self.buttonStart.backgroundColor

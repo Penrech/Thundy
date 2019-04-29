@@ -78,9 +78,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                 } else {
                    if let collectionView = toView.subviews[0] as? UICollectionView {
                         collectionView.frame = toView.frame
-                        /*collectionView.scrollToItem(at: currentIndexPath, at: .centeredVertically, animated: false)
-                        collectionView.collectionViewLayout.invalidateLayout()*/
-                
+                        collectionView.scrollToItem(at: currentIndexPath, at: .centeredVertically, animated: false)
                     }
                     snapshotView.frame = currentFrame
                     snapshotView.fetchImage(asset: currentAsset, contentMode: .aspectFill)
@@ -104,40 +102,17 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                                 snapshotView.frame = CGRect(x: toView.frame.origin.x + (toView.frame.width / 2) - (newDimensions.width / 2), y: toView.frame.origin.y + (toView.frame.height / 2) - (newDimensions.height / 2), width: newDimensions.width, height: newDimensions.height)
                             } else {
                                 if let collectionView = toView.subviews[0] as? UICollectionView {
-                                    print("collectionViewFrame: \(collectionView.frame)")
+                                 
                                     collectionView.frame = toView.frame
                                     let attributes: UICollectionViewLayoutAttributes? = collectionView.layoutAttributesForItem(at: indexPath)
                                     let cellRect: CGRect? = attributes?.frame
-                                    let cellRect2 = collectionView.cellForItem(at: indexPath)!
-                                    print("@Cell rect: \(cellRect)")
-                                    print("@Cell2 rect: \(cellRect2)")
-                                    print("@Cell3 rect: \(attributes?.bounds)")
-                                    print("View Frame: \(toView.frame)")
+                                    //collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
                                     let cellFrameInSuperview = collectionView.convert(cellRect ?? CGRect.zero, to: collectionView.superview)
-                                    /*var origin = cellFrameInSuperview.origin
                                     
-
-                                    let xWidthPercentage = origin.x / toViewFrame.width
-                                    let yHeightPercentage = origin.y / toViewFrame.height
-                                    let newXPosition = fromView.frame.width * xWidthPercentage
-                                    let newYPosition = fromView.frame.height * yHeightPercentage
-                                    let newOrigin = CGPoint(x: newXPosition, y: newYPosition)
-                                    print("Nuevo origen: \(newOrigin)")
-                                    origin = newOrigin
-                                    let cellPrueba = CGRect(origin: newOrigin, size: cellFrameInSuperview.size)*/
-
-
-                                    //let newDimensions = collectionView.cellForItem(at: indexPath)!.frame
-                                    //print("new frame position: \(newDimensions)")
                                     snapshotView.frame = cellFrameInSuperview
-                                    //snapshotView.frame = cellPrueba
+                        
                                 }
-                                if let galleryViewController = toViewController as? GalleryViewController {
-                                    let attributes: UICollectionViewLayoutAttributes? = galleryViewController.collectionView.layoutAttributesForItem(at: indexPath)
-                                    let cellRect: CGRect? = attributes?.frame
-                                    print("@Cell4 rect: \(cellRect)")
-                                    print("Celdas visibles: \(galleryViewController.collectionView.indexPathsForVisibleItems)")
-                                }
+                                
                             }
                         }
                     default: break

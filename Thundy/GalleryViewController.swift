@@ -43,11 +43,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     let photoToDelete = "%d photo"
     let photosToDelete = "%d photos"
     
-    let imageSelectionModeEnabled = UIImage(named: "endSelection")!.escalarImagen(nuevaAnchura: 28)
-    let imageSelectionModeDisabled = UIImage(named: "startSelection")!.escalarImagen(nuevaAnchura: 28)
+    let imageSelectionModeEnabled = UIImage(named: "cerrarSeleccion")
+    let imageSelectionModeDisabled = UIImage(named: "seleccionar")
 
     var selectButton: UIBarButtonItem!
-    var closeSlideShowMode: UIBarButtonItem = UIBarButtonItem()
     
     var deleteButton: UIBarButtonItem = UIBarButtonItem()
     var shareButton: UIBarButtonItem = UIBarButtonItem()
@@ -57,10 +56,20 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     var toolbarDefault = [UIBarButtonItem]()
     
     var shouldCloseViewController = false
+
+    var prevIndexPathAtCenter: IndexPath?
+    
+    var currentIndexPath: IndexPath? {
+        /*let center = view.convert(collectionView.center, to: collectionView)
+        return collectionView.indexPathForItem(at: center)*/
+        print("Indices: \(collectionView.indexPathsForVisibleItems.sorted{$0.row < $1.row})")
+        let indices = collectionView.indexPathsForVisibleItems.sorted{$0.row < $1.row}
+        let firstIndex = indices.first
+        return firstIndex
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -68,11 +77,9 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         if selectButton == nil {
             selectButton = UIBarButtonItem(image: imageSelectionModeDisabled, style: .plain, target: self, action: #selector(clickOnSelectionButton))
         }
-        closeSlideShowMode = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 28), style: .plain, target: self, action: #selector(disableSlideShowMode))
-        
     
-        deleteButton = UIBarButtonItem(image: UIImage(named: "delete")?.escalarImagen(nuevaAnchura: 28), style: .plain, target: self, action: #selector(deleteImages))
-        shareButton = UIBarButtonItem(image: UIImage(named: "share")?.escalarImagen(nuevaAnchura: 28), style: .plain, target: self, action: #selector(shareImages))
+        deleteButton = UIBarButtonItem(image: UIImage(named: "borrar"), style: .plain, target: self, action: #selector(deleteImages))
+        shareButton = UIBarButtonItem(image: UIImage(named: "compartir"), style: .plain, target: self, action: #selector(shareImages))
         deleteButton.isEnabled = false
         shareButton.isEnabled = false
         toolbarDefault = [spacer, shareButton, spacer, deleteButton, spacer]
@@ -87,6 +94,61 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         longPressGR.delaysTouchesBegan = true
         self.collectionView.addGestureRecognizer(longPressGR)
 
+    }
+    
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.adjustToRotation()
+        
+        if let indexAtCenter = self.currentIndexPath {
+            prevIndexPathAtCenter = indexAtCenter
+            
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        adjustConstraints()
+        adjustToRotation()
+        loadImages()
+        
+        guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
+            return
+        }
+        
+        navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.navigationItem.title = self.defaultViewTitle
+                self.navigationController?.toolbar.isTranslucent = false
+                self.navigationController?.toolbar.backgroundColor = UIColor.defaultBlue
+                
+            })
+        }
+        
+        statusBarView.backgroundColor = UIColor.defaultBlue
+        navigationController?.navigationBar.topItem?.title = ""
+        toolbarItems = []
+        navigationController?.hidesBarsOnSwipe = true
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        TypeOfTransition.shared.currentTransition = .DefaultSlide
+        
+        if !navigationController!.isToolbarHidden {
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
+    }
+    
+    override var shouldAutorotate: Bool {
+        return true
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
     }
   
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
@@ -113,7 +175,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             numOfColumns = numberOfColumnsPortrait
         }
-      collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func loadImages(){
@@ -126,7 +187,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                     
                 } else {
                     //No hay elementos, mostrar empty view
-                    print("Album vacio")
                     self.allPhotos = photos
                     self.showEmptyState(show: true)
                     
@@ -134,6 +194,14 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             } else {
                 //Mostrar Error
                 print("Error cargando photos")
+                DispatchQueue.main.async {
+                    let alerta = UIAlertController(title: "Error", message: "Unspected error while loading photos, please try again", preferredStyle: .alert)
+                    alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+                        self.navigationController?.popViewController(animated: true)
+                    }))
+                    
+                    self.present(alerta, animated: true, completion: nil)
+                }
             }
         }
       
@@ -144,6 +212,8 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             if show {
                 self.emptyStateView.isHidden = false
                 self.navigationItem.rightBarButtonItem = nil
+                self.navigationController?.hidesBarsOnSwipe = false
+                self.navigationController?.setNavigationBarHidden(false, animated: true)
             } else {
                 if !self.emptyStateView.isHidden {
                     self.emptyStateView.isHidden = true
@@ -235,61 +305,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         self.present(activityViewController, animated: true, completion: nil)
             
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-         self.adjustToRotation()
-        /*coordinator.animate(alongsideTransition: { (animation) in
-            self.adjustToRotation()
-        }) { (completion) in
-            
-        }*/
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        adjustConstraints()
-        adjustToRotation()
-        loadImages()
-        
-        guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
-            return
-        }
-
-        navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.navigationItem.title = self.defaultViewTitle
-                self.navigationController?.toolbar.isTranslucent = false
-                self.navigationController?.toolbar.backgroundColor = UIColor.defaultBlue
-              
-            })
-        }
-
-        statusBarView.backgroundColor = UIColor.defaultBlue
-        navigationController?.navigationBar.topItem?.title = ""
-        toolbarItems = []
-        navigationController?.hidesBarsOnSwipe = true
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        
-        
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        TypeOfTransition.shared.currentTransition = .DefaultSlide
-        
-        if !navigationController!.isToolbarHidden {
-            navigationController?.setToolbarHidden(true, animated: true)
-        }
-    }
- 
-    override var shouldAutorotate: Bool {
-        return true
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle{
-        return .lightContent
-    }
-    
+   
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -318,53 +334,40 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        if !slideShowModeEnabled{
-            let cellSize = calculateSizes(element: .Cell)
-            return CGSize(width: cellSize, height: cellSize)
-        }
-        let screenSize = UIScreen.main.bounds
-        return CGSize(width: screenSize.width , height: screenSize.height)
-    
+        let cellSize = calculateSizes(element: .Cell)
+        return CGSize(width: cellSize, height: cellSize)
+        
         }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         
-        if !slideShowModeEnabled{
-            let footerHeight = calculateSizes(element: .TopMargin)
-            return CGSize(width: view.frame.width, height: footerHeight)
-        }
-        return CGSize(width: 0, height: 0)
+        let footerHeight = calculateSizes(element: .TopMargin)
+        return CGSize(width: view.frame.width, height: footerHeight)
+
     
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-        if !slideShowModeEnabled {
-            let headerHeight = calculateSizes(element: .TopMargin)
-            return CGSize(width: view.frame.width, height: headerHeight)
-            
-        }
-        return CGSize(width: 0, height: 0)
+        let headerHeight = calculateSizes(element: .TopMargin)
+        return CGSize(width: view.frame.width, height: headerHeight)
     
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        if !slideShowModeEnabled {
-            return 1.0
-        }
-        return 0.0
+        
+        return 1.0
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout
         collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
  
-        if !slideShowModeEnabled {
-            return calculateSizes(element: .TopMargin)
-        }
-        return 0.0
+        return calculateSizes(element: .TopMargin)
+   
         
     }
     
@@ -373,8 +376,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return true
         }
         
-        //Comentado para compilarla en la mona
-        //performSegue(withIdentifier: "ImageToDetail", sender: indexPath.row)
         let attributes: UICollectionViewLayoutAttributes? = collectionView.layoutAttributesForItem(at: indexPath)
         let cellRect: CGRect? = attributes?.frame
         let cellFrameInSuperview = collectionView.convert(cellRect ?? CGRect.zero, to: collectionView.superview)
@@ -396,6 +397,34 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         showSelectionTitle()
     }
     
+    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        if prevIndexPathAtCenter != nil {
+            var layoutAttrs: UICollectionViewLayoutAttributes? = nil
+            var realPosition: CGRect? = nil
+            if let pathForFocusItem = prevIndexPathAtCenter {
+                layoutAttrs = collectionView.layoutAttributesForItem(at: pathForFocusItem)
+               
+                realPosition = collectionView.convert(layoutAttrs!.frame, to: collectionView.superview!)
+ 
+            }
+            print("ViewFrame: \(self.view.frame)")
+            let nextHeight = collectionView.frame.height
+            let nextWidth = collectionView.frame.width
+            /*print("currentHeight = \(nextHeight)")
+            let numberOfCells = allPhotos?.count ?? 0
+            let oldNumOfColumns = self.numOfColumns == 5 ? 3 : 5
+            let numberOfRows = numberOfCells / self.numOfColumns
+            let marginMultiplier = (0.05 / (CGFloat(self.numOfColumns) - 1))
+            let oldCellHeight = (nextHeight / CGFloat(oldNumOfColumns)) * 0.95
+            let currentCellHeight = collectionView.cellForItem(at: prevIndexPathAtCenter!)!.frame.height
+            let differenceBetweenCells = currentCellHeight - oldCellHeight*/
+            //let aditionalOffsetCauseGapsBetweenCells = nextWidth * marginMultiplier * CGFloat(numberOfRows)
+            prevIndexPathAtCenter = nil
+            return CGPoint(x: 0, y: (layoutAttrs?.frame.origin.y ?? 0))
+        } else {
+            return proposedContentOffset
+        }
+    }
     
     func showSelectionTitle(){
         if let numberOfSelections = collectionView.indexPathsForSelectedItems?.count {
@@ -414,9 +443,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     @objc func handleLongPress(longPressGR: UILongPressGestureRecognizer) {
-        if slideShowModeEnabled {
-            return
-        }
         
         if longPressGR.state == .ended {
             return
@@ -483,7 +509,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return (screenWidth / CGFloat(numOfColumns)) * 0.95
         case .TopMargin:
             return screenWidth  * (0.05 / (CGFloat(numOfColumns) - 1))
-            //return screenWidth  * 0.025
         }
     }
     
@@ -492,94 +517,17 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         case TopMargin
     }
 
-    @objc func disableSlideShowMode(){
-        backToNormalGallery()
-    }
-
-    func slideShowImage(moveToClicked: IndexPath){
-         self.extendedLayoutIncludesOpaqueBars = true
-     
-        
-        self.collectionView.contentInsetAdjustmentBehavior = .never
-        self.slideShowModeEnabled = true
-        self.collectionView.reloadData()
-        
-        self.collectionView.isPagingEnabled = true
-        self.navigationItem.hidesBackButton = true
-        
-        
-        if self.navigationController!.navigationBar.isHidden {
-            self.navigationController?.setNavigationBarHidden(false, animated: true)
-        }
-        
-        self.shareButton.isEnabled = true
-        self.deleteButton.isEnabled = true
-        self.toolbarItems = self.toolbarDefault
-        self.navigationController?.setToolbarHidden(false, animated: true)
-        
-        self.navigationController?.hidesBarsOnSwipe = false
-        self.navigationItem.rightBarButtonItem = self.closeSlideShowMode
-        
-        if let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .horizontal  // .horizontal
-        }
-        
-        self.collectionView.scrollToItem(at: moveToClicked, at: .centeredHorizontally, animated: false)
-        
-    }
-
-    func backToNormalGallery(){
-         self.extendedLayoutIncludesOpaqueBars = false
-        collectionView.contentInsetAdjustmentBehavior = .always
-        slideShowModeEnabled = false
-        collectionView.reloadData()
-        
-        collectionView.isPagingEnabled = false
-        collectionView.backgroundColor = .clear
-        navigationItem.hidesBackButton = false
-        
-        shareButton.isEnabled = false
-        deleteButton.isEnabled = false
-        toolbarItems = nil
-        if !navigationController!.toolbar.isHidden {
-            navigationController?.setToolbarHidden(true, animated: true)
-        }
-        
-        if !UIApplication.shared.isStatusBarHidden {
-            self.setNeedsStatusBarAppearanceUpdate()
-        }
-        
-        navigationController?.hidesBarsOnSwipe = true
-        navigationItem.rightBarButtonItem = selectButton
-        
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .vertical  // .horizontal
-        }
-        
-}
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
-        if segue.identifier == "ImageToDetail"{
-            if let elementPosition = sender as? Int {
-                let asset = allPhotos?.object(at: elementPosition)
-                let controlerDestino = segue.destination as! DetailImageViewController
-                controlerDestino.asset = asset!
-                //controlerDestino.transitioningDelegate = self
-                //controlerDestino.modalPresentationStyle = .custom
-                //CATransaction.setDisableActions(true)
-            }
-        } else if segue.identifier == "imageToGalleryDetail"{
+       if segue.identifier == "imageToGalleryDetail"{
             if let element = sender as? IndexPath {
                 print("Element: \(element)")
                 commingFromHome = false
                 let controlerDestino = segue.destination as! GalleryDetailViewController
                 controlerDestino.allPhotos = allPhotos
                 controlerDestino.delegate = self
-                print("Allphotos: \(allPhotos)")
                 controlerDestino.startIndexPath = element
-                //TypeOfTransition.shared.currentTransition = .UpDownSlide
-                //CATransaction.setDisableActions(true)
             }
         }
     }

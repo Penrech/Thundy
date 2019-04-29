@@ -9,12 +9,15 @@
 import UIKit
 import Photos
 
+//Esta clase es la de las celdas de la libreria
 class PhotoCollectionViewCell: UICollectionViewCell {
     
-
+    //MARK: - outlets
     @IBOutlet weak var libraryImage: UIImageView!
     @IBOutlet weak var selectedTint: UIView!
     @IBOutlet weak var checkSelectedIndicator: UIImageView!
+    
+    // Esta variable permite cambiar la apariencia de una celda cuando está seleccionada
     override var isSelected: Bool{
         didSet{
             if self.isSelected
@@ -30,40 +33,10 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    override func willTransition(from oldLayout: UICollectionViewLayout, to newLayout: UICollectionViewLayout) {
-        print("transiciona a nuevo layout")
-    }
-    
+    //Con esta función se inicializa la imagen de la celda
     func setImage(asset: PHAsset){
-        let cellHeight = self.frame.height
-        let cellWidth = self.frame.width
-        //self.libraryImage.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
         self.libraryImage.fetchImage(asset: asset, contentMode: .aspectFill, targetSize: self.frame.size)
     }
-    
-    func setImageDetail(asset: PHAsset){
-        let width = asset.pixelWidth
-        let height = asset.pixelHeight
-        let deviceHeight = UIScreen.main.bounds.height
-        let deviceWidth = UIScreen.main.bounds.width
-        var newHeight: CGFloat = CGFloat(height)
-        var newWidth: CGFloat = CGFloat(width)
-        
-        let proportion = CGFloat(height) / CGFloat(width)
-        newWidth = deviceWidth
-        newHeight = deviceWidth * proportion
-        let positionY = (deviceHeight - newHeight) / 2
-        self.libraryImage.frame = CGRect(x: 0, y: positionY, width: newWidth, height: newHeight)
-        self.libraryImage.fetchImage(asset: asset, contentMode: .aspectFill)
-        
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-    }
+
 }
 
-extension PhotoCollectionViewCell {
-    //MARK :- new Methods
-}

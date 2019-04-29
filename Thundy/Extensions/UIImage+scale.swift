@@ -30,6 +30,7 @@ extension UIImage {
         return nuevaImagen ?? self
     }
     func addShadow(shadowHeight: CGFloat) -> UIImage{
+        self.withRenderingMode(.alwaysTemplate)
         let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
         let shadowContext: CGContext = CGContext(data: nil, width: Int(size.width), height: Int(size.height + shadowHeight), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
         
