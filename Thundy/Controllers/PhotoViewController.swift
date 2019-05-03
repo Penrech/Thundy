@@ -67,6 +67,7 @@ class PhotoViewController: UIViewController {
     
     // MARK: - Outlets
     
+    @IBOutlet weak var optionsScrollview: UIScrollView!
     @IBOutlet weak var optionsViewHeightContraint: NSLayoutConstraint!
     @IBOutlet weak var isoSlider: UISlider!
     @IBOutlet weak var isoStackView: UIStackView!
@@ -243,6 +244,7 @@ class PhotoViewController: UIViewController {
             // Si el dispositivo no lo permite, mantengo las que hay por defecto y desactivo la opción de poder utilizar ajustes avanzados
                 if captureDevice.isExposureModeSupported(.custom){
                     let preferences = UserDefaults.standard
+                    initializeOptionsMenu(device: captureDevice)
                     
                     var exposureTime = CMTime(value: 1, timescale: 250)
                     var iso: Float = 100
@@ -263,8 +265,9 @@ class PhotoViewController: UIViewController {
                     if iso < captureDevice.activeFormat.minISO {
                         iso = captureDevice.activeFormat.minISO
                     }
+                    print("ExposureTime: \(exposureTime), ISO: \(iso)")
                     captureDevice.setExposureModeCustom(duration: exposureTime, iso: iso, completionHandler: nil)
-                    initializeOptionsMenu(device: captureDevice)
+                    
                 } else {
                     settingsButton.isHidden = true
                 }
@@ -870,6 +873,7 @@ extension PhotoViewController {
             }
         } else {
             scanButton.isEnabled = true
+            optionsScrollview.setContentOffset(CGPoint.zero, animated: true)
             self.optionsViewHeightContraint.constant = 0
             UIView.animate(withDuration: 0.15) {
                 self.view.layoutIfNeeded()

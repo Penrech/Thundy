@@ -21,7 +21,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Thundy needs to use the camera in order to take amazing photos of thunders</string>
+	<string>Thundy needs to use the camera in order to take amazing photos of lightnings</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Thundy needs permission to save photos in the device photo library</string>
 	<key>NSPhotoLibraryUsageDescription</key>

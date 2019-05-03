@@ -60,9 +60,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     var prevIndexPathAtCenter: IndexPath?
     
     var currentIndexPath: IndexPath? {
-        /*let center = view.convert(collectionView.center, to: collectionView)
-        return collectionView.indexPathForItem(at: center)*/
-        print("Indices: \(collectionView.indexPathsForVisibleItems.sorted{$0.row < $1.row})")
         let indices = collectionView.indexPathsForVisibleItems.sorted{$0.row < $1.row}
         let firstIndex = indices.first
         return firstIndex
@@ -104,6 +101,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             prevIndexPathAtCenter = indexAtCenter
             
         }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -122,14 +120,11 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 self.navigationItem.title = self.defaultViewTitle
                 self.navigationController?.toolbar.isTranslucent = false
                 self.navigationController?.toolbar.backgroundColor = UIColor.defaultBlue
-                
             })
         }
         
         statusBarView.backgroundColor = UIColor.defaultBlue
         navigationController?.navigationBar.topItem?.title = ""
-        toolbarItems = []
-        navigationController?.hidesBarsOnSwipe = true
         navigationController?.setNavigationBarHidden(false, animated: false)
         
         
@@ -137,10 +132,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     override func viewDidAppear(_ animated: Bool) {
         TypeOfTransition.shared.currentTransition = .DefaultSlide
-        
-        if !navigationController!.isToolbarHidden {
-            navigationController?.setToolbarHidden(true, animated: true)
-        }
     }
     
     override var shouldAutorotate: Bool {
@@ -209,10 +200,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     func showEmptyState(show: Bool){
         DispatchQueue.main.async {
+            
             if show {
                 self.emptyStateView.isHidden = false
                 self.navigationItem.rightBarButtonItem = nil
-                self.navigationController?.hidesBarsOnSwipe = false
                 self.navigationController?.setNavigationBarHidden(false, animated: true)
             } else {
                 if !self.emptyStateView.isHidden {
@@ -225,6 +216,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 self.collectionView.collectionViewLayout.invalidateLayout()
                 self.collectionView.allowsMultipleSelection = true
             }
+            
             self.collectionView.reloadData()
         }
     }
@@ -306,7 +298,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             
     }
    
-    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let allPhotos = allPhotos{
@@ -398,29 +389,9 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-        if prevIndexPathAtCenter != nil {
-            var layoutAttrs: UICollectionViewLayoutAttributes? = nil
-            var realPosition: CGRect? = nil
-            if let pathForFocusItem = prevIndexPathAtCenter {
-                layoutAttrs = collectionView.layoutAttributesForItem(at: pathForFocusItem)
-               
-                realPosition = collectionView.convert(layoutAttrs!.frame, to: collectionView.superview!)
- 
-            }
-            print("ViewFrame: \(self.view.frame)")
-            let nextHeight = collectionView.frame.height
-            let nextWidth = collectionView.frame.width
-            /*print("currentHeight = \(nextHeight)")
-            let numberOfCells = allPhotos?.count ?? 0
-            let oldNumOfColumns = self.numOfColumns == 5 ? 3 : 5
-            let numberOfRows = numberOfCells / self.numOfColumns
-            let marginMultiplier = (0.05 / (CGFloat(self.numOfColumns) - 1))
-            let oldCellHeight = (nextHeight / CGFloat(oldNumOfColumns)) * 0.95
-            let currentCellHeight = collectionView.cellForItem(at: prevIndexPathAtCenter!)!.frame.height
-            let differenceBetweenCells = currentCellHeight - oldCellHeight*/
-            //let aditionalOffsetCauseGapsBetweenCells = nextWidth * marginMultiplier * CGFloat(numberOfRows)
-            prevIndexPathAtCenter = nil
-            return CGPoint(x: 0, y: (layoutAttrs?.frame.origin.y ?? 0))
+        if let pathForFocusItem = prevIndexPathAtCenter, let layoutAttrs = collectionView.layoutAttributesForItem(at: pathForFocusItem) {
+            return CGPoint(x: 0, y: layoutAttrs.frame.origin.y)
+
         } else {
             return proposedContentOffset
         }
@@ -500,7 +471,6 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
     }
     
-    
     func calculateSizes(element: CollectionViewSizes) -> CGFloat{
         let screenWidth = view.frame.width
         
@@ -517,17 +487,17 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         case TopMargin
     }
 
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
        if segue.identifier == "imageToGalleryDetail"{
             if let element = sender as? IndexPath {
-                print("Element: \(element)")
                 commingFromHome = false
                 let controlerDestino = segue.destination as! GalleryDetailViewController
                 controlerDestino.allPhotos = allPhotos
                 controlerDestino.delegate = self
                 controlerDestino.startIndexPath = element
+                navigationController?.toolbar.layoutIfNeeded()
+                navigationController?.setToolbarHidden(false, animated: true)
             }
         }
     }

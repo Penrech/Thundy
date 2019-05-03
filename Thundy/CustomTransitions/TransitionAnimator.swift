@@ -3,7 +3,7 @@ import UIKit
 import Photos
 
 final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-    // 1
+    
     let presenting: Bool
 
     init(presenting: Bool) {
@@ -11,28 +11,25 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
     }
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        // 3
+      
         return TimeInterval(UINavigationController.hideShowBarDuration)
        
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        // 4
+  
         guard let fromView = transitionContext.view(forKey: .from) else { return }
-        guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
         guard let toView = transitionContext.view(forKey: .to) else { return }
-        guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
+
         
         let snapshotView = UIImageView()
         
         var cellView: UICollectionViewCell? = nil
         
-        // 5
-        var duration = transitionDuration(using: transitionContext)
-        //let duration: Double = 4
-        
+ 
+        let duration = transitionDuration(using: transitionContext)
 
-        // 6
+
         let container = transitionContext.containerView
         let toViewFrame = toView.frame
         container.backgroundColor = UIColor.white
@@ -47,8 +44,6 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
             }
         }
  
-        // 7
-        
         
         switch TypeOfTransition.shared.currentTransition {
         case .DefaultSlide:
@@ -56,8 +51,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
         case .UpDownSlide:
             toView.frame = CGRect(x: toView.frame.origin.x, y: presenting ? toView.frame.height : -toView.frame.height, width: toView.frame.width, height: toView.frame.height)
         case .ImageSlide:
-            print(toView)
-            //duration = 3
+            
             if let currentIndexPath = TypeOfTransition.shared.currentCellIndexPath, let currentFrame =  TypeOfTransition.shared.curretnCellFrame, let currentAsset = TypeOfTransition.shared.currentAsset  {
                 if presenting{
                     
@@ -74,6 +68,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                     if let cellview = cellView {
                         cellview.isHidden = true
                     }
+                    
                     
                 } else {
                    if let collectionView = toView.subviews[0] as? UICollectionView {
@@ -106,11 +101,10 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                                     collectionView.frame = toView.frame
                                     let attributes: UICollectionViewLayoutAttributes? = collectionView.layoutAttributesForItem(at: indexPath)
                                     let cellRect: CGRect? = attributes?.frame
-                                    //collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+                
                                     let cellFrameInSuperview = collectionView.convert(cellRect ?? CGRect.zero, to: collectionView.superview)
                                     
                                     snapshotView.frame = cellFrameInSuperview
-                        
                                 }
                                 
                             }
@@ -130,7 +124,6 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                    fromView.frame = CGRect(x: fromView.frame.origin.x, y: self.presenting ? -fromView.frame.height : fromView.frame.height, width: fromView.frame.width, height: fromView.frame.height)
                 case .ImageSlide:
                     fromView.alpha = self.presenting ? 0 : 1
-                    print("predd")
                 }
     
             }
@@ -183,5 +176,6 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
         return CGRect(x: positionX, y: positionY, width: newShortSide, height: newLongSide)
         
     }
+    
 }
 

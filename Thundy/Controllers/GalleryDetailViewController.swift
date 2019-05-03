@@ -34,6 +34,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     
     var allPhotos : PHFetchResult<PHAsset>? = nil
     var startIndexPath = IndexPath(row: 0, section: 0)
+    var startedProperly = false
     var customPhotoManager: CustomPhotoAlbum = (UIApplication.shared.delegate as! AppDelegate).customPhotosManager
     
     var navBarsVisible = true
@@ -59,7 +60,6 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         collectionView.allowsSelection = true
         collectionView.isPagingEnabled = true
         self.collectionView.contentInsetAdjustmentBehavior = .never
-        print("Layout: \(self.collectionView.frame)")
         
         self.extendedLayoutIncludesOpaqueBars = true
         
@@ -77,8 +77,12 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         collectionView.addGestureRecognizer(singleTapRecognizer)
   
         actualPage = startIndexPath.row
-        collectionView.layoutIfNeeded()
-        self.collectionView.scrollToItem(at: startIndexPath, at: .centeredHorizontally, animated: true)
+        
+        if let asset = allPhotos?.object(at: startIndexPath.row), let date = asset.creationDate {
+            let dateFormater = DateFormatter()
+            dateFormater.dateStyle = .medium
+            self.navigationItem.title = dateFormater.string(from: date)
+        }
         
         backButton = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 32), style: .plain, target: self, action: #selector(backToPreviousViewController))
         deleteButton = UIBarButtonItem(image: UIImage(named: "delete")?.escalarImagen(nuevaAnchura: 28), style: .plain, target: self, action: #selector(deleteImage))
@@ -89,63 +93,10 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         
     }
     
-    func adjustConstraints(){
-        if UIDevice.current.hasNotch{
-            safeAreaLeadingConstraint.priority = .defaultLow
-            safeAreaTrailingConstraint.priority = .defaultLow
-            superViewLeadingConstraint.priority = .defaultHigh
-            superViewTrailingConstraint.priority = .defaultHigh
-        } else {
-            safeAreaLeadingConstraint.priority = .defaultHigh
-            safeAreaTrailingConstraint.priority = .defaultHigh
-            superViewLeadingConstraint.priority = .defaultLow
-            superViewTrailingConstraint.priority = .defaultLow
-        }
-    }
-    @objc func handleSingleTapGesture(recognizer: UITapGestureRecognizer){
-        hideToolbars(show: !navBarsVisible)
-    }
-   @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
-        let actualIndexPath = collectionView.indexPathsForVisibleItems[0]
-        let actualCell = collectionView.cellForItem(at: actualIndexPath) as! PhotoDetailViewCell
-        
-        //Check if is bounds
-        let boundsOfView = actualCell.detailImageView.bounds
-        let placeTouched = recognizer.location(in: actualCell.detailImageView)
-        if placeTouched.x >= 0.0 && placeTouched.x <= boundsOfView.width && placeTouched.y >= 0.0 && placeTouched.y <= boundsOfView.height{
-            print("Envio pulsación")
-            actualCell.recieveDataFromDoubleTap(recognizer: recognizer)
-        }
-        print("Localizacion: \(recognizer.location(in: actualCell.detailImageView))")
-    }
-    
-    @objc func backToPreviousViewController() {
-        closeViewController()
-    }
-    
-    func closeViewController(){
-        navigationController?.setToolbarHidden(true, animated: true)
-        
-        if noMorePhotos {
-            self.delegate?.allDeleted(deleted: true)
-            TypeOfTransition.shared.currentTransition = .UpDownSlide
-            self.navigationController?.popViewController(animated: true)
-            return
-        }
-
-        let currentCellIndexPath = collectionView.indexPathsForVisibleItems[0]
-        let currentCell = collectionView.cellForItem(at: currentCellIndexPath)! as! PhotoDetailViewCell
-        let currentImageViewFrame = currentCell.detailImageView.frame
-        let asset = allPhotos?.object(at: currentCellIndexPath.row)
-        
-        TypeOfTransition.shared.currentTransition = .ImageSlide
-        TypeOfTransition.shared.setCellForAnimation(cellFrame: currentImageViewFrame, indexPath: currentCellIndexPath, cellAsset: asset!)
-        self.navigationController?.popViewController(animated: true)
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         adjustConstraints()
+        self.setToolbarToModeDetail(set: true)
         
         if UIDevice.current.orientation.isLandscape{
             hideStatusBar = true
@@ -156,19 +107,16 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         self.navigationController?.navigationBar.topItem?.title = ""
         
         navigationController?.hidesBarsOnSwipe = false
-        print("BoundsOfCollection: \(self.collectionView.bounds)")
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("Celdas Visibles: \(collectionView.indexPathsForVisibleItems.count)")
+
         super.viewDidAppear(animated)
         
         if navigationController!.isNavigationBarHidden {
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
-        
-        navigationController?.setToolbarHidden(false, animated: true)
-        
+
         UIView.animate(withDuration: 0.3) {
             
             self.navigationController?.navigationBar.backgroundColor = UIColor.defaultBlueTranslucent
@@ -176,19 +124,103 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
                 return
             }
             statusBarView.backgroundColor = UIColor.defaultBlueTranslucent
-            
-            self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-            self.navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
-            self.navigationController?.toolbar.isTranslucent = true
-            print(self.navigationController?.toolbar.backgroundImage(forToolbarPosition: UIBarPosition.any, barMetrics: .default))
-            /*if let image = self.navigationController?.toolbar.backgroundImage(forToolbarPosition: .any, barMetrics: .default){
-                print("Entro aqui")
-                let newImage = image.alpha(0.65)
-                self.navigationController?.toolbar.setBackgroundImage(newImage, forToolbarPosition: .any, barMetrics: .default)
-            }*/
-            self.navigationController?.toolbar.backgroundColor = UIColor.defaultBlueTranslucent
+           
             
         }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        let currentIndexPath2 = collectionView.indexPathsForVisibleItems[0]
+        let currentCell = collectionView.cellForItem(at: currentIndexPath2) as! PhotoDetailViewCell
+        
+        if let indexAtCenter = currentIndexPath {
+            prevIndexPathAtCenter = indexAtCenter
+        }
+        collectionView.collectionViewLayout.invalidateLayout()
+        
+        coordinator.animate(alongsideTransition: { (transitionContext) in
+            
+            currentCell.setImageWhenRotate()
+            if UIDevice.current.orientation.isLandscape {
+                self.manageHideStatusOfBars(type: .hideStatusBar)
+            } else {
+                self.manageHideStatusOfBars(type: .showStatusBar)
+            }
+            
+        }) { (completion) in
+            
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
+    }
+    
+    override var prefersStatusBarHidden: Bool{
+        return hideStatusBar
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
+    }
+    
+    func adjustConstraints(){
+        if UIDevice.current.hasNotch{
+            print("Device has notch")
+            safeAreaLeadingConstraint.priority = .defaultLow
+            safeAreaTrailingConstraint.priority = .defaultLow
+            superViewLeadingConstraint.priority = .defaultHigh
+            superViewTrailingConstraint.priority = .defaultHigh
+        } else {
+            print("Device has not notch")
+            safeAreaLeadingConstraint.priority = .defaultHigh
+            safeAreaTrailingConstraint.priority = .defaultHigh
+            superViewLeadingConstraint.priority = .defaultLow
+            superViewTrailingConstraint.priority = .defaultLow
+        }
+    }
+    
+    @objc func handleSingleTapGesture(recognizer: UITapGestureRecognizer){
+        hideToolbars(show: !navBarsVisible)
+    }
+    
+    @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
+        let actualIndexPath = collectionView.indexPathsForVisibleItems[0]
+        let actualCell = collectionView.cellForItem(at: actualIndexPath) as! PhotoDetailViewCell
+        
+        //Check if is bounds
+        let boundsOfView = actualCell.detailImageView.bounds
+        let placeTouched = recognizer.location(in: actualCell.detailImageView)
+        if placeTouched.x >= 0.0 && placeTouched.x <= boundsOfView.width && placeTouched.y >= 0.0 && placeTouched.y <= boundsOfView.height{
+            actualCell.recieveDataFromDoubleTap(recognizer: recognizer)
+        }
+    }
+    
+    @objc func backToPreviousViewController() {
+        closeViewController()
+    }
+    
+    func closeViewController(){
+       
+        setToolbarToModeDetail(set: false)
+        toolbarItems =  nil
+        
+        if noMorePhotos {
+            self.delegate?.allDeleted(deleted: true)
+            TypeOfTransition.shared.currentTransition = .UpDownSlide
+            self.navigationController?.popViewController(animated: true)
+            return
+        }
+        
+        let currentCellIndexPath = collectionView.indexPathsForVisibleItems[0]
+        let currentCell = collectionView.cellForItem(at: currentCellIndexPath)! as! PhotoDetailViewCell
+        let currentImageViewFrame = currentCell.detailImageView.frame
+        let asset = allPhotos?.object(at: currentCellIndexPath.row)
+        
+        TypeOfTransition.shared.currentTransition = .ImageSlide
+        TypeOfTransition.shared.setCellForAnimation(cellFrame: currentImageViewFrame, indexPath: currentCellIndexPath, cellAsset: asset!)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func moveOffset(toBounds: CGSize){
@@ -198,52 +230,6 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         collectionView.contentOffset = CGPoint(x: offsetX, y: 0)
     }
     
-    func setAnchorProperly(indexPath: IndexPath, toBounds: CGSize){
-        let collectionBounds = collectionView.bounds
-        let actualCellNumber = indexPath.row
-        let offsetX = CGFloat(actualCellNumber) * toBounds.width
-       
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        let currentIndexPath2 = collectionView.indexPathsForVisibleItems[0]
-        let currentCell = collectionView.cellForItem(at: currentIndexPath2) as! PhotoDetailViewCell
-    
-    
-        if let indexAtCenter = currentIndexPath {
-            prevIndexPathAtCenter = indexAtCenter
-        }
-        collectionView.collectionViewLayout.invalidateLayout()
-        
-        coordinator.animate(alongsideTransition: { (transitionContext) in
-            
-            currentCell.setImageWhenRotate()
-            //self.setAnchorProperly(indexPath: currentIndexPath, toBounds: size)
-            //self.collectionView.selectItem(at: currentIndexPath, animated: false, scrollPosition: .centeredHorizontally)
-            if UIDevice.current.orientation.isLandscape {
-                self.manageHideStatusOfBars(type: .hideStatusBar)
-            } else {
-                self.manageHideStatusOfBars(type: .showStatusBar)
-            }
-
-        }) { (completion) in
-           
-            //self.viewRotating = false
-            self.collectionView.collectionViewLayout.invalidateLayout()
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-        guard let oldCenter = prevIndexPathAtCenter else {
-            return proposedContentOffset
-        }
-        
-        let attrs =  collectionView.layoutAttributesForItem(at: oldCenter)
-        
-        let newOriginForOldIndex = attrs?.frame.origin
-        
-        return newOriginForOldIndex ?? proposedContentOffset
-    }
     
     func manageHideStatusOfBars(type: typeOfBarHide){
         switch type {
@@ -270,18 +256,6 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         case showAllbars
     }
  
-
-    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return .slide
-    }
-    
-    override var prefersStatusBarHidden: Bool{
-        return hideStatusBar
-    }
-
-    override var preferredStatusBarStyle: UIStatusBarStyle{
-        return .lightContent
-    }
     
     @objc func deleteImage(){
         
@@ -327,7 +301,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
                 if visibleItems.count > 0 {
                     self.collectionView.reloadItems(at: visibleItems)
                 }
-                print(self.allPhotos)
+ 
                 if self.allPhotos?.count == 0 {
                     //Mover al inicial, mostrar que no hay nada
                     self.noMorePhotos = true
@@ -341,7 +315,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         
         let indice = self.collectionView.indexPathsForVisibleItems[0]
         let asset = self.allPhotos?.object(at: indice.row)
-        let imagenUrlACompartir = UIImage().shareImage(asset: asset!)
+        guard let imagenUrlACompartir = UIImage().shareImage(asset: asset!) else { return }
       
         let activityViewController = UIActivityViewController(activityItems: [imagenUrlACompartir], applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
@@ -371,50 +345,26 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         }
     }
     
-    /*func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let x = scrollView.contentOffset.x
-        let w = scrollView.bounds.size.width
-        let currentPage = Int(ceil(x/w))
-         print("Current Page: \(currentPage)")
-        
-        
-        let lastCell = collectionView.cellForItem(at: IndexPath(row: currentPage + 1, section: 0))
-        print("@ScrollViewDidEndDecelerating")
-        print("ContentOffset : \(collectionView.contentOffset)")
-        if currentPage == actualPage{
-            return
-        }
-        
-        actualPage = currentPage
-        
-        let currentIndexPath = IndexPath(row: currentPage, section: 0)
-        let asset = allPhotos?.object(at: currentIndexPath.row)
-        UIView.animate(withDuration: 0.3) {
-            if let asset = asset, let date = asset.creationDate {
-                let dateFormater = DateFormatter()
-                dateFormater.dateStyle = .medium
-                self.navigationItem.title = dateFormater.string(from: date)
-            }
-        }
-        
-    }*/
-    
-
-    /*func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 
         if let indiceActual = collectionView.indexPathsForVisibleItems.first{
             let asset = allPhotos?.object(at: indiceActual.row)
-            UIView.animate(withDuration: 0.3) {
                 if let asset = asset, let date = asset.creationDate {
                     let dateFormater = DateFormatter()
                     dateFormater.dateStyle = .medium
                     self.navigationItem.title = dateFormater.string(from: date)
                 }
-            }
             
         }
        
-    }*/
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if !startedProperly {
+            collectionView.scrollToItem(at: startIndexPath, at: .centeredHorizontally, animated: false)
+            startedProperly = true
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let allPhotos = allPhotos{
@@ -430,6 +380,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         let asset = allPhotos?.object(at: indexPath.row)
         
         cell.setImageDetail(asset: asset!)
+    
         cell.delegate = self
         
         return cell
@@ -460,11 +411,40 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         return 0.0
     }
     
+    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        guard let oldCenter = prevIndexPathAtCenter else {
+            return proposedContentOffset
+        }
+        
+        let attrs =  collectionView.layoutAttributesForItem(at: oldCenter)
+        
+        let newOriginForOldIndex = attrs?.frame.origin
+        
+        return newOriginForOldIndex ?? proposedContentOffset
+    }
+    
+    func setToolbarToModeDetail(set: Bool){
+        if set{
+            navigationController?.toolbar.setShadowImage(nil, forToolbarPosition: .any)
+            navigationController?.toolbar.setBackgroundImage(nil, forToolbarPosition: .any, barMetrics: .default)
+            navigationController?.toolbar.isTranslucent = true
+            navigationController?.toolbar.backgroundColor = .clear
+            navigationController?.toolbar.subviews.first?.alpha = 0.65
+           
+        } else {
+            navigationController?.setToolbarHidden(true, animated: true)
+            navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
+            navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
+            navigationController?.toolbar.isTranslucent = false
+            navigationController?.toolbar.subviews.first?.alpha = 1.0
+            navigationController?.toolbar.backgroundColor = UIColor.defaultBlue
+            
+        }
+    }
 
 }
 extension GalleryDetailViewController: cellZoomDelegate {
     func cellDidZoom(toDefaultZoom: Bool) {
-        print("Celda hace zoom")
         if !toDefaultZoom {
             manageHideStatusOfBars(type: .hideAllBars)
         }

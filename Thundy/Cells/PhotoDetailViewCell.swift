@@ -1,36 +1,76 @@
 //
-//  DetailImageViewController.swift
+//  PhotoDetailViewCell.swift
 //  Thundy
 //
-//  Created by Pau Enrech on 01/04/2019.
+//  Created by Pau Enrech on 16/04/2019.
 //  Copyright © 2019 Pau Enrech. All rights reserved.
 //
 
 import UIKit
 import Photos
 
-class DetailImageViewController: UIViewController, UIScrollViewDelegate {
+//Este protocolo sirve para notificar a la vista padre de la celdad que se ha hecho zoom en ella
+protocol cellZoomDelegate: class {
+    func cellDidZoom(toDefaultZoom: Bool)
+}
 
-    var asset = PHAsset()
-
+//Esta clase es la de las celdas en vista detalle
+class PhotoDetailViewCell: UICollectionViewCell {
+    
+    //MARK: - outlets
+    
+    @IBOutlet weak var detailImageView: UIImageView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    
+    //MARK: - variables
+    
+    var delegate : cellZoomDelegate?
+    
     var positionY: CGFloat = 0
     var positionX: CGFloat = 0
-    var closeViewControllerButton = UIBarButtonItem()
-    
-    var startOrientation = UIDevice.current.orientation
-    
     var initialWidth: CGFloat = 0
     var initialHeight: CGFloat = 0
     
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var detailImageView: UIImageView!
-   
-    @objc func closeDetail2(_ sender: Any){
-        navigationController?.popViewController(animated: true)
+    var asset: PHAsset?
+
+    //Esta función gestiona el doble tap en una celda, amplia la celda al máximo si esta en el zoom inicial, o la devuelve
+    // Al zoom inicial si está con un zoom distinto al estado inicial
+    @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
+        if scrollView.zoomScale == 1 {
+            scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
+        } else {
+            scrollView.setZoomScale(1, animated: true)
+            
+        }
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    //
+    func recieveDataFromDoubleTap(recognizer: UITapGestureRecognizer) {
+        if scrollView.zoomScale == 1 {
+            scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: detailImageView)), animated: true)
+        } else {
+            scrollView.setZoomScale(1, animated: true)
+            
+        }
+    }
+    
+    func setImageDetail(asset: PHAsset){
+        setUPScrollView()
+        restoreVariables()
         
+        self.asset = asset
+        
+        let longSide = UIScreen.main.bounds.height
+        let shortSide = UIScreen.main.bounds.width
+        
+        setSizeOfImage(screenLongSide: longSide, screenShortSide: shortSide)
+        
+        self.detailImageView.fetchImage(asset: asset, contentMode: .aspectFit)
+        
+    }
+    
+    func setUPScrollView(){
+        scrollView.isScrollEnabled = true
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -39,47 +79,72 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         scrollView.maximumZoomScale = 4.5
         scrollView.delegate = self
         scrollView.clipsToBounds = true
-        print("ScrollView ancla: \(scrollView.layer.anchorPoint)")
-        print("ScrollView centro: \(scrollView.center)")
-        
-        self.extendedLayoutIncludesOpaqueBars = true
-        //self.edgesForExtendedLayout = .bottom
         
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapScrollView))
         doubleTapRecognizer.numberOfTapsRequired = 2
         detailImageView.addGestureRecognizer(doubleTapRecognizer)
+    }
+    
+    func restoreVariables(){
+        initialWidth = 0
+        initialHeight = 0
+        if scrollView.zoomScale > scrollView.minimumZoomScale {
+            scrollView.zoomScale = scrollView.minimumZoomScale
+        }
+    }
+    
+    func restoreZoom(){
+        if scrollView.zoomScale > scrollView.minimumZoomScale {
+            scrollView.zoomScale = scrollView.minimumZoomScale
+        }
+    }
+    
+    func setSizeOfImage(screenLongSide: CGFloat, screenShortSide: CGFloat){
+        let width:CGFloat = CGFloat(asset!.pixelWidth)
+        let height:CGFloat = CGFloat(asset!.pixelHeight)
+        positionX = 0
+        positionY = 0
         
-        setImageDetail(asset: asset)
-       
-    
-    }
-    
-    func initBarsButtons(){
-       closeViewControllerButton = UIBarButtonItem(image: UIImage(named: "close")?.escalarImagen(nuevaAnchura: 35), style: .plain, target: self, action: #selector(closeDetail2(_:)))
-        navigationItem.leftBarButtonItem = closeViewControllerButton
-    
-    }
-
-    @IBAction func handleDoubleTapScrollView(recognizer: UITapGestureRecognizer) {
-      /*if scrollView.zoomScale == 1 {
-            scrollView.zoom(to: zoomRectForScale(scale: scrollView.maximumZoomScale, center: recognizer.location(in: recognizer.view)), animated: true)
+        var proportion = height / width
+        var newShortSide = screenShortSide
+        var newLongSide = screenShortSide * proportion
+        
+        if newLongSide > screenLongSide {
+            proportion = pow(proportion, -1)
+            newLongSide = screenLongSide
+            newShortSide = screenLongSide * proportion
+            positionX = ( screenShortSide - newShortSide) / 2
         } else {
-            scrollView.setZoomScale(1, animated: true)
-
-        }*/
-        navigationController?.popViewController(animated: true)
+            positionY = (screenLongSide - newLongSide) / 2
+        }
+        
+        initialWidth = newShortSide
+        initialHeight = newLongSide
+  
+        self.detailImageView.frame = CGRect(x: positionX, y: positionY, width: newShortSide, height: newLongSide)
+        
     }
+    
+    
+}
+extension PhotoDetailViewCell: UIScrollViewDelegate {
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        
+       
         if scrollView.zoomScale < scrollView.minimumZoomScale {
             return
         }
-
+        
+        if scrollView.zoomScale == scrollView.minimumZoomScale{
+            delegate?.cellDidZoom(toDefaultZoom: true)
+        } else {
+            delegate?.cellDidZoom(toDefaultZoom: false)
+        }
+        
         let deviceHeight = UIScreen.main.bounds.height
         let deviceWidth = UIScreen.main.bounds.width
         let actualFrame = detailImageView.frame
-       
+        
         let newHeight = actualFrame.height
         let newWidth = actualFrame.width
         var position: CGFloat = 0
@@ -89,7 +154,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         let actualY = actualFrame.minY
         
         var newFrame = CGRect.zero
- 
+        
         
         if UIDevice.current.orientation.isLandscape {
             if initialWidth == deviceWidth {
@@ -98,7 +163,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
                 positionNormalized = max(position , 0)
                 
                 newFrame = CGRect(x: actualX, y: positionNormalized , width: actualFrame.width, height: actualFrame.height)
-        
+                
             } else {
                 positionX = (deviceWidth - newWidth) / 2
                 position = positionX
@@ -125,7 +190,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         }
         
         detailImageView.frame = newFrame
-       
+        
     }
     
     func newYPosition() -> CGFloat {
@@ -133,7 +198,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         let actualFrame = detailImageView.frame
         let newHeight = actualFrame.height
         let position = (deviceHeight - newHeight) / 2
-
+        
         let positionNormalized = max(position, 0)
         
         return positionNormalized
@@ -157,7 +222,7 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         let newCenter = scrollView.convert(center, from: detailImageView)
         zoomRect.origin.x = newCenter.x - (zoomRect.size.width / 2.0) - newXPosition()
         zoomRect.origin.y = newCenter.y - (zoomRect.size.height / 2.0) - newYPosition()
-       
+        
         return zoomRect
     }
     
@@ -165,119 +230,27 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
         return detailImageView
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        UIView.animate(withDuration: 0.3) {
-            if let date = self.asset.creationDate {
-                let dateFormater = DateFormatter()
-                dateFormater.dateStyle = .medium
-                self.navigationController?.navigationBar.topItem?.title = ""
-                self.navigationItem.title = dateFormater.string(from: date)
-            }
-            
-            self.initBarsButtons()
-            self.navigationController?.navigationBar.backgroundColor = UIColor.defaultBlueTranslucent
-            guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
-                return
-            }
-            statusBarView.backgroundColor = UIColor.defaultBlueTranslucent
-        }
-        
-        navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-        navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
-        navigationController?.toolbar.isTranslucent = true
-        navigationController?.toolbar.backgroundColor = UIColor.defaultBlueTranslucent
-        navigationController?.setToolbarHidden(true, animated: true)
-        navigationController?.setNavigationBarHidden(true, animated: true)
-        
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setToolbarHidden(false, animated: true)
-        navigationController?.hidesBarsOnSwipe = false
-    
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-       
-        coordinator.animate(alongsideTransition: { (transitionContext) in
-             self.setImageWhenRotate(landscape: UIDevice.current.orientation.isLandscape)
-        }) { (completion) in
-            
-        }
-        
-    }
-    
-    
-    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return .fade
-    }
-    
-    override var prefersStatusBarHidden: Bool{
-        return true
-    }
-    
-    func setImageDetail(asset: PHAsset){
-        
-        let longSide = UIScreen.main.bounds.height
-        let shortSide = UIScreen.main.bounds.width
-        
-        setSizeOfImage(screenLongSide: longSide, screenShortSide: shortSide)
-    
-        self.detailImageView.fetchImage(asset: asset, contentMode: .aspectFit)
-     
-    }
-    
-    func setSizeOfImage(screenLongSide: CGFloat, screenShortSide: CGFloat){
-        let width:CGFloat = CGFloat(asset.pixelWidth)
-        let height:CGFloat = CGFloat(asset.pixelHeight)
-        positionX = 0
-        positionY = 0
-        
-        var proportion = height / width 
-        var newShortSide = screenShortSide
-        var newLongSide = screenShortSide * proportion
-        
-        if newLongSide > screenLongSide {
-            proportion = pow(proportion, -1)
-            newLongSide = screenLongSide
-            newShortSide = screenLongSide * proportion
-            positionX = ( screenShortSide - newShortSide) / 2
-        } else {
-            positionY = (screenLongSide - newLongSide) / 2
-        }
-        
-        initialWidth = newShortSide
-        initialHeight = newLongSide
-        
-        print("PositionX : \(positionX)")
-        print("PositionY: \(positionY)")
-        self.detailImageView.frame = CGRect(x: positionX, y: positionY, width: newShortSide, height: newLongSide)
-        
-    }
-  
-    func setImageWhenRotate(landscape: Bool){
+    func setImageWhenRotate(){
         let currentZoom = scrollView.zoomScale
         let currentOffset = scrollView.contentOffset
         let lastScreenWidth = UIScreen.main.bounds.height
         let lastScreenHeight = UIScreen.main.bounds.width
-
+        
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: false)
         
         let lastWidth = detailImageView.bounds.width * currentZoom
         let lastHeight = detailImageView.bounds.height * currentZoom
-
+        
         setSizeOfImage(screenLongSide: UIScreen.main.bounds.height , screenShortSide: UIScreen.main.bounds.width)
-
+        
         scrollView.setZoomScale(currentZoom, animated: false)
-
+        
         scrollView.contentOffset = convertOffset(lastScreenWidth: lastScreenWidth, lastScreenHeight: lastScreenHeight, newScreenWidth: UIScreen.main.bounds.width, newScreenHeight: UIScreen.main.bounds.height, lastWidth: lastWidth, lastHeight: lastHeight, newWidth: detailImageView.bounds.width * currentZoom, newHeight: detailImageView.bounds.height * currentZoom, oldContentOffset: currentOffset)
-       
+        
     }
     
     func convertOffset(lastScreenWidth: CGFloat, lastScreenHeight: CGFloat, newScreenWidth: CGFloat, newScreenHeight: CGFloat, lastWidth: CGFloat, lastHeight: CGFloat, newWidth: CGFloat, newHeight: CGFloat, oldContentOffset: CGPoint) -> CGPoint{
-
+        
         var posisicionX = oldContentOffset.x
         var posicionY = oldContentOffset.y
         
@@ -306,10 +279,9 @@ class DetailImageViewController: UIViewController, UIScrollViewDelegate {
             let proportionY = centerOfViewY / lastHeight
             posicionY = newHeight * proportionY - (newScreenHeight / 2)
         }
-       
+        
         return CGPoint(x: min(max(posisicionX , 0) , max(newWidth - newScreenWidth, 0) ), y: min(max(posicionY , 0), max(newHeight - newScreenHeight , 0)))
     }
 
-
+    
 }
-

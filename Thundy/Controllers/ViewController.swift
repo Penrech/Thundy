@@ -47,9 +47,7 @@ class ViewController: UIViewController {
         startTimer()
         //Esta línea es importante, ya que define el conjunto de animaciones de transición que utiliza la aplicación, salvo las de acceder a la cámara
         navigationController?.addCustomTransitioning()
-        
-        /*imagesButton = UIBarButtonItem(image: UIImage(named: "info")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(showInfo))
-        infoButton = UIBarButtonItem(image: UIImage(named: "images")!.escalarImagen(nuevaAnchura: 30), style: .plain, target: self, action: #selector(goToImages))*/
+ 
         imagesButton = UIBarButtonItem(image: UIImage(named: "info-1"), style: .plain, target: self, action: #selector(showInfo))
         infoButton = UIBarButtonItem(image: UIImage(named: "galeria"), style: .plain, target: self, action: #selector(goToImages))
         
@@ -75,6 +73,8 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
+        navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
         navigationController?.hidesBarsOnSwipe = false
         if navigationController!.isNavigationBarHidden {
             navigationController?.setNavigationBarHidden(false, animated: true)
@@ -120,7 +120,7 @@ class ViewController: UIViewController {
             return
         }
     
-        let cameraPermissionStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        var cameraPermissionStatus = AVCaptureDevice.authorizationStatus(for: .video)
         let savePhotosPermissionStatus = PHPhotoLibrary.authorizationStatus()
         
         if cameraPermissionStatus == .authorized && savePhotosPermissionStatus == .authorized{
@@ -131,6 +131,8 @@ class ViewController: UIViewController {
             requestPermissionAgain(error: .Camera)
         } else if cameraPermissionStatus == .notDetermined {
             AVCaptureDevice.requestAccess(for: .video) { (permitido) in
+        
+                cameraPermissionStatus = AVCaptureDevice.authorizationStatus(for: .video)
                 if !permitido {
                     self.showErrorIfNotPermission(error: .NoCameraPermission)
                 } else {
@@ -162,7 +164,7 @@ class ViewController: UIViewController {
     func loadCameraView(){
         reStoreInitialState()
     
-        OperationQueue.main.addOperation {
+        DispatchQueue.main.async {
             let preferences = UserDefaults.standard
             let key = (UIApplication.shared.delegate as! AppDelegate).isAppLoadBefore
             
@@ -238,13 +240,6 @@ class ViewController: UIViewController {
             self.present(alertController, animated: true, completion: nil)
         }
     }
-    
-    /*func albumCreationError(){
-        let alertController = UIAlertController(title: "Media Error", message:"Error while creating Thundy photo album, please try again" , preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        
-        present(alertController, animated: true, completion: nil)
-    }*/
     
     //Este método detiene la animación de parpadeo del logotipo
     func stopBlinking(){
