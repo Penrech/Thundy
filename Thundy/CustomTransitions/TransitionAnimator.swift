@@ -20,6 +20,9 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
   
         guard let fromView = transitionContext.view(forKey: .from) else { return }
         guard let toView = transitionContext.view(forKey: .to) else { return }
+        
+        guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
+        guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
 
         
         let snapshotView = UIImageView()
@@ -112,6 +115,29 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                     default: break
                     }
             }
+            
+            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 1, animations: {
+                if TypeOfTransition.shared.currentTransition == .DefaultSlide {
+                    if self.presenting {
+                        //Viewcontroller
+                        if let backgroundImage = fromView.subviews.first(where: {$0 is UIImageView}) {
+                            backgroundImage.alpha = 0.0
+                        }
+                    } else {
+                        //Viewcontroller
+                        print("BackgroundView?: \(toView.subviews)")
+                        if let backgroundImage = toView.subviews.first(where: {$0 is UIImageView}) {
+                            backgroundImage.alpha = 1.0
+                        }
+                        toViewController.navigationController?.navigationBar.backgroundColor = .clear
+                        guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
+                            return
+                        }
+                        statusBarView.backgroundColor = .clear
+                    }
+                    
+                }
+            })
 
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1) {
                 

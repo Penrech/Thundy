@@ -14,15 +14,15 @@ class ViewController: UIViewController {
 
     // MARK: - variables
     
-    let normalLogoImage = UIImage(named: "Logo")
-    let blinkLogoImage = UIImage(named: "parpadeando")
-    let defaultText = "Let's catch some friends for Thundy"
-    var images: [UIImage]?
+    /*let normalLogoImage = UIImage(named: "Logo")
+    let blinkLogoImage = UIImage(named: "parpadeando")*/
+    let defaultText = "Let's catch some lightnings"
+    //var images: [UIImage]?
     
     var imagesButton = UIBarButtonItem()
     var infoButton = UIBarButtonItem()
     
-    var blinkTimer: Timer!
+    //var blinkTimer: Timer!
     var permissionError = false
     
     let toCameraTransition = TransitionPopAnimator()
@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        images = [blinkLogoImage!, normalLogoImage!]
+        //images = [blinkLogoImage!, normalLogoImage!]
         
         //Esta línea es importante, ya que define el conjunto de animaciones de transición que utiliza la aplicación, salvo las de acceder a la cámara
         navigationController?.addCustomTransitioning()
@@ -53,6 +53,7 @@ class ViewController: UIViewController {
         
         navigationItem.rightBarButtonItems = [imagesButton, infoButton]
         
+        navigationController?.navigationBar.barTintColor = UIColor.white
     }
    
     override var preferredStatusBarStyle: UIStatusBarStyle{
@@ -75,6 +76,7 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
+    
         navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
         navigationController?.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
         navigationController?.hidesBarsOnSwipe = false
@@ -82,17 +84,28 @@ class ViewController: UIViewController {
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
         
-        startTimer()
+        
+        
+        //startTimer()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        stopBlinking()
+        //stopBlinking()
     }
+    
+   /* override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if let backView = navigationController?.navigationBar.subviews.first {
+            backView.alpha = 0.5
+            backView.backgroundColor = UIColor.defaultBlue
+        }
+    }*/
 
     //MARK: - métodos para controlar la animación de parpadeo
     
-    func startTimer(){
+    /*func startTimer(){
         if let blinkTimer = blinkTimer {
             if !blinkTimer.isValid {
                 self.blinkTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] timer in
@@ -104,9 +117,9 @@ class ViewController: UIViewController {
                 self?.startBlinking()
             }
         }
-    }
+    }*/
     
-    func startBlinking(){
+    /*func startBlinking(){
         if logoImage.isAnimating {
             logoImage.stopAnimating()
         }
@@ -115,7 +128,7 @@ class ViewController: UIViewController {
         logoImage.animationRepeatCount = 1
         logoImage.startAnimating()
 
-    }
+    }*/
     
     //MARK: - métodos de permisos y accesos a otros view controllers
     
@@ -201,9 +214,9 @@ class ViewController: UIViewController {
                 self.labelTextoPortrait.numberOfLines = 1
                 self.labelTexto.text = self.defaultText
                 self.labelTextoPortrait.text = self.defaultText
-                self.logoImage.image = self.normalLogoImage
+                //self.logoImage.image = self.normalLogoImage
                 
-                self.startTimer()
+                //self.startTimer()
             }
         }
     }
@@ -211,9 +224,9 @@ class ViewController: UIViewController {
     //Este método cambia la interfaz (El logo y el texto de la app) para mostrar un mensaje de error
     func showErrorIfNotPermission(error: PermissionErrors){
         DispatchQueue.main.async {
-            self.stopBlinking()
+            //self.stopBlinking()
             
-            self.logoImage.image = UIImage(named: "triste")
+            //self.logoImage.image = UIImage(named: "triste")
             self.labelTexto.numberOfLines = 2
             self.labelTextoPortrait.numberOfLines = 2
             self.permissionError = true
@@ -253,13 +266,13 @@ class ViewController: UIViewController {
         }
     }
     
-    //Este método detiene la animación de parpadeo del logotipo
+   /* //Este método detiene la animación de parpadeo del logotipo
     func stopBlinking(){
         if logoImage.isAnimating {
             logoImage.stopAnimating()
         }
         blinkTimer.invalidate()
-    }
+    }*/
    
     //Este método carga la libreria de la app, siempre y cuando el usuario halla dado permiso
     @objc func goToImages(){
