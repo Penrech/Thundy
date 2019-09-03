@@ -18,7 +18,6 @@ class TutorialStepViewController: UIViewController {
   
     }
     
-   
     @IBOutlet weak var downView: UIView!
     @IBOutlet weak var buttonStart: RoundButton!
     @IBAction func startCamera(_ sender: Any) {

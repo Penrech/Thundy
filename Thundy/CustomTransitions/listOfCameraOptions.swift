@@ -18,6 +18,10 @@ class ListOfCameraOptions {
     let initialExposureOption: ExposureOption?
     let initialSensibilityOption = 1
     
+    let isoKey = "isoKey"
+    let exposureKey =  "exposureKey"
+    let sensibilityKey = "sensibilityKey"
+    
     var defaultISOoption: ISOoption? = nil
     var defaultExposureOption: ExposureOption? = nil
     

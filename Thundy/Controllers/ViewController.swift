@@ -44,10 +44,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         images = [blinkLogoImage!, normalLogoImage!]
         
-        startTimer()
         //Esta línea es importante, ya que define el conjunto de animaciones de transición que utiliza la aplicación, salvo las de acceder a la cámara
         navigationController?.addCustomTransitioning()
  
+        //imagesButton = UIBarButtonItem(image: UIImage(named: "info-1"), style: .plain, target: self, action: #selector(showInfo))
         imagesButton = UIBarButtonItem(image: UIImage(named: "info-1"), style: .plain, target: self, action: #selector(showInfo))
         infoButton = UIBarButtonItem(image: UIImage(named: "galeria"), style: .plain, target: self, action: #selector(goToImages))
         
@@ -60,6 +60,7 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         navigationController?.navigationBar.backgroundColor = .clear
         
         guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
@@ -70,6 +71,7 @@ class ViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         navigationController?.navigationBar.barStyle = .blackTranslucent
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
@@ -79,7 +81,13 @@ class ViewController: UIViewController {
         if navigationController!.isNavigationBarHidden {
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
-
+        
+        startTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        stopBlinking()
     }
 
     //MARK: - métodos para controlar la animación de parpadeo
@@ -87,14 +95,18 @@ class ViewController: UIViewController {
     func startTimer(){
         if let blinkTimer = blinkTimer {
             if !blinkTimer.isValid {
-                self.blinkTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(startBlinking), userInfo: nil, repeats: true)
+                self.blinkTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] timer in
+                    self?.startBlinking()
+                }
             }
         } else {
-            blinkTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(startBlinking), userInfo: nil, repeats: true)
+            self.blinkTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] timer in
+                self?.startBlinking()
+            }
         }
     }
     
-    @objc func startBlinking(){
+    func startBlinking(){
         if logoImage.isAnimating {
             logoImage.stopAnimating()
         }

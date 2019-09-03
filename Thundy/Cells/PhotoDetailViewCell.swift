@@ -24,7 +24,7 @@ class PhotoDetailViewCell: UICollectionViewCell {
     
     //MARK: - variables
     
-    var delegate : cellZoomDelegate?
+    weak var delegate : cellZoomDelegate?
     
     var positionY: CGFloat = 0
     var positionX: CGFloat = 0

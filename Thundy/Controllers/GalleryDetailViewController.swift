@@ -30,7 +30,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         return collectionView.indexPathForItem(at: center)
     }
     
-    var delegate: SendAllDeleted?
+    weak var delegate: SendAllDeleted?
     
     var allPhotos : PHFetchResult<PHAsset>? = nil
     var startIndexPath = IndexPath(row: 0, section: 0)
@@ -110,7 +110,6 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     }
     
     override func viewDidAppear(_ animated: Bool) {
-
         super.viewDidAppear(animated)
         
         if navigationController!.isNavigationBarHidden {
@@ -130,6 +129,8 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
         let currentIndexPath2 = collectionView.indexPathsForVisibleItems[0]
         let currentCell = collectionView.cellForItem(at: currentIndexPath2) as! PhotoDetailViewCell
         
@@ -138,17 +139,16 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         }
         collectionView.collectionViewLayout.invalidateLayout()
         
-        coordinator.animate(alongsideTransition: { (transitionContext) in
+        coordinator.animate(alongsideTransition: { [weak self] (transitionContext) in
             
             currentCell.setImageWhenRotate()
             if UIDevice.current.orientation.isLandscape {
-                self.manageHideStatusOfBars(type: .hideStatusBar)
+                self?.manageHideStatusOfBars(type: .hideStatusBar)
             } else {
-                self.manageHideStatusOfBars(type: .showStatusBar)
+                self?.manageHideStatusOfBars(type: .showStatusBar)
             }
             
         }) { (completion) in
-            
             self.collectionView.collectionViewLayout.invalidateLayout()
         }
     }
@@ -168,12 +168,14 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     func adjustConstraints(){
         if UIDevice.current.hasNotch{
             print("Device has notch")
+            
             safeAreaLeadingConstraint.priority = .defaultLow
             safeAreaTrailingConstraint.priority = .defaultLow
             superViewLeadingConstraint.priority = .defaultHigh
             superViewTrailingConstraint.priority = .defaultHigh
         } else {
             print("Device has not notch")
+            
             safeAreaLeadingConstraint.priority = .defaultHigh
             safeAreaTrailingConstraint.priority = .defaultHigh
             superViewLeadingConstraint.priority = .defaultLow
@@ -189,7 +191,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         let actualIndexPath = collectionView.indexPathsForVisibleItems[0]
         let actualCell = collectionView.cellForItem(at: actualIndexPath) as! PhotoDetailViewCell
         
-        //Check if is bounds
+        //Check if is inside the bounds
         let boundsOfView = actualCell.detailImageView.bounds
         let placeTouched = recognizer.location(in: actualCell.detailImageView)
         if placeTouched.x >= 0.0 && placeTouched.x <= boundsOfView.width && placeTouched.y >= 0.0 && placeTouched.y <= boundsOfView.height{
@@ -266,11 +268,11 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (action) in
             if assetSelected != nil {
-                self.customPhotoManager.deletePhotos(assetsToDelete: [assetSelected!], completionHandler: { (success, error, remainPhotos) in
+                self.customPhotoManager.deletePhotos(assetsToDelete: [assetSelected!], completionHandler: { [weak self] (success, error, remainPhotos) in
                     if success{
-                        self.successDeletingPhotos(selectionToDelete: [indexOfPhoto], remainPhotos: remainPhotos)
+                        self?.successDeletingPhotos(selectionToDelete: [indexOfPhoto], remainPhotos: remainPhotos)
                     } else {
-                        self.errorDeletingPhotos()
+                        self?.errorDeletingPhotos()
                     }
                 })
             }
@@ -296,23 +298,23 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
             self.allPhotos = remainPhotos
             self.collectionView.performBatchUpdates({
                 self.collectionView.deleteItems(at: selectionToDelete)
-            }) { (finished) in
-                let visibleItems = self.collectionView.indexPathsForVisibleItems
-                if visibleItems.count > 0 {
-                    self.collectionView.reloadItems(at: visibleItems)
+            }) { [weak self] (finished) in
+                if let visibleItems = self?.collectionView.indexPathsForVisibleItems {
+                    if visibleItems.count > 0 {
+                        self?.collectionView.reloadItems(at: visibleItems)
+                    }
+     
+                    if self?.allPhotos?.count == 0 {
+                        //Mover al inicial, mostrar que no hay nada
+                        self?.noMorePhotos = true
+                        self?.closeViewController()
+                    }
                 }
- 
-                if self.allPhotos?.count == 0 {
-                    //Mover al inicial, mostrar que no hay nada
-                    self.noMorePhotos = true
-                    self.closeViewController()
-                } 
             }
         }
     }
     
     @objc func shareImage(){
-        
         let indice = self.collectionView.indexPathsForVisibleItems[0]
         let asset = self.allPhotos?.object(at: indice.row)
         guard let imagenUrlACompartir = UIImage().shareImage(asset: asset!) else { return }
@@ -443,6 +445,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
     }
 
 }
+
 extension GalleryDetailViewController: cellZoomDelegate {
     func cellDidZoom(toDefaultZoom: Bool) {
         if !toDefaultZoom {

@@ -16,7 +16,6 @@
 		B95165B32269C2B60009AAB5 /* UINavigationController+customTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95165B22269C2B60009AAB5 /* UINavigationController+customTransition.swift */; };
 		B95165BE2269E0CD0009AAB5 /* TypeOfTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95165BD2269E0CD0009AAB5 /* TypeOfTransition.swift */; };
 		B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C36F225228B4005DF25F /* PhotoViewController.swift */; };
-		B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */; };
 		B958C374225233E0005DF25F /* UIButton+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C373225233E0005DF25F /* UIButton+Animation.swift */; };
 		B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */; };
 		B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */; };
@@ -26,12 +25,12 @@
 		B972EDB4225B965900C16640 /* RoundedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972EDB3225B965900C16640 /* RoundedCard.swift */; };
 		B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9814E0F224F9AA700F1C0CC /* RoundButton.swift */; };
 		B9844B2D226889A200CB78F2 /* UIDevice+notch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9844B2C226889A200CB78F2 /* UIDevice+notch.swift */; };
-		B9844B2F2268AACA00CB78F2 /* UIView+anchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9844B2E2268AACA00CB78F2 /* UIView+anchor.swift */; };
 		B99501A62265C5DA00CC1F35 /* Phasset+share.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501A52265C5DA00CC1F35 /* Phasset+share.swift */; };
 		B99501AF2265E34700CC1F35 /* GalleryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */; };
 		B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */; };
 		B99BA77B2254D4E6009CBC47 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */; };
 		B9C2F639225CAA59004B4A81 /* CustomPhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */; };
+		B9D7219A227C8D2200B276F5 /* cameraSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D72199227C8D2200B276F5 /* cameraSettingsViewController.swift */; };
 		B9D7666E2270B7450092D168 /* listOfCameraOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */; };
 		B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */; };
 		B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */; };
@@ -55,7 +54,6 @@
 		B95165B22269C2B60009AAB5 /* UINavigationController+customTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+customTransition.swift"; sourceTree = "<group>"; };
 		B95165BD2269E0CD0009AAB5 /* TypeOfTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeOfTransition.swift; sourceTree = "<group>"; };
 		B958C36F225228B4005DF25F /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
-		B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Orientation.swift"; sourceTree = "<group>"; };
 		B958C373225233E0005DF25F /* UIButton+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Animation.swift"; sourceTree = "<group>"; };
 		B958C37722524FD8005DF25F /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Fetch.swift"; sourceTree = "<group>"; };
@@ -65,12 +63,12 @@
 		B972EDB3225B965900C16640 /* RoundedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCard.swift; sourceTree = "<group>"; };
 		B9814E0F224F9AA700F1C0CC /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		B9844B2C226889A200CB78F2 /* UIDevice+notch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+notch.swift"; sourceTree = "<group>"; };
-		B9844B2E2268AACA00CB78F2 /* UIView+anchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+anchor.swift"; sourceTree = "<group>"; };
 		B99501A52265C5DA00CC1F35 /* Phasset+share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Phasset+share.swift"; sourceTree = "<group>"; };
 		B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryDetailViewController.swift; sourceTree = "<group>"; };
 		B99501B02265EDC300CC1F35 /* PhotoDetailViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewCell.swift; sourceTree = "<group>"; };
 		B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoAlbum.swift; sourceTree = "<group>"; };
+		B9D72199227C8D2200B276F5 /* cameraSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cameraSettingsViewController.swift; sourceTree = "<group>"; };
 		B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = listOfCameraOptions.swift; sourceTree = "<group>"; };
 		B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ext.swift"; sourceTree = "<group>"; };
 		B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scale.swift"; sourceTree = "<group>"; };
@@ -128,6 +126,7 @@
 				B958C36F225228B4005DF25F /* PhotoViewController.swift */,
 				B99BA77A2254D4E6009CBC47 /* GalleryViewController.swift */,
 				B99501AE2265E34700CC1F35 /* GalleryDetailViewController.swift */,
+				B9D72199227C8D2200B276F5 /* cameraSettingsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -154,7 +153,6 @@
 			isa = PBXGroup;
 			children = (
 				B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */,
-				B958C371225231E2005DF25F /* UINavigationController+Orientation.swift */,
 				B958C373225233E0005DF25F /* UIButton+Animation.swift */,
 				B958C37B2252609C005DF25F /* UIImageView+Fetch.swift */,
 				B958C37D22526644005DF25F /* UIApplication+statusBar.swift */,
@@ -163,7 +161,6 @@
 				B972EDB1225B646E00C16640 /* Date+Milis.swift */,
 				B99501A52265C5DA00CC1F35 /* Phasset+share.swift */,
 				B9844B2C226889A200CB78F2 /* UIDevice+notch.swift */,
-				B9844B2E2268AACA00CB78F2 /* UIView+anchor.swift */,
 				B95165B22269C2B60009AAB5 /* UINavigationController+customTransition.swift */,
 			);
 			path = Extensions;
@@ -287,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9D7219A227C8D2200B276F5 /* cameraSettingsViewController.swift in Sources */,
 				B9814E10224F9AA700F1C0CC /* RoundButton.swift in Sources */,
 				B90566AC225DFD97001DDFC2 /* TutorialStepViewController.swift in Sources */,
 				B95165AF2269C1050009AAB5 /* TransitionAnimator.swift in Sources */,
@@ -311,8 +309,6 @@
 				B99501A62265C5DA00CC1F35 /* Phasset+share.swift in Sources */,
 				B958C37822524FD8005DF25F /* PhotoCollectionViewCell.swift in Sources */,
 				B9F9255C224F842900CD2F9C /* AppDelegate.swift in Sources */,
-				B958C372225231E2005DF25F /* UINavigationController+Orientation.swift in Sources */,
-				B9844B2F2268AACA00CB78F2 /* UIView+anchor.swift in Sources */,
 				B9C2F639225CAA59004B4A81 /* CustomPhotoAlbum.swift in Sources */,
 				B958C370225228B4005DF25F /* PhotoViewController.swift in Sources */,
 				B95165B32269C2B60009AAB5 /* UINavigationController+customTransition.swift in Sources */,

@@ -14,18 +14,14 @@ import CoreMotion
 class PhotoViewController: UIViewController {
 
     // MARK: - variables
-    
-    let isoKey = "isoKey"
-    let exposureKey =  "exposureKey"
-    let sensibilityKey = "sensibilityKey"
-    let optionsViewShowHeight = 225
+
+    var optionsViewController: cameraSettingsViewController?
+    let containerViewHeight = 225
     
     let scanImage = UIImage(named: "scan")
     let pauseImage = UIImage(named: "pause")
     var scanning = false
     var lastValue: Double!
-  /*  let maxGapBetweenPeaks = 500
-    let minGapBetweenPeaks = 50*/
     
     var oldMaxBrightness: Double = 0
     var oldMinBrightness: Double = 0
@@ -62,40 +58,17 @@ class PhotoViewController: UIViewController {
 
     var stillImageOutput: AVCapturePhotoOutput?
     
-    var supportedISO : [ListOfCameraOptions.ISOoption] = []
-    var supportedExposure: [ListOfCameraOptions.ExposureOption] = []
-    
     // MARK: - Outlets
     
-    @IBOutlet weak var optionsScrollview: UIScrollView!
-    @IBOutlet weak var optionsViewHeightContraint: NSLayoutConstraint!
-    @IBOutlet weak var isoSlider: UISlider!
-    @IBOutlet weak var isoStackView: UIStackView!
-    @IBOutlet weak var exposureSlider: UISlider!
-    @IBOutlet weak var exposureStackView: UIStackView!
-    @IBOutlet weak var sensibilitySlider: UISlider!
-    @IBOutlet weak var optionsView: UIView! {
+    @IBOutlet weak var containerViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var ContainerView: UIView!{
         didSet{
-            optionsView.layer.cornerRadius = 24
-            optionsView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            ContainerView.layer.cornerRadius = 24
+            ContainerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         }
     }
+
     @IBOutlet weak var settingsButton: UIButton!
-    
-    //Aqui controlo los sliders de opciones
-    @IBAction func isoOptionsChange(_ sender: Any) {
-       isoSlider.value = round(self.isoSlider.value)
-        setNewIso(value: Int(isoSlider!.value))
-    }
-    @IBAction func ExposureOptionsChange(_ sender: Any) {
-       exposureSlider.value = round(self.exposureSlider.value)
-        setNewExposure(value: Int(exposureSlider!.value))
-    }
-    @IBAction func SensibilityOptionsChange(_ sender: Any) {
-        sensibilitySlider.value = round(self.sensibilitySlider.value)
-        setNewSensibility(value: Int(sensibilitySlider!.value))
-    }
-    
     @IBOutlet weak var scanButton: UIButton!
     @IBOutlet weak var thunderCountLabel: UILabel!
     @IBOutlet weak var photoAlertView: UIView!
@@ -113,17 +86,10 @@ class PhotoViewController: UIViewController {
     
     @IBAction func openSettings(_ sender: Any) {
         if settingsWindowOpen {
-            showOptionsView(show: false)
+           showOptionsView(show: false)
         } else {
             showOptionsView(show: true)
         }
-    }
-    @IBAction func restoreSettings(_ sender: Any) {
-        restoreValues()
-    }
-    
-    @IBAction func closeSettins(_ sender: Any) {
-        showOptionsView(show: false)
     }
     
     @IBAction func closePhotoViewController(_ sender: Any) {
@@ -139,7 +105,9 @@ class PhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setInitialExposureValues()
+        if let cameraVC = optionsViewController {
+            cameraVC.setInitialExposureValues()
+        }
         
         closeButton.setImage(closeButton.image(for: .normal)!.addShadow(shadowHeight: 35), for: .normal)
         thunderIcon.image = thunderIcon.image?.addShadow(shadowHeight: 35)
@@ -157,19 +125,21 @@ class PhotoViewController: UIViewController {
     //Oculto el botón de escaneo hasta que la cámara halla sido configurada
     //Cargo el album de Thundy, en principio debería estar ya creado, pero si no está el método lo creará
     override func viewWillAppear(_ animated: Bool) {
-        optionsView.isHidden = true
-        customAlbumManager.getAlbum(title: customAlbumManager.photoAlbumName) { (album) in
+        super.viewWillAppear(animated)
+        ContainerView.isHidden = true
+        
+        customAlbumManager.getAlbum(title: customAlbumManager.photoAlbumName) { [weak self] (album) in
             if let _ = album {
                 OperationQueue.main.addOperation {
-                    if !self.scanButton.isEnabled && self.captureSession.isRunning {
-                        self.scanButton.isEnabled = true
-                        self.settingsButton.isEnabled = true
+                    if let buttonEnabled = self?.scanButton.isEnabled , let sessionRunning = self?.captureSession.isRunning, !buttonEnabled && sessionRunning {
+                        self?.scanButton.isEnabled = true
+                        self?.settingsButton.isEnabled = true
                     }
                 }
             } else {
                 let alerta = UIAlertController(title: "Unspected Error", message: "Thundy couldn't load it's photo album and unspected error occured. Please, try start it again.", preferredStyle: .alert)
                 alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (alerta) in
-                    self.dismiss(animated: true, completion: nil)
+                    self?.dismiss(animated: true, completion: nil)
                 }))
                 }
             }
@@ -181,18 +151,19 @@ class PhotoViewController: UIViewController {
     //Para mejorar la apariencia de la animación de entrada, oculto en un principio el menú de opciones, aquí lo activo de nuevo
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        optionsView.isHidden = false
+        
+        ContainerView.isHidden = false
     }
     
     //Gestiono el cambio de portrait a landscape, desactivo las animaciones para evitar efectos extraños
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        UIView.setAnimationsEnabled(false)
-       coordinator.animate(alongsideTransition: { (contexto) in
+       UIView.setAnimationsEnabled(false)
+       coordinator.animate(alongsideTransition: { [weak self] (contexto) in
      
             DispatchQueue.main.async(execute: {
-                self.updateVideoOrientation()
+                self?.updateVideoOrientation()
                 UIView.setAnimationsEnabled(true)
             })
             
@@ -218,11 +189,12 @@ class PhotoViewController: UIViewController {
         //Obtenemos la cámara trasera para capturar video
         let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: AVCaptureDevice.Position.back)
         
-        guard let captureDevice = deviceDiscoverySession.devices.first else {
+        guard let captureDevice = deviceDiscoverySession.devices.first, let settings = optionsViewController else {
             return
         }
         
         captureDeviceRef = captureDevice
+        
         
         //Arrancamos la sesión
         do {
@@ -244,28 +216,29 @@ class PhotoViewController: UIViewController {
             // Si el dispositivo no lo permite, mantengo las que hay por defecto y desactivo la opción de poder utilizar ajustes avanzados
                 if captureDevice.isExposureModeSupported(.custom){
                     let preferences = UserDefaults.standard
-                    initializeOptionsMenu(device: captureDevice)
-                    
                     var exposureTime = CMTime(value: 1, timescale: 250)
                     var iso: Float = 100
                     
-                    if let defaultId = preferences.value(forKey: isoKey) as? Int {
-                        if let isoElement = supportedISO.first(where: {$0.id == defaultId}){
+                    settings.initializeOptionsMenu(device: captureDevice)
+                    
+                    if let isoKey = optionsViewController?.isoKey, let defaultId = preferences.value(forKey: isoKey) as? Int {
+                        if let isoElement = settings.supportedISO.first(where: {$0.id == defaultId}){
                             iso = isoElement.option
                         }
                     }
-                    if let defaultExposure = preferences.value(forKey: exposureKey) as? Int {
-                        if let exposureElement = supportedExposure.first(where: {$0.id == defaultExposure}){
+                    if let exposureKey = optionsViewController?.exposureKey, let defaultExposure = preferences.value(forKey: exposureKey) as? Int {
+                        if let exposureElement = settings.supportedExposure.first(where: {$0.id == defaultExposure}){
                             exposureTime = exposureElement.option
                         }
                     }
+        
                     if exposureTime < captureDevice.activeFormat.minExposureDuration {
                         exposureTime = captureDevice.activeFormat.minExposureDuration
                     }
                     if iso < captureDevice.activeFormat.minISO {
                         iso = captureDevice.activeFormat.minISO
                     }
-                    print("ExposureTime: \(exposureTime), ISO: \(iso)")
+                    
                     captureDevice.setExposureModeCustom(duration: exposureTime, iso: iso, completionHandler: nil)
                     
                 } else {
@@ -298,7 +271,7 @@ class PhotoViewController: UIViewController {
                 self.view.bringSubviewToFront(self.closeButton)
                 self.view.bringSubviewToFront(self.photoAlertView)
                 self.view.bringSubviewToFront(self.AlertSteady)
-                self.view.bringSubviewToFront(self.optionsView)
+                self.view.bringSubviewToFront(self.ContainerView)
                 self.view.bringSubviewToFront(self.settingsButton)
                 
                 if !self.scanButton.isEnabled && self.customAlbumManager.albumReference != nil {
@@ -310,8 +283,8 @@ class PhotoViewController: UIViewController {
         } catch {
             print(error)
             let alerta = UIAlertController(title: "Unspected Error", message: "Thundy couldn't load the camera and unspected error occured. Please, try start it again.", preferredStyle: .alert)
-            alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (alerta) in
-                self.dismiss(animated: true, completion: nil)}))
+            alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { [weak self] (alerta) in
+                self?.dismiss(animated: true, completion: nil)}))
             return
         }
     
@@ -410,7 +383,7 @@ class PhotoViewController: UIViewController {
     // MARK: - Metodos para tomar fotos
     
     //Este método inicia la captura de una fotografía, se llama cuando un rayo es detectado
-    func photoTaken(luminosityWhenDetected: Double){
+    func photoTaken(){
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         photoSettings.isAutoStillImageStabilizationEnabled = true
         photoSettings.isHighResolutionPhotoEnabled = true
@@ -490,8 +463,7 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
         if -self.oldMinBrightness < brightness {
             self.oldMinBrightness = abs(brightness)
         }
-        print("Brillo en bruto: \(brightness)")
-        print("Constante compensacion: \(oldMinBrightness)")
+        
         return brightness
     }
     
@@ -551,8 +523,8 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
         }
         if active {
             showAlertToUser(show: true)
-            steadyTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { (timer) in
-                self.showAlertToUser(show: false)
+            steadyTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false, block: { [weak self] (timer) in
+                self?.showAlertToUser(show: false)
             })
         }
     }
@@ -569,12 +541,12 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
         }
         if active {
             print("Inició espera de 2 segundos por si la luminosidad se mantiene")
-            controlLuxTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { (timer) in
+            controlLuxTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { [weak self] (timer) in
      
-                if self.scanningPauseBetweenPhotoGap {
+                if let pauseBool = self?.scanningPauseBetweenPhotoGap, pauseBool {
                     print("La luminosidad ha cambiado, ajustando...")
-                    self.lastValue = nil
-                    self.scanningPauseBetweenPhotoGap = false
+                    self?.lastValue = nil
+                    self?.scanningPauseBetweenPhotoGap = false
                 }
             })
         }
@@ -623,7 +595,7 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
         let normalizedLastValue = max(lastValue + oldMinBrightness, 0)
         
         //Este porcentaje determina la sensibilidad a la que se detectan los rayos
-        let porcentajeAumentoLuminosidad = getSensibility()
+        let porcentajeAumentoLuminosidad = optionsViewController?.getSensibility() ?? 0.25
         
         if normalizedLuminosity > normalizedLastValue + normalizedLastValue * porcentajeAumentoLuminosidad {
 
@@ -633,12 +605,18 @@ extension PhotoViewController: AVCaptureMetadataOutputObjectsDelegate , AVCaptur
             
             scanningPauseBetweenPhotoGap = true
             setControlLuminosityTimer(active: true)
-            photoTaken(luminosityWhenDetected: luminosity)
+            photoTaken()
             
         }
         self.lastValue = luminosity
     }
  
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "settingsSegue", let vc = segue.destination as? cameraSettingsViewController {
+            self.optionsViewController = vc
+            vc.delegate = self
+        }
+    }
     
 }
 // MARK: - Extension encargada de gestionar las fotos realizadas
@@ -660,164 +638,65 @@ extension PhotoViewController: AVCapturePhotoCaptureDelegate{
         if let luminosidadInicial = referenceLuminosity {
             let luminosidadInicialNormalizada = luminosidadInicial + oldMinBrightness
             let luminosidadFinal = calcularLuminosidad(capturedImage: photo) + oldMinBrightness
-       
+  
             if luminosidadFinal >= luminosidadInicialNormalizada {
                 print("Rayo detectado y guardado...")
                 self.saveAndSetPhoto(imageData: imageData)
+            } else {
+                self.scanningPauseWhenIsTakingPhoto = false
             }
         }
-        scanningPauseWhenIsTakingPhoto = false
+        
     }
     
     // En este método guardo finalmente la imagen tomada haciendo uso de mi clase destinada a gestionar las fotos
     func saveAndSetPhoto(imageData: Data){
-        
         let stillImage = UIImage(data: imageData)
-        customAlbumManager.save(photo: stillImage!, toAlbum: customAlbumManager.photoAlbumName) { (success, error) in
+        customAlbumManager.save(photo: stillImage!, toAlbum: customAlbumManager.photoAlbumName) { [weak self] (success, error) in
             if success{
                 OperationQueue.main.addOperation {
-                    self.rayCapturedNumber += 1
-                    self.showAlertView()
+                    self?.rayCapturedNumber += 1
+                    self?.showAlertView()
                 }
             }
+            
+            self?.scanningPauseWhenIsTakingPhoto = false
         }
     }
     
 }
 // MARK: - options view over
 
-extension PhotoViewController {
-    //En este método inicializo los valores por defecto de las opciones de ajustes. Si están guardados en preferences inicializo con los guardados
-    //Sino, guardo los que hay por defecto en preferences
-    func setInitialExposureValues(){
-        let preferences = UserDefaults.standard
-        if let defaultIso = ListOfCameraOptions.shared.defaultISOoption, let defaultExposure = ListOfCameraOptions.shared.defaultExposureOption {
-   
-            if let ISOId = preferences.value(forKey: isoKey) as? Int {
-                ListOfCameraOptions.shared.defaultISOoption = ListOfCameraOptions.shared.ISOoptions.first(where: {$0.id == ISOId})
-            } else {
-                preferences.set(defaultIso.id, forKey: isoKey)
-            }
-            if let exposureId = preferences.value(forKey: exposureKey) as? Int {
-                ListOfCameraOptions.shared.defaultExposureOption = ListOfCameraOptions.shared.ExposureOptions.first(where: {$0.id == exposureId})
-            } else {
-                preferences.set(defaultExposure.id, forKey: exposureKey)
-            }
-            if let sensibilityValue = preferences.value(forKey: sensibilityKey) as? Int {
-                sensibilitySlider.value = Float(sensibilityValue)
-            } else {
-                preferences.set(ListOfCameraOptions.shared.initialSensibilityOption, forKey: sensibilityKey)
-            }
-        }
-    }
-    
-    //Aquí compruebo cuales de las opciones de iso y exposición definidas son compatibles con la cámara del dispositivo.
-    //En un principio el rango especificado es bastante común y todos los dispositivos deberían poder hacer uso de todas las opciones
-    func initializeOptionsMenu(device: AVCaptureDevice){
-    
-        for iso in ListOfCameraOptions.shared.ISOoptions {
-            if iso.option > device.activeFormat.minISO && iso.option < device.activeFormat.maxISO {
-                supportedISO.append(iso)
-            }
-        }
-        for exposure in ListOfCameraOptions.shared.ExposureOptions {
-            if exposure.option > device.activeFormat.minExposureDuration && exposure.option < device.activeFormat.maxExposureDuration {
-                supportedExposure.append(exposure)
-            }
-        }
-        
-        DispatchQueue.main.async {
-            self.isoStackView.subviews.forEach({$0.removeFromSuperview()})
-            self.exposureStackView.subviews.forEach({$0.removeFromSuperview()})
-            
-            self.isoSlider.maximumValue = Float(self.supportedISO.count - 1)
-            self.isoSlider.minimumValue = 0
-            self.exposureSlider.maximumValue = Float(self.supportedExposure.count - 1)
-            self.exposureSlider.minimumValue = 0
-            
-            for (index,iso) in self.supportedISO.enumerated() {
-                let label = UILabel()
-                label.font = UIFont(name: "Comfortaa-Regular", size: 12)
-                label.minimumScaleFactor = 0.5
-                label.text = "\(Int(iso.option))"
-                self.isoStackView.addArrangedSubview(label)
-                if iso.id == ListOfCameraOptions.shared.defaultISOoption?.id {
-                    self.isoSlider.value = Float(index)
-                }
-            }
-            
-            for (index,exposure) in self.supportedExposure.enumerated(){
-                let label = UILabel()
-                label.font = UIFont(name: "Comfortaa-Regular", size: 12)
-                label.minimumScaleFactor = 0.5
-                label.text = exposure.name
-                self.exposureStackView.addArrangedSubview(label)
-                if exposure.id == ListOfCameraOptions.shared.defaultExposureOption?.id {
-                    self.exposureSlider.value = Float(index)
-                }
-            }
-       
-        }
-   
-    }
- 
-    //Esta función es llamada cuando el usuario utiliza el botón de restaurar opciones a opciones por defecto
-    func restoreValues(){
-        let initialIso = ListOfCameraOptions.shared.initialISOoption
-        let initialExposure = ListOfCameraOptions.shared.initialExposureOption
-        let initialSensibility = ListOfCameraOptions.shared.initialSensibilityOption
-        if let isoSupported = supportedISO.firstIndex(where: {$0.id == initialIso?.id}){
-            isoSlider.value = Float(isoSupported)
-            setNewIso(value: isoSupported)
-        } else {
-            isoSlider.value = 0
-            setNewIso(value: 0)
-        }
-        if let exposureSupporte = supportedExposure.firstIndex(where: {$0.id == initialExposure?.id}) {
-            exposureSlider.value = Float(exposureSupporte)
-            setNewExposure(value: exposureSupporte)
-        } else {
-            exposureSlider.value = 0
-            setNewExposure(value: 0)
-        }
-        sensibilitySlider.value = Float(initialSensibility)
-        setNewSensibility(value: initialSensibility)
-    }
-    
-    // MARK: - métodos set
-    //Los siguientes métodos cambian el valor de alguno de los ajustes al valor especificado por el usuario
-    
-    func setNewSensibility(value: Int){
+extension PhotoViewController: cameraSettingsDelegate {
+
+    func setNewSensibility(value: Int) {
         if !captureSession.isRunning {
             return
         }
         
-        let preferences = UserDefaults.standard
-        preferences.set(value, forKey: sensibilityKey)
-    
+        if let sensibilityKey = optionsViewController?.sensibilityKey {
+            let preferences = UserDefaults.standard
+            preferences.set(value, forKey: sensibilityKey)
+        }
+        
     }
     
-    func getSensibility() -> Double{
-        let sensibility = ListOfCameraOptions.shared.SensitibilityOptions[Int(sensibilitySlider.value)]
-        return sensibility
-    }
-    
-    func setNewIso(value: Int){
+    func setNewIso(value: ListOfCameraOptions.ISOoption) {
         if !captureSession.isRunning{
             return
         }
         
-        let newValue = supportedISO[value]
-        
         guard let captureDevice = captureDeviceRef else { return }
-   
+        
         do {
             try captureDevice.lockForConfiguration()
             if captureDevice.isExposureModeSupported(.custom){
                 
-                captureDevice.setExposureModeCustom(duration: captureDevice.exposureDuration, iso: newValue.option) { (time) in
-                    let preferences = UserDefaults.standard
-                    preferences.set(newValue.id, forKey: self.isoKey)
+                captureDevice.setExposureModeCustom(duration: captureDevice.exposureDuration, iso: value.option) { [weak self] (time) in
+                    if let isoKey = self?.optionsViewController?.isoKey {
+                        let preferences = UserDefaults.standard
+                        preferences.set(value.id, forKey: isoKey)
+                    }
                 }
             }
             
@@ -832,23 +711,22 @@ extension PhotoViewController {
         captureDevice.unlockForConfiguration()
     }
     
-    func setNewExposure(value: Int){
+    func setNewExposure(value: ListOfCameraOptions.ExposureOption) {
         if !captureSession.isRunning{
             return
         }
         
-        let newValue = supportedExposure[value]
-        
         guard let captureDevice = captureDeviceRef else { return }
-     
+        
         do {
             try captureDevice.lockForConfiguration()
             if captureDevice.isExposureModeSupported(.custom){
-              
-                captureDevice.setExposureModeCustom(duration: newValue.option, iso: captureDevice.iso) { (time) in
-                  let preferences = UserDefaults.standard
-                  
-                  preferences.set(newValue.id, forKey: self.exposureKey)
+                
+                captureDevice.setExposureModeCustom(duration: value.option, iso: captureDevice.iso) { [weak self] (time) in
+                    if let exposureKey = self?.optionsViewController?.exposureKey {
+                        let preferences = UserDefaults.standard
+                        preferences.set(value.id, forKey: exposureKey)
+                    }
                 }
             }
         } catch {
@@ -862,23 +740,30 @@ extension PhotoViewController {
         captureDevice.unlockForConfiguration()
     }
     
+    func showSettings(show: Bool) {
+        showOptionsView(show: show)
+    }
+    
     //En este método se gestiona cuando se debe mostrar o ocultar la ventana de ajustes
     func showOptionsView(show: Bool){
         if show {
             settingsWindowOpen = true
             scanButton.isEnabled = false
-            self.optionsViewHeightContraint.constant = CGFloat(self.optionsViewShowHeight)
+            self.containerViewHeightConstraint.constant = CGFloat(self.containerViewHeight)
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
         } else {
             scanButton.isEnabled = true
-            optionsScrollview.setContentOffset(CGPoint.zero, animated: true)
-            self.optionsViewHeightContraint.constant = 0
+            if let settings = optionsViewController {
+                settings.resetScrollFromTable()
+            }
+            self.containerViewHeightConstraint.constant = 0
             UIView.animate(withDuration: 0.15) {
                 self.view.layoutIfNeeded()
             }
             settingsWindowOpen = false
         }
     }
+    
 }

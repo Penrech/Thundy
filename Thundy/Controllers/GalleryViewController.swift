@@ -95,6 +95,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         self.adjustToRotation()
         
         if let indexAtCenter = self.currentIndexPath {
@@ -131,6 +132,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         TypeOfTransition.shared.currentTransition = .DefaultSlide
     }
     
@@ -145,6 +147,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return .slide
     }
+
 
     func adjustConstraints(){
         if UIDevice.current.hasNotch{
@@ -169,17 +172,17 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     func loadImages(){
-        customPhotoManager.getPhotos(albumTitle: customPhotoManager.photoAlbumName) { (success, numberOfElements, photos) in
+        customPhotoManager.getPhotos(albumTitle: customPhotoManager.photoAlbumName) { [weak self] (success, numberOfElements, photos) in
             if success {
                 if numberOfElements! > 0 {
                     //Hay elementos, mostrar
-                    self.allPhotos = photos
-                    self.showEmptyState(show: false)
+                    self?.allPhotos = photos
+                    self?.showEmptyState(show: false)
                     
                 } else {
                     //No hay elementos, mostrar empty view
-                    self.allPhotos = photos
-                    self.showEmptyState(show: true)
+                    self?.allPhotos = photos
+                    self?.showEmptyState(show: true)
                     
                 }
             } else {
@@ -188,10 +191,10 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
                 DispatchQueue.main.async {
                     let alerta = UIAlertController(title: "Error", message: "Unspected error while loading photos, please try again", preferredStyle: .alert)
                     alerta.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
-                        self.navigationController?.popViewController(animated: true)
+                        self?.navigationController?.popViewController(animated: true)
                     }))
                     
-                    self.present(alerta, animated: true, completion: nil)
+                    self?.present(alerta, animated: true, completion: nil)
                 }
             }
         }
@@ -222,7 +225,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     @objc func deleteImages(){
-        if let seleccion = self.collectionView.indexPathsForSelectedItems{
+        if let seleccion = self.collectionView.indexPathsForSelectedItems {
             var indexPaths: [Int] = []
             for index in seleccion {
                 indexPaths.append(index.row)
@@ -236,11 +239,11 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
             let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (action) in
                 if assetsSelected != nil {
-                    self.customPhotoManager.deletePhotos(assetsToDelete: assetsSelected!, completionHandler: { (success, error, remainPhotos) in
+                    self.customPhotoManager.deletePhotos(assetsToDelete: assetsSelected!, completionHandler: { [weak self] (success, error, remainPhotos) in
                         if success{
-                            self.successDeletingPhotos(selectionToDelete: seleccion, remainPhotos: remainPhotos)
+                            self?.successDeletingPhotos(selectionToDelete: seleccion, remainPhotos: remainPhotos)
                         } else {
-                             self.errorDeletingPhotos()
+                            self?.errorDeletingPhotos()
                         }
                     })
                 }
@@ -266,15 +269,16 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             self.allPhotos = remainPhotos
             self.collectionView.performBatchUpdates({
                 self.collectionView.deleteItems(at: selectionToDelete)
-            }) { (finished) in
-                self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems)
-                if self.allPhotos == nil || self.allPhotos?.count == 0 {
-                    self.setSelectionMode(on: false)
-                    self.showEmptyState(show: true)
-                } else {
-                    self.showSelectionTitle()
+            }) { [weak self] (finished) in
+                if let itemsToReload = self?.collectionView.indexPathsForVisibleItems {
+                    self?.collectionView.reloadItems(at: itemsToReload)
+                    if self?.allPhotos == nil || self?.allPhotos?.count == 0 {
+                        self?.setSelectionMode(on: false)
+                        self?.showEmptyState(show: true)
+                    } else {
+                        self?.showSelectionTitle()
+                    }
                 }
-                
             }
         }
         
@@ -435,7 +439,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
         setSelectionMode(on: !selectionModeEnabled)
     }
     
-    func setSelectionMode(on: Bool, selectIndexPath: IndexPath? = nil){
+    func setSelectionMode(on: Bool, selectIndexPath: IndexPath? = nil) {
         selectionModeEnabled = !selectionModeEnabled
         
         if on {
@@ -489,7 +493,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
-       if segue.identifier == "imageToGalleryDetail"{
+       if segue.identifier == "imageToGalleryDetail" {
             if let element = sender as? IndexPath {
                 commingFromHome = false
                 let controlerDestino = segue.destination as! GalleryDetailViewController

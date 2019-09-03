@@ -52,26 +52,23 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         if transitionMode == .Present {
             
-            //Get view of view controller beign presented
+
             guard let presentedView = transitionContext.view(forKey: .to) else { return }
             guard let presentedViewController = transitionContext.viewController(forKey: .to) as? PhotoViewController else { return }
             let originalCenter = presentedView.center
             let originalSize = presentedView.frame.size
             let originalBackgroundColor = presentedView.backgroundColor
             
-            //Get frame of circle
+      
             circle = UIView(frame: frameForCircle(center: originalCenter, size: originalSize, start: origin))
-            //circle = UIView(frame: buttonRect!)
             circle?.layer.cornerRadius = circle!.frame.size.height / 2
             circle?.clipsToBounds = true
             circle?.center = origin
-            
-            //make it small
+
             circle?.transform = CGAffineTransform(scaleX: 0.001, y: 0.001)
             
             circle?.backgroundColor = circleColor
             
-            //Add circle to container view
             containerView.addSubview(circle!)
             
             presentedView.center = origin
@@ -106,9 +103,7 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             let originalSize = returningControllerView.frame.size
             let originalColor = returningControllerView.backgroundColor
             
-            //Get frame of circle
             circle = UIView(frame: frameForCircle(center: originalCenter, size: originalSize, start: origin))
-            //circle = UIView(frame: buttonRect!)
             circle?.layer.cornerRadius = circle!.frame.size.height / 2
             circle?.clipsToBounds = true
             circle?.center = origin
@@ -145,7 +140,6 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 transitionContext.completeTransition(finished)
             }
             
-            
         }
     }
     
@@ -157,7 +151,5 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         return heightToBeAdded
     }
-    
-
     
 }

@@ -11,6 +11,7 @@ import UIKit
 import Photos
 
 extension UIImage {
+    
     func escalarImagen(nuevaAnchura: CGFloat) -> UIImage {
 
         if self.size.width == nuevaAnchura {
@@ -29,6 +30,7 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return nuevaImagen ?? self
     }
+    
     func addShadow(shadowHeight: CGFloat) -> UIImage{
         self.withRenderingMode(.alwaysTemplate)
         let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -42,6 +44,7 @@ extension UIImage {
         
         return shadowedImage
     }
+    
     func getAssetImage(asset: PHAsset) -> UIImage{
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()

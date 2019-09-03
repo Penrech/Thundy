@@ -38,7 +38,6 @@ extension UIImageView{
             }
             
             self.image = image
-            print("Imagen colocada para asset(\(asset.localIdentifier)): \(image)")
         }
     }
     func getContentInsetsWhenScroll(){

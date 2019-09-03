@@ -135,14 +135,14 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                                 options: .calculationModeCubic,
                                 animations: animations,
                                 completion: { finished in
-                                    // 8
-                            
+                  
                                     if !self.presenting{
                                         if let collectionView = toView.subviews[0] as? UICollectionView , let indexPath = TypeOfTransition.shared.currentCellIndexPath{
                                             let cell = collectionView.cellForItem(at: indexPath)
                                             cell?.isHidden = false
                                         }
                                     }
+                                    
                                     toView.isHidden = false
                                     fromView.alpha = 1.0
                                     snapshotView.removeFromSuperview()

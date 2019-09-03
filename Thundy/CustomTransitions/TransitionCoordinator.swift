@@ -9,10 +9,9 @@
 import UIKit
 
 final class TransitionCoordinator: NSObject, UINavigationControllerDelegate {
-    // 1
+
     var interactionController: UIPercentDrivenInteractiveTransition?
     
-    // 2
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         switch operation {
         case .push:
@@ -23,8 +22,7 @@ final class TransitionCoordinator: NSObject, UINavigationControllerDelegate {
             return nil
         }
     }
-    
-    // 3
+
     func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return interactionController
     }
