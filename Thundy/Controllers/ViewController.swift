@@ -32,7 +32,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var downView: UIView!
     @IBOutlet weak var logoImage: UIImageView!
     @IBOutlet weak var labelTexto: UILabel!
-    @IBOutlet weak var labelTextoPortrait: UILabel!
     @IBOutlet weak var buttonStart: RoundButton!
     @IBAction func comenzarConLaApp(_ sender: Any) {
         askForPermissions()
@@ -84,14 +83,30 @@ class ViewController: UIViewController {
             navigationController?.setNavigationBarHidden(false, animated: true)
         }
         
-        
-        
+        setNumberOfLines(numberOfLinesPortrait: 1)
         //startTimer()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //stopBlinking()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setNumberOfLines(numberOfLinesPortrait: 1)
+    }
+    
+    private func setNumberOfLines(numberOfLinesPortrait: Int){
+        if UIDevice.current.orientation.isLandscape {
+            self.labelTexto.numberOfLines = 0
+        } else {
+            if self.permissionError {
+                self.labelTexto.numberOfLines = 2
+            } else {
+                self.labelTexto.numberOfLines = numberOfLinesPortrait
+            }
+        }
     }
     
    /* override func viewDidLayoutSubviews() {
@@ -210,10 +225,8 @@ class ViewController: UIViewController {
         DispatchQueue.main.async {
             if self.permissionError {
                 self.permissionError = false
-                self.labelTexto.numberOfLines = 1
-                self.labelTextoPortrait.numberOfLines = 1
+                self.setNumberOfLines(numberOfLinesPortrait: 1)
                 self.labelTexto.text = self.defaultText
-                self.labelTextoPortrait.text = self.defaultText
                 //self.logoImage.image = self.normalLogoImage
                 
                 //self.startTimer()
@@ -227,12 +240,10 @@ class ViewController: UIViewController {
             //self.stopBlinking()
             
             //self.logoImage.image = UIImage(named: "triste")
-            self.labelTexto.numberOfLines = 2
-            self.labelTextoPortrait.numberOfLines = 2
+            self.setNumberOfLines(numberOfLinesPortrait: 2)
             self.permissionError = true
             
             self.labelTexto.text = error.rawValue
-            self.labelTextoPortrait.text = error.rawValue
         }
     }
     

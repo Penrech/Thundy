@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="H8c-qe-ajC">
-    <device id="retina6_5" orientation="landscape">
+    <device id="retina6_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -34,11 +34,11 @@
             <objects>
                 <viewController storyboardIdentifier="galleryViewController" id="Owg-Iq-Dgf" customClass="GalleryViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" id="Evn-Oh-jr8">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ai4-kO-RcT">
-                                <rect key="frame" x="44" y="0.0" width="808" height="414"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="vTs-4m-uA4">
                                     <size key="itemSize" width="50" height="50"/>
@@ -105,13 +105,13 @@
                                 </cells>
                             </collectionView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zx2-YE-sm1" userLabel="Empty state">
-                                <rect key="frame" x="44" y="44" width="808" height="349"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="noImages" translatesAutoresizingMaskIntoConstraints="NO" id="nlw-8F-hdV">
-                                        <rect key="frame" x="16" y="16" width="776" height="142.66666666666666"/>
+                                        <rect key="frame" x="16" y="16" width="382" height="355"/>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There's no photos yet. Hurry up! Thundy is waiting for you" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rg2-jj-wth">
-                                        <rect key="frame" x="16" y="174.66666666666666" width="776" height="20.333333333333343"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There's no photos yet" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rg2-jj-wth">
+                                        <rect key="frame" x="16" y="387" width="382" height="20.333333333333314"/>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="18"/>
                                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -165,11 +165,11 @@
             <objects>
                 <viewController storyboardIdentifier="GalleryDetailViewController" extendedLayoutIncludesOpaqueBars="YES" id="Yw7-Ja-6Zm" customClass="GalleryDetailViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LSQ-ri-Qjn">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="McF-Xd-MKL">
-                                <rect key="frame" x="44" y="0.0" width="808" height="414"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="z9r-6w-ZxJ">
                                     <size key="itemSize" width="375" height="605"/>
@@ -179,7 +179,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="of7-83-n6D" customClass="PhotoDetailViewCell" customModule="Thundy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="-128" width="375" height="605"/>
+                                        <rect key="frame" x="0.0" y="84.666666666666671" width="375" height="605"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="605"/>
@@ -240,55 +240,25 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="portrait_landscape" translatesAutoresizingMaskIntoConstraints="NO" id="7BE-na-1Tb" userLabel="BackgroundImage">
-                                <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <variation key="heightClass=compact-widthClass=compact" image="landscape_landscape"/>
                                 <variation key="heightClass=compact-widthClass=regular" image="landscape_landscape"/>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZYI-2a-r6l" userLabel="UpperView">
-                                <rect key="frame" x="44" y="0.0" width="808" height="207"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's catch some friends for Thundy" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="Qt6-8S-XJt">
-                                        <rect key="frame" x="191" y="16" width="601" height="191"/>
-                                        <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="45"/>
-                                        <color key="textColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Qt6-8S-XJt" secondAttribute="trailing" constant="16" id="XqA-q8-8KO"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="subviews">
-                                        <exclude reference="Qt6-8S-XJt"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <mask key="subviews">
-                                        <exclude reference="Qt6-8S-XJt"/>
-                                    </mask>
-                                </variation>
-                                <variation key="heightClass=compact-widthClass=regular">
-                                    <mask key="subviews">
-                                        <exclude reference="Qt6-8S-XJt"/>
-                                    </mask>
-                                </variation>
-                            </view>
                             <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sbt-g7-ghp" userLabel="downView">
-                                <rect key="frame" x="44" y="207" width="808" height="186"/>
+                                <rect key="frame" x="0.0" y="448" width="414" height="414"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's catch some lightnings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="13" translatesAutoresizingMaskIntoConstraints="NO" id="3wd-yb-zon">
-                                        <rect key="frame" x="32" y="135.66666666666663" width="350" height="39.333333333333343"/>
-                                        <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="35"/>
+                                        <rect key="frame" x="32" y="204" width="350" height="33.666666666666657"/>
+                                        <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="30"/>
                                         <color key="textColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="akI-ht-38H" customClass="RoundButton" customModule="Thundy" customModuleProvider="target">
-                                        <rect key="frame" x="331.66666666666669" y="20.666666666666657" width="144.66666666666669" height="144.66666666666666"/>
+                                        <rect key="frame" x="145" y="269.66666666666663" width="124" height="124.33333333333331"/>
                                         <color key="backgroundColor" red="1" green="0.50196078431372548" blue="0.70980392156862748" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="akI-ht-38H" secondAttribute="height" multiplier="1:1" id="Vyf-ER-LBz"/>
@@ -304,74 +274,109 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="akI-ht-38H" secondAttribute="bottom" constant="20" id="1st-Ip-Nv6"/>
                                     <constraint firstItem="3wd-yb-zon" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Sbt-g7-ghp" secondAttribute="leading" constant="32" id="7iS-A3-0ld"/>
+                                    <constraint firstItem="akI-ht-38H" firstAttribute="leading" secondItem="3wd-yb-zon" secondAttribute="trailing" constant="32" id="INy-u5-UHB"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="centerY" secondItem="Sbt-g7-ghp" secondAttribute="centerY" id="J4z-ow-kAY"/>
-                                    <constraint firstItem="akI-ht-38H" firstAttribute="width" secondItem="Sbt-g7-ghp" secondAttribute="width" multiplier="0.35" id="K9e-uK-YlP"/>
+                                    <constraint firstItem="akI-ht-38H" firstAttribute="width" secondItem="Sbt-g7-ghp" secondAttribute="width" multiplier="0.3" id="K9e-uK-YlP"/>
+                                    <constraint firstItem="3wd-yb-zon" firstAttribute="height" secondItem="akI-ht-38H" secondAttribute="height" id="Qx8-Dq-ZkI"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="centerX" secondItem="Sbt-g7-ghp" secondAttribute="centerX" id="RKC-a3-Mzw"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3wd-yb-zon" secondAttribute="trailing" constant="32" id="TE6-Ms-KIJ"/>
+                                    <constraint firstItem="3wd-yb-zon" firstAttribute="centerY" secondItem="Sbt-g7-ghp" secondAttribute="centerY" id="hiV-HZ-BqL"/>
                                     <constraint firstItem="3wd-yb-zon" firstAttribute="centerX" secondItem="Sbt-g7-ghp" secondAttribute="centerX" id="jOO-2S-JAo"/>
+                                    <constraint firstAttribute="trailing" secondItem="akI-ht-38H" secondAttribute="trailing" constant="20" id="kOD-oP-GDl"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="top" secondItem="Sbt-g7-ghp" secondAttribute="centerY" id="qh7-N5-4Pl"/>
                                     <constraint firstItem="akI-ht-38H" firstAttribute="top" secondItem="3wd-yb-zon" secondAttribute="bottom" constant="32" id="rhJ-n3-lYj"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
+                                        <exclude reference="Qx8-Dq-ZkI"/>
+                                        <exclude reference="hiV-HZ-BqL"/>
+                                        <exclude reference="INy-u5-UHB"/>
                                         <exclude reference="J4z-ow-kAY"/>
+                                        <exclude reference="kOD-oP-GDl"/>
+                                        <exclude reference="qh7-N5-4Pl"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=compact-widthClass=compact">
                                     <mask key="subviews">
-                                        <exclude reference="3wd-yb-zon"/>
+                                        <include reference="3wd-yb-zon"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <exclude reference="7iS-A3-0ld"/>
+                                        <include reference="Qx8-Dq-ZkI"/>
+                                        <exclude reference="TE6-Ms-KIJ"/>
+                                        <include reference="hiV-HZ-BqL"/>
+                                        <exclude reference="jOO-2S-JAo"/>
+                                        <exclude reference="1st-Ip-Nv6"/>
+                                        <include reference="INy-u5-UHB"/>
                                         <include reference="J4z-ow-kAY"/>
                                         <exclude reference="K9e-uK-YlP"/>
+                                        <exclude reference="RKC-a3-Mzw"/>
+                                        <include reference="kOD-oP-GDl"/>
                                         <exclude reference="qh7-N5-4Pl"/>
+                                        <exclude reference="rhJ-n3-lYj"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=compact-widthClass=regular">
                                     <mask key="subviews">
-                                        <exclude reference="3wd-yb-zon"/>
+                                        <include reference="3wd-yb-zon"/>
                                     </mask>
                                     <mask key="constraints">
+                                        <exclude reference="7iS-A3-0ld"/>
+                                        <include reference="Qx8-Dq-ZkI"/>
+                                        <exclude reference="TE6-Ms-KIJ"/>
+                                        <include reference="hiV-HZ-BqL"/>
+                                        <exclude reference="jOO-2S-JAo"/>
+                                        <exclude reference="1st-Ip-Nv6"/>
+                                        <include reference="INy-u5-UHB"/>
                                         <include reference="J4z-ow-kAY"/>
                                         <exclude reference="K9e-uK-YlP"/>
+                                        <exclude reference="RKC-a3-Mzw"/>
+                                        <include reference="kOD-oP-GDl"/>
                                         <exclude reference="qh7-N5-4Pl"/>
+                                        <exclude reference="rhJ-n3-lYj"/>
                                     </mask>
                                 </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.40000000000000002" green="0.90196078430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="akI-ht-38H" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.35" id="De4-gD-N4w"/>
+                            <constraint firstItem="akI-ht-38H" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.3" id="De4-gD-N4w"/>
+                            <constraint firstItem="Sbt-g7-ghp" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="E8e-9v-IDn"/>
                             <constraint firstAttribute="bottom" secondItem="7BE-na-1Tb" secondAttribute="bottom" id="FDl-2h-KvP"/>
-                            <constraint firstItem="ZYI-2a-r6l" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="GiP-Ry-M2v"/>
+                            <constraint firstItem="3wd-yb-zon" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="GVl-CQ-2UF"/>
                             <constraint firstItem="Sbt-g7-ghp" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Inr-KH-zqb"/>
                             <constraint firstItem="Sbt-g7-ghp" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="UHs-Kr-kZi"/>
-                            <constraint firstItem="ZYI-2a-r6l" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="YD9-bO-ngu"/>
                             <constraint firstItem="7BE-na-1Tb" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="YIN-Ww-mx3"/>
-                            <constraint firstItem="ZYI-2a-r6l" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="cEe-of-TFd"/>
                             <constraint firstItem="7BE-na-1Tb" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ddo-qh-ZHa"/>
                             <constraint firstItem="Sbt-g7-ghp" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="dmH-C8-uWX">
                                 <variation key="heightClass=compact-widthClass=regular" constant="0.0"/>
                             </constraint>
                             <constraint firstAttribute="trailing" secondItem="7BE-na-1Tb" secondAttribute="trailing" id="fMm-K7-Pg3"/>
                             <constraint firstItem="Sbt-g7-ghp" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="o3Y-SO-PeV"/>
-                            <constraint firstItem="ZYI-2a-r6l" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="zJ3-ie-m9Y"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="E8e-9v-IDn"/>
+                                <exclude reference="GVl-CQ-2UF"/>
                                 <exclude reference="De4-gD-N4w"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=compact">
                             <mask key="constraints">
+                                <include reference="E8e-9v-IDn"/>
+                                <exclude reference="dmH-C8-uWX"/>
+                                <include reference="GVl-CQ-2UF"/>
                                 <include reference="De4-gD-N4w"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="dmH-C8-uWX"/>
+                                <include reference="E8e-9v-IDn"/>
+                                <exclude reference="dmH-C8-uWX"/>
+                                <include reference="GVl-CQ-2UF"/>
                                 <include reference="De4-gD-N4w"/>
                             </mask>
                         </variation>
@@ -381,7 +386,6 @@
                         <outlet property="buttonStart" destination="akI-ht-38H" id="rmx-EA-Du4"/>
                         <outlet property="downView" destination="Sbt-g7-ghp" id="7bF-Eu-NAe"/>
                         <outlet property="labelTexto" destination="3wd-yb-zon" id="ooE-o2-5dh"/>
-                        <outlet property="labelTextoPortrait" destination="Qt6-8S-XJt" id="NuQ-az-JWx"/>
                         <segue destination="Owg-Iq-Dgf" kind="show" identifier="toGalleryVC" id="6gz-O9-o2J"/>
                         <segue destination="i9d-I1-ogP" kind="show" identifier="toTutorialVC" id="Xp7-vh-AFF"/>
                         <segue destination="ho0-eA-cbi" kind="presentation" identifier="showCamera" id="9CV-b2-Gte"/>
@@ -396,11 +400,11 @@
             <objects>
                 <viewController storyboardIdentifier="photoViewController" id="ho0-eA-cbi" customClass="PhotoViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qnu-ng-zqX">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cH1-97-JbP">
-                                <rect key="frame" x="720" y="157" width="100" height="100"/>
+                                <rect key="frame" x="157" y="730" width="100" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="Bsw-mY-FRG"/>
                                     <constraint firstAttribute="height" constant="100" id="jI6-mq-16y"/>
@@ -416,7 +420,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zBd-yH-dqw">
-                                <rect key="frame" x="809" y="24" width="11" height="23"/>
+                                <rect key="frame" x="371" y="68" width="11" height="23"/>
                                 <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="19"/>
                                 <color key="textColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -424,7 +428,7 @@
                                 <size key="shadowOffset" width="0.0" height="1"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yeI-Oq-DHp">
-                                <rect key="frame" x="707" y="18.666666666666671" width="42" height="34"/>
+                                <rect key="frame" x="269" y="62.666666666666657" width="42" height="34"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="19"/>
                                 <size key="titleShadowOffset" width="0.0" height="1"/>
@@ -437,14 +441,14 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NumberThunder" translatesAutoresizingMaskIntoConstraints="NO" id="qN6-qN-4Qb">
-                                <rect key="frame" x="765" y="9.6666666666666643" width="36" height="36"/>
+                                <rect key="frame" x="327" y="53.666666666666657" width="36" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="36" id="02G-tK-yyw"/>
                                     <constraint firstAttribute="height" constant="36" id="rtJ-B3-M2T"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9fn-DM-13p">
-                                <rect key="frame" x="76" y="9.6666666666666643" width="36" height="36"/>
+                                <rect key="frame" x="32" y="53.666666666666657" width="36" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="DYu-V0-4Ei"/>
                                     <constraint firstAttribute="width" constant="36" id="z2s-mL-dZy"/>
@@ -459,14 +463,14 @@
                                 </connections>
                             </button>
                             <view hidden="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DXp-DQ-GCc" userLabel="photoAlert">
-                                <rect key="frame" x="44" y="0.0" width="808" height="393"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
                                 <color key="backgroundColor" red="0.40000000000000002" green="0.90196078430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KU6-fr-bn8" userLabel="steadyAlertView" customClass="RoundedCard" customModule="Thundy" customModuleProvider="target">
-                                <rect key="frame" x="208" y="77.666666666666671" width="480" height="215.33333333333331"/>
+                                <rect key="frame" x="32" y="121.66666666666669" width="350" height="576.33333333333326"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep the device steady" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="bte-G9-b0e">
-                                        <rect key="frame" x="72" y="32" width="336" height="151"/>
+                                        <rect key="frame" x="52.666666666666686" y="86.333333333333343" width="245" height="403.66666666666663"/>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="50"/>
                                         <color key="textColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -486,7 +490,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="105-Vb-GQL">
-                                <rect key="frame" x="44" y="414" width="808" height="0.0"/>
+                                <rect key="frame" x="0.0" y="896" width="414" height="0.0"/>
                                 <constraints>
                                     <constraint firstAttribute="height" id="Yrb-q3-7dk"/>
                                 </constraints>
@@ -598,17 +602,17 @@
             <objects>
                 <viewController storyboardIdentifier="Step1" id="PtV-C3-35h" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VLU-jj-XFo">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w98-w7-tZg">
-                                <rect key="frame" x="44.666666666666686" y="51.666666666666657" width="806.66666666666652" height="310.66666666666674"/>
+                                <rect key="frame" x="20.666666666666657" y="112" width="372.66666666666674" height="672"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NumberThunder" translatesAutoresizingMaskIntoConstraints="NO" id="qWs-7Y-Ucd">
-                                        <rect key="frame" x="16" y="16.000000000000007" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="16" width="340.66666666666669" height="304"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thundy helps you to take amazing lightning photos automatically" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="cEE-Ey-NtQ">
-                                        <rect key="frame" x="16" y="171.33333333333334" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="352" width="340.66666666666669" height="304"/>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="22"/>
                                         <color key="textColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -648,7 +652,7 @@
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="VjP-c2-VHQ">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
@@ -672,17 +676,17 @@
             <objects>
                 <viewController storyboardIdentifier="Step2" id="tud-EJ-cLZ" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VAx-t8-O39">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CGn-dn-879">
-                                <rect key="frame" x="44.666666666666686" y="51.666666666666657" width="806.66666666666652" height="310.66666666666674"/>
+                                <rect key="frame" x="20.666666666666657" y="112" width="372.66666666666674" height="672"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="brigthness" translatesAutoresizingMaskIntoConstraints="NO" id="wf4-v4-0J7">
-                                        <rect key="frame" x="16" y="16.000000000000007" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="16" width="340.66666666666669" height="304"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Yu7-we-wfh">
-                                        <rect key="frame" x="16" y="171.33333333333334" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="352" width="340.66666666666669" height="304"/>
                                         <string key="text">Thundy scans and analyze the brightness of a scene in order to find fluctuations, such as the ones produced by a flashing light or a lighting</string>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="22"/>
                                         <color key="textColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
@@ -721,17 +725,17 @@
             <objects>
                 <viewController storyboardIdentifier="Step3" id="ZCP-1G-5VQ" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3zg-0a-0ZZ">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOh-kz-THP">
-                                <rect key="frame" x="44.666666666666686" y="51.666666666666657" width="806.66666666666652" height="310.66666666666674"/>
+                                <rect key="frame" x="20.666666666666657" y="112" width="372.66666666666674" height="672"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="steady" translatesAutoresizingMaskIntoConstraints="NO" id="2MQ-0f-kiP">
-                                        <rect key="frame" x="16" y="16.000000000000007" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="16" width="340.66666666666669" height="304"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Once the Thundy camera was shown, try to keep your device steady, you can use a tripod or just hold it steady with your hands" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="pMa-Lv-DUR">
-                                        <rect key="frame" x="16" y="171.33333333333334" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="352" width="340.66666666666669" height="304"/>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="22"/>
                                         <color key="textColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -769,23 +773,23 @@
             <objects>
                 <viewController storyboardIdentifier="Step4" id="38l-BA-NSZ" customClass="TutorialStepViewController" customModule="Thundy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2rS-ba-fyJ">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hZz-PN-y6x">
-                                <rect key="frame" x="44.666666666666686" y="51.666666666666657" width="806.66666666666652" height="310.66666666666674"/>
+                                <rect key="frame" x="20.666666666666657" y="112" width="372.66666666666674" height="672"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="That's all. Use the blue scan button to begin the scanning" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="zPk-O5-7NO">
-                                        <rect key="frame" x="16" y="16.000000000000014" width="774.66666666666663" height="155.33333333333337"/>
+                                        <rect key="frame" x="16" y="16" width="340.66666666666669" height="336"/>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="22"/>
                                         <color key="textColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="czS-D6-4CD" userLabel="downView">
-                                        <rect key="frame" x="0.0" y="155.33333333333331" width="806.66666666666663" height="155.33333333333331"/>
+                                        <rect key="frame" x="0.0" y="336" width="372.66666666666669" height="336"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y94-n5-1hu" customClass="RoundButton" customModule="Thundy" customModuleProvider="target">
-                                                <rect key="frame" x="345" y="19.33333333333335" width="116.66666666666669" height="116.66666666666669"/>
+                                                <rect key="frame" x="94" y="75.666666666666615" width="184.66666666666663" height="184.66666666666663"/>
                                                 <color key="backgroundColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="y94-n5-1hu" secondAttribute="height" id="R8B-vm-juF"/>
@@ -1144,17 +1148,17 @@
             <objects>
                 <viewController storyboardIdentifier="StepBis" id="OJS-5p-hIx" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GUg-c0-pAZ">
-                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uKi-v9-MK1">
-                                <rect key="frame" x="44.666666666666686" y="51.666666666666657" width="806.66666666666652" height="310.66666666666674"/>
+                                <rect key="frame" x="20.666666666666657" y="112" width="372.66666666666674" height="672"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warning" translatesAutoresizingMaskIntoConstraints="NO" id="XRN-92-HPB">
-                                        <rect key="frame" x="16" y="16.000000000000007" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="16" width="340.66666666666669" height="304"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="sCD-0H-AlY">
-                                        <rect key="frame" x="16" y="171.33333333333334" width="774.66666666666663" height="123.33333333333334"/>
+                                        <rect key="frame" x="16" y="352" width="340.66666666666669" height="304"/>
                                         <string key="text">Don't be too close of a lightning storm. Avoid stand on large open spaces and stay away from isolated high structures, like trees. Don't put your life in danger in any situation</string>
                                         <fontDescription key="fontDescription" name="Comfortaa-Bold" family="Comfortaa" pointSize="22"/>
                                         <color key="textColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
