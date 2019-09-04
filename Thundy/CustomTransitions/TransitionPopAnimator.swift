@@ -55,6 +55,7 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
             guard let presentedView = transitionContext.view(forKey: .to) else { return }
             guard let presentedViewController = transitionContext.viewController(forKey: .to) as? PhotoViewController else { return }
+            
             let originalCenter = presentedView.center
             let originalSize = presentedView.frame.size
             let originalBackgroundColor = presentedView.backgroundColor
@@ -98,6 +99,12 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             guard let toView = transitionContext.view(forKey: .to) else { return }
             
             guard let returningControllerView = transitionContext.view(forKey: .from) else { return }
+            
+            guard let button = returningControllerView.subviews.first(where: {$0 is UIButton}) else { return }
+            
+            let alternativeRect = button.frame
+            
+            let alternativeOrigin = CGPoint(x: alternativeRect.midX, y: alternativeRect.midY)
    
             let originalCenter = returningControllerView.center
             let originalSize = returningControllerView.frame.size
@@ -113,8 +120,8 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             let newXPosition = returningControllerView.frame.width * xWidthPercentage
             let newYPosition = returningControllerView.frame.height * yHeightPercentage
             let newOrigin = CGPoint(x: newXPosition, y: newYPosition + checkIfCorrectionIsNeeded(toView: toView, fromView: returningControllerView))
-  
-            origin = newOrigin
+
+            origin = alternativeOrigin
             toView.frame = returningControllerView.frame
             
             circle?.frame = frameForCircle(center: originalCenter, size: toView.frame.size, start: origin)

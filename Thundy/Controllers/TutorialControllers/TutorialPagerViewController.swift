@@ -26,6 +26,7 @@ class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDat
         self.dataSource = self
         
         let bgView = UIView(frame: UIScreen.main.bounds)
+        bgView.tag = 123
         bgView.backgroundColor = UIColor.defaultBlue
         view.insertSubview(bgView, at: 0)
         
@@ -35,6 +36,19 @@ class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDat
         navigationController?.navigationBar.topItem?.title = ""
         setUpViewControllers(infoTab: infoTab)
         loadAlbum(infoTab: infoTab)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        for view in self.view.subviews {
+            if view is UIScrollView {
+                view.frame = UIScreen.main.bounds
+            } else if view is UIPageControl {
+                view.backgroundColor = .clear
+            } else if view.tag == 123 {
+                view.frame = UIScreen.main.bounds
+            }
+        }
     }
     
     //En caso de que el usuario entre por primera vez a la cámara, le aparece el tutorial que de fondo intenta crear el album si este todavía no existe
@@ -98,6 +112,18 @@ class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDat
          
          return viewControllerList[nextIndex]
 
+    }
+    
+    func presentationCount(for pageViewController: UIPageViewController) -> Int {
+        return viewControllerList.count
+    }
+    
+    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
+        guard let firstViewController = viewControllers?.first,
+            let firstViewControllerIndex = viewControllerList.firstIndex(of: firstViewController) else {
+                return 0
+        }
+        return firstViewControllerIndex
     }
 
 }

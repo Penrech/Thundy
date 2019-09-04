@@ -125,7 +125,6 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                         }
                     } else {
                         //Viewcontroller
-                        print("BackgroundView?: \(toView.subviews)")
                         if let backgroundImage = toView.subviews.first(where: {$0 is UIImageView}) {
                             backgroundImage.alpha = 1.0
                         }
