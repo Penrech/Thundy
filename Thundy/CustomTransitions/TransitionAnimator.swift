@@ -11,9 +11,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
     }
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-      
         return TimeInterval(UINavigationController.hideShowBarDuration)
-       
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -21,17 +19,14 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
         guard let fromView = transitionContext.view(forKey: .from) else { return }
         guard let toView = transitionContext.view(forKey: .to) else { return }
         
-        guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
-        guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
+        /*guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
+        guard let toViewController = transitionContext.viewController(forKey: .to) else { return }*/
 
-        
         let snapshotView = UIImageView()
         
         var cellView: UICollectionViewCell? = nil
         
- 
         let duration = transitionDuration(using: transitionContext)
-
 
         let container = transitionContext.containerView
         let toViewFrame = toView.frame
@@ -116,7 +111,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                     }
             }
             
-            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 1, animations: {
+           /* UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 1, animations: {
                 if TypeOfTransition.shared.currentTransition == .DefaultSlide {
                     if self.presenting {
                         //Viewcontroller
@@ -136,7 +131,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                     }
                     
                 }
-            })
+            })*/
 
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1) {
                 

@@ -52,9 +52,8 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         if transitionMode == .Present {
             
-
-            guard let presentedView = transitionContext.view(forKey: .to) else { return }
-            guard let presentedViewController = transitionContext.viewController(forKey: .to) as? PhotoViewController else { return }
+            guard let presentedView = transitionContext.view(forKey: .to),
+                let presentedViewController = transitionContext.viewController(forKey: .to) as? PhotoViewController else { return }
             
             let originalCenter = presentedView.center
             let originalSize = presentedView.frame.size
@@ -96,39 +95,27 @@ class TransitionPopAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             }
         } else {
             
-            guard let toView = transitionContext.view(forKey: .to) else { return }
+            guard let toView = transitionContext.view(forKey: .to),
+                let returningControllerView = transitionContext.view(forKey: .from),
+                let button = returningControllerView.subviews.first(where: {$0 is UIButton}) else { return }
             
-            guard let returningControllerView = transitionContext.view(forKey: .from) else { return }
+            let buttonRect = button.frame
             
-            guard let button = returningControllerView.subviews.first(where: {$0 is UIButton}) else { return }
-            
-            let alternativeRect = button.frame
-            
-            let alternativeOrigin = CGPoint(x: alternativeRect.midX, y: alternativeRect.midY)
+            let newOrigin = CGPoint(x: buttonRect.midX, y: buttonRect.midY)
    
             let originalCenter = returningControllerView.center
             let originalSize = returningControllerView.frame.size
             let originalColor = returningControllerView.backgroundColor
+      
+            origin = newOrigin
+            toView.frame = returningControllerView.frame
             
             circle = UIView(frame: frameForCircle(center: originalCenter, size: originalSize, start: origin))
             circle?.layer.cornerRadius = circle!.frame.size.height / 2
-            circle?.clipsToBounds = true
-            circle?.center = origin
-       
-            let xWidthPercentage = origin.x / toView.frame.width
-            let yHeightPercentage = origin.y / toView.frame.height
-            let newXPosition = returningControllerView.frame.width * xWidthPercentage
-            let newYPosition = returningControllerView.frame.height * yHeightPercentage
-            let newOrigin = CGPoint(x: newXPosition, y: newYPosition + checkIfCorrectionIsNeeded(toView: toView, fromView: returningControllerView))
-
-            origin = alternativeOrigin
-            toView.frame = returningControllerView.frame
-            
-            circle?.frame = frameForCircle(center: originalCenter, size: toView.frame.size, start: origin)
             circle?.backgroundColor = originalColor
-            circle?.layer.cornerRadius = circle!.frame.size.height / 2
             circle?.clipsToBounds = true
             circle?.center = origin
+            
             
             containerView.addSubview(toView)
             containerView.addSubview(circle!)

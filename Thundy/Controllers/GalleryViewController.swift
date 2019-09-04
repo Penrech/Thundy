@@ -286,7 +286,9 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @objc func shareImages(){
        
-        var imagenesACompartirURL: [URL] = []
+        var imagenesACompartirURL: [Any] = []
+        imagenesACompartirURL.append(ShareTextProvider())
+        
         if let listaDeImagenesSeleccionadas = self.collectionView.indexPathsForSelectedItems {
             for indexPath in listaDeImagenesSeleccionadas{
                 let asset = self.allPhotos?.object(at: indexPath.row)

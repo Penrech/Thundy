@@ -319,7 +319,7 @@ class GalleryDetailViewController: UIViewController, UICollectionViewDelegate, U
         let asset = self.allPhotos?.object(at: indice.row)
         guard let imagenUrlACompartir = UIImage().shareImage(asset: asset!) else { return }
       
-        let activityViewController = UIActivityViewController(activityItems: [imagenUrlACompartir], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: [imagenUrlACompartir, ShareTextProvider()], applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
         
     }

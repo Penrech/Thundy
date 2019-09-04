@@ -72,13 +72,14 @@ class TutorialPagerViewController: UIPageViewController, UIPageViewControllerDat
         let vc1 = self.storyboard?.instantiateViewController(withIdentifier: "Step1")
         let vc2 = self.storyboard?.instantiateViewController(withIdentifier: "Step2")
         let vc3 = self.storyboard?.instantiateViewController(withIdentifier: "Step3")
+        let vcPro = self.storyboard?.instantiateViewController(withIdentifier: "StepPro")
         let vcBis = self.storyboard?.instantiateViewController(withIdentifier: "StepBis")
         
         if infoTab{
-            viewControllerList = [vc1!, vc2!, vc3!,vcBis!]
+            viewControllerList = [vc1!, vc2!, vc3!,vcPro!,vcBis!]
         } else {
             let vc4 = self.storyboard?.instantiateViewController(withIdentifier: "Step4")
-            viewControllerList = [vc1!, vc2!, vc3!, vcBis!,vc4!]
+            viewControllerList = [vc1!, vc2!, vc3!,vcPro!, vcBis!,vc4!]
         }
         
         if let firstViewController = viewControllerList.first {

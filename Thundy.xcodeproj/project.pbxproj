@@ -32,6 +32,7 @@
 		B9C2F639225CAA59004B4A81 /* CustomPhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */; };
 		B9D7219A227C8D2200B276F5 /* cameraSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D72199227C8D2200B276F5 /* cameraSettingsViewController.swift */; };
 		B9D7666E2270B7450092D168 /* listOfCameraOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */; };
+		B9E63A2C231FFAB200CF6DBE /* ShareTextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E63A2B231FFAB200CF6DBE /* ShareTextProvider.swift */; };
 		B9F1CF2F22563E1500B2DAF0 /* UIColor+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */; };
 		B9F8A11A224F8CF1003E1028 /* UIImage+scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */; };
 		B9F8A11F224F8F5A003E1028 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */; };
@@ -70,6 +71,7 @@
 		B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoAlbum.swift; sourceTree = "<group>"; };
 		B9D72199227C8D2200B276F5 /* cameraSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cameraSettingsViewController.swift; sourceTree = "<group>"; };
 		B9D7666D2270B7450092D168 /* listOfCameraOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = listOfCameraOptions.swift; sourceTree = "<group>"; };
+		B9E63A2B231FFAB200CF6DBE /* ShareTextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTextProvider.swift; sourceTree = "<group>"; };
 		B9F1CF2E22563E1500B2DAF0 /* UIColor+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ext.swift"; sourceTree = "<group>"; };
 		B9F8A119224F8CF1003E1028 /* UIImage+scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+scale.swift"; sourceTree = "<group>"; };
 		B9F8A11C224F8F5A003E1028 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				B972EDB3225B965900C16640 /* RoundedCard.swift */,
 				B9C2F638225CAA59004B4A81 /* CustomPhotoAlbum.swift */,
 				B971351A2261EFAD004146B5 /* ButtonForToolbar.swift */,
+				B9E63A2B231FFAB200CF6DBE /* ShareTextProvider.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				B9844B2D226889A200CB78F2 /* UIDevice+notch.swift in Sources */,
 				B9302DFE22589F4200FB33D7 /* UIInterfaceOrientation+Video.swift in Sources */,
 				B972EDB2225B646E00C16640 /* Date+Milis.swift in Sources */,
+				B9E63A2C231FFAB200CF6DBE /* ShareTextProvider.swift in Sources */,
 				B958C37C2252609C005DF25F /* UIImageView+Fetch.swift in Sources */,
 				B958C37E22526644005DF25F /* UIApplication+statusBar.swift in Sources */,
 				B99501B12265EDC300CC1F35 /* PhotoDetailViewCell.swift in Sources */,

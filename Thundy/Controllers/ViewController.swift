@@ -349,29 +349,20 @@ extension ViewController: UIViewControllerTransitioningDelegate {
         
         toCameraTransition.transitionMode = .Present
         toCameraTransition.circleColor = self.buttonStart.backgroundColor
-        //let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview?.superview)
-        //let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview)
         let circleButtonRect = view.convert(self.buttonStart.frame, to: view.superview)
         toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
         toCameraTransition.buttonRect = circleButtonRect
-        
-        print("@Rect on present: \(circleButtonRect)")
-        print("@Origin on present: \(CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY))")
-        
+
         return toCameraTransition
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         toCameraTransition.transitionMode = .Dismiss
-        //let circleButtonRect = downView.convert(self.buttonStart.frame, to: downView.superview)
         let circleButtonRect = self.buttonStart.frame
         toCameraTransition.origin = CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY)
         toCameraTransition.buttonRect = circleButtonRect
         toCameraTransition.circleColor = self.buttonStart.backgroundColor
-        
-        print("@Rect on dismiss: \(circleButtonRect)")
-        print("@Origin on dismiss: \(CGPoint(x: circleButtonRect.midX, y: circleButtonRect.midY))")
         
         return toCameraTransition
     }
