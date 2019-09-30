@@ -682,17 +682,11 @@ extension PhotoViewController: cameraSettingsDelegate {
     }
     
     func setNewIso(value: ListOfCameraOptions.ISOoption) {
-        print("Entro new iso")
         if !captureSession.isRunning{
             return
         }
         
-        print("Paso primer return")
-        
         guard let captureDevice = captureDeviceRef else { return }
-        
-        print("Paso segundo return")
-        print("Valor \(value.option)")
         
         do {
             try captureDevice.lockForConfiguration()
@@ -715,7 +709,6 @@ extension PhotoViewController: cameraSettingsDelegate {
             }
         }
         captureDevice.unlockForConfiguration()
-        print("ISO modified \(captureDevice.iso)")
     }
     
     func setNewExposure(value: ListOfCameraOptions.ExposureOption) {
