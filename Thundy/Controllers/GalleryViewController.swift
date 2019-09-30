@@ -115,7 +115,7 @@ class GalleryViewController: UIViewController, UICollectionViewDelegate, UIColle
             return
         }
         
-        navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
+       navigationController?.navigationBar.backgroundColor = UIColor.defaultBlue
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.3, animations: {
                 self.navigationItem.title = self.defaultViewTitle

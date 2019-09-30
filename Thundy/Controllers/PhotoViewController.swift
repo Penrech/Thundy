@@ -682,11 +682,17 @@ extension PhotoViewController: cameraSettingsDelegate {
     }
     
     func setNewIso(value: ListOfCameraOptions.ISOoption) {
+        print("Entro new iso")
         if !captureSession.isRunning{
             return
         }
         
+        print("Paso primer return")
+        
         guard let captureDevice = captureDeviceRef else { return }
+        
+        print("Paso segundo return")
+        print("Valor \(value.option)")
         
         do {
             try captureDevice.lockForConfiguration()
@@ -709,6 +715,7 @@ extension PhotoViewController: cameraSettingsDelegate {
             }
         }
         captureDevice.unlockForConfiguration()
+        print("ISO modified \(captureDevice.iso)")
     }
     
     func setNewExposure(value: ListOfCameraOptions.ExposureOption) {
@@ -733,6 +740,36 @@ extension PhotoViewController: cameraSettingsDelegate {
             print("Error")
             DispatchQueue.main.async {
                 let alertaError = UIAlertController(title: "Error", message: "Error setting Exposure time", preferredStyle: .alert)
+                alertaError.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(alertaError, animated: true, completion: nil)
+            }
+        }
+        captureDevice.unlockForConfiguration()
+    }
+    
+    func restoreISOAndExposure(isoValue: ListOfCameraOptions.ISOoption, exposureValue: ListOfCameraOptions.ExposureOption){
+        if !captureSession.isRunning {
+            return
+        }
+        
+        guard let captureDevice = captureDeviceRef else { return }
+        
+        do {
+            try captureDevice.lockForConfiguration()
+            if captureDevice.isExposureModeSupported(.custom){
+                
+                captureDevice.setExposureModeCustom(duration: exposureValue.option, iso: isoValue.option) { [weak self] (time) in
+                    if let exposureKey = self?.optionsViewController?.exposureKey, let isoKey = self?.optionsViewController?.isoKey {
+                        let preferences = UserDefaults.standard
+                        preferences.set(exposureValue.id, forKey: exposureKey)
+                        preferences.set(isoValue.id, forKey: isoKey)
+                    }
+                }
+            }
+        } catch {
+            print("Error")
+            DispatchQueue.main.async {
+                let alertaError = UIAlertController(title: "Error", message: "Error restoring values", preferredStyle: .alert)
                 alertaError.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
                 self.present(alertaError, animated: true, completion: nil)
             }

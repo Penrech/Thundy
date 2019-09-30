@@ -19,10 +19,11 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
         guard let fromView = transitionContext.view(forKey: .from) else { return }
         guard let toView = transitionContext.view(forKey: .to) else { return }
         
-        /*guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
-        guard let toViewController = transitionContext.viewController(forKey: .to) else { return }*/
+        guard let fromViewController = transitionContext.viewController(forKey: .from) else { return }
+        guard let toViewController = transitionContext.viewController(forKey: .to) else { return }
 
         let snapshotView = UIImageView()
+        
         
         var cellView: UICollectionViewCell? = nil
         
@@ -110,28 +111,25 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                     default: break
                     }
             }
+        
             
-           /* UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 1, animations: {
-                if TypeOfTransition.shared.currentTransition == .DefaultSlide {
-                    if self.presenting {
-                        //Viewcontroller
-                        if let backgroundImage = fromView.subviews.first(where: {$0 is UIImageView}) {
-                            backgroundImage.alpha = 0.0
+           UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1.0, animations: {
+                if !(toViewController is UIPageViewController || fromViewController is UIPageViewController) {
+                    if TypeOfTransition.shared.currentTransition == .DefaultSlide {
+                        if !self.presenting {
+                            fromViewController.navigationController?.navigationBar.backgroundColor = .clear
+                            if let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView,
+                                let collectionView = fromView.subviews.first as? UICollectionView{
+                                statusBarView.backgroundColor = .clear
+                                collectionView.backgroundColor = UIColor.defaultBlue
+                            }
+                            print("Not presenting")
                         }
-                    } else {
-                        //Viewcontroller
-                        if let backgroundImage = toView.subviews.first(where: {$0 is UIImageView}) {
-                            backgroundImage.alpha = 1.0
-                        }
-                        toViewController.navigationController?.navigationBar.backgroundColor = .clear
-                        guard let statusBarView = UIApplication.shared.value(forKeyPath: "statusBarWindow.statusBar") as? UIView else {
-                            return
-                        }
-                        statusBarView.backgroundColor = .clear
                     }
-                    
                 }
-            })*/
+            })
+            
+            
 
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 1) {
                 
@@ -139,6 +137,7 @@ final class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
                 case .DefaultSlide:
                     toView.frame = toViewFrame
                     fromView.frame = CGRect(x: self.presenting ? -fromView.frame.width : fromView.frame.width, y: fromView.frame.origin.y, width: fromView.frame.width, height: fromView.frame.height)
+                    
                 case .UpDownSlide:
                     toView.frame = toViewFrame
                    fromView.frame = CGRect(x: fromView.frame.origin.x, y: self.presenting ? -fromView.frame.height : fromView.frame.height, width: fromView.frame.width, height: fromView.frame.height)

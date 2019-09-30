@@ -13,6 +13,7 @@ protocol cameraSettingsDelegate: class {
     func setNewSensibility(value: Int)
     func setNewIso(value: ListOfCameraOptions.ISOoption)
     func setNewExposure(value: ListOfCameraOptions.ExposureOption)
+    func restoreISOAndExposure(isoValue: ListOfCameraOptions.ISOoption, exposureValue: ListOfCameraOptions.ExposureOption)
     func showSettings(show: Bool)
 }
 
@@ -44,6 +45,7 @@ class cameraSettingsViewController: UIViewController {
         restoreValues()
     }
     @IBAction func isoOptionsChange(_ sender: Any) {
+        print("Cambio iso a \(isoSlider.value)")
         isoSlider.value = round(self.isoSlider.value)
         if let delegate = delegate {
             let newValue = supportedISO[Int(isoSlider!.value)]
@@ -146,24 +148,25 @@ class cameraSettingsViewController: UIViewController {
             let initialIso = ListOfCameraOptions.shared.initialISOoption,
             let initialExposure = ListOfCameraOptions.shared.initialExposureOption else { return }
         
+        
+        var isoTemp = supportedISO[0]
+        var expTemp = supportedExposure[0]
         let initialSensibility = ListOfCameraOptions.shared.initialSensibilityOption
         if let isoSupported = supportedISO.firstIndex(where: {$0.id == initialIso.id}){
             isoSlider.value = Float(isoSupported)
-            let newISO = supportedISO[isoSupported]
-            delegate.setNewIso(value: newISO)
+            isoTemp = supportedISO[isoSupported]
         } else {
             isoSlider.value = 0
-            delegate.setNewIso(value: supportedISO[0])
         }
         if let exposureSupporte = supportedExposure.firstIndex(where: {$0.id == initialExposure.id}) {
             exposureSlider.value = Float(exposureSupporte)
-            let newExposure = supportedExposure[exposureSupporte]
-            delegate.setNewExposure(value: newExposure)
+            expTemp = supportedExposure[exposureSupporte]
         } else {
             exposureSlider.value = 0
-            delegate.setNewExposure(value: supportedExposure[0])
         }
+        
         sensibilitySlider.value = Float(initialSensibility)
+        delegate.restoreISOAndExposure(isoValue: isoTemp, exposureValue: expTemp)
         delegate.setNewSensibility(value: initialSensibility)
         
     }
