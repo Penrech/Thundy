@@ -24,7 +24,7 @@
 
 <h1>Videos</h1>
 <p>
-  <a href='#img3'><img id='img_cover' src='thundy_cover.png'/></a>
+  <a href='#img3'><img id='img_cover' width = '49%' src='thundy_cover.png'/></a>
 </p>
 
 <h1>License</h1>
