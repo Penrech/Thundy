@@ -14,16 +14,19 @@
 
 <h1>Screenshots</h1>
 <p>
-  <a href='#img1'><img id='img1' width = '49%' src='device-2019-02-05-123200.png'/></a>
-  <a href='#img2'><img id='img2' width = '49%' src='device-2019-02-05-123255.png'/></a>
+  <a href='#img1'><img id='img1' width = '49%' src='IMG_0685.png'/></a>
+  <a href='#img2'><img id='img2' width = '49%' src='IMG_0686.png'/></a>
 </p>
 <p>
-  <a href='#img3'><img id='img3' width = '49%' src='device-2019-02-05-123346.png'/></a>
-  <a href='#img4'><img id='img4' width = '49%' src='device-2019-02-05-123438.png'/></a>
+  <a href='#img3'><img id='img3' width = '49%' src='IMG_0687.png'/></a>
+  <a href='#img4'><img id='img4' width = '49%' src='IMG_0688.png'/></a>
 </p>
 
-<h1>Video/Gif</h1>
-
+<h1>Videos</h1>
+<p>
+  <a href='#img3'><img id='img3' width = '49%' src='IMG_0687.png'/></a>
+  <a href='#img4'><img id='img4' width = '49%' src='IMG_0688.png'/></a>
+</p>
 
 <h1>License</h1>
 <p>This repo acts like a portfolio and the app contained here <b>can't hold liability neither place warranty</b>. Furthermore, Thundy is meant to be a commercial app published in the app store, so in order to avoid problems in the future this repo has a <b>NonCommercial</b> CC-BY-NC license</p>
